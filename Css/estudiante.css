@@ -43,3 +43,6 @@ body {
   padding: 10px 0;
   text-align: center;
 }
+img{
+  border-radius:100%;
+}  
