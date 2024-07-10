@@ -1,66 +1,45 @@
 body {
-    padding-top: 0px;
-    background: linear-gradient(150deg, white, black, grey);
-    margin: 0; 
-    background-attachment: fixed; /* Fondo fijo */
-  }
-  
-  .hero {
-    padding: 10vh 0;
-    background: transparent; 
-    color: white;
-  }
-  
-  .features {
-    padding: 50px 0;
-  }
-  
-  .feature-box {
-    background-color: #adadad;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-  }
-  .feature-box:hover {
-    transform: scale(1.25);
-  }
-  
-  .footer {
-    background-color: #343a40;
-    color: #ffffff;
-    padding: 20px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;  
-  }
-  body{
-    color:white;
-  }
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
-   /* Estilos para el contenedor del ícono */
-   .qr-icon-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999; /* Asegura que esté encima de otros elementos */
-  }
+.navbar-brand img {
+  border-radius: 50%;
+}
 
-  /* Estilos para el ícono de escáner QR */
-  .qr-icon {
-    font-size: 5em; /* Tamaño del ícono */
-    color: #000; /* Color del ícono */
-  }
+.container {
+  max-width: 900px;
+  margin-top: 50px;
+  flex: 1;
+}
 
-  /* Estilos para el área de escaneo QR */
-  .qr-scan-area {
-    text-align: center;
-    margin-top: 20px;
-  }
+.card {
+  padding: 20px;
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #ffffff;
+}
 
-  .qr-scan-area p {
-    font-size: 18px;
-  }
+.form-label {
+  font-weight: bold;
+}
 
-  
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.footer {
+  background-color: #343a40;
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+}
