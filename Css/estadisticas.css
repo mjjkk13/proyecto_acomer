@@ -1,45 +1,51 @@
-/* archivo: ../../Css/estadisticas.css */
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
 body {
-    background-color: #f8f9fa;
-  }
-  
-  .table {
-    margin-top: 20px;
-  }
-  body {
-    padding-top: 0px;
-    background: linear-gradient(150deg, white, black, grey);
-    margin: 0; 
-    background-attachment: fixed; /* Fondo fijo */
-    }
-  
-  .hero {
-    padding: 10vh 0;
-    background: transparent; 
-    color: white;
-  }
-  
-  .features {
-    padding: 50px 0;
-  }
-  
-  .feature-box {
-    background-color: #adadad;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-  }
-  .feature-box:hover {
-    transform: scale(1.25);
-  }
-  
-  .footer {
-    background-color: #343a40;
-    color: #ffffff;
-    padding: 20px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;  
-  }
-    
+  background-color: #DDE6ED; /* Fondo general */
+  margin: 0; 
+  background-attachment: fixed; /* Fondo fijo */
+  padding-top: 0px;
+  font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
+}
+
+.table {
+  margin-top: 20px;
+}
+
+nav {
+  background-color: #27374D; /* Fondo del nav */
+  color: #ffffff; /* Color del texto en el nav */
+}
+
+.hero {
+  padding: 10vh 0;
+  background: transparent; 
+  color: #ffffff !important; /* Color del texto */
+}
+
+.features {
+  padding: 50px 0;
+  background-color: #9DB2BF; /* Fondo de la sección de características */
+}
+
+.feature-box {
+  background-color: #526D82; /* Fondo de las cajas */
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  color: #DDE6ED; /* Color del texto en las cajas */
+}
+
+.feature-box:hover {
+  transform: scale(1.25);
+}
+
+.footer {
+  background-color: #27374D; /* Fondo del footer, oscuro para contraste */
+  color: #DDE6ED; /* Color del texto en el footer */
+  padding: 20px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;  
+}
