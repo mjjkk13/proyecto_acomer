@@ -11,10 +11,26 @@ body {
 .table {
   margin-top: 20px;
 }
+.so{
+  color: white;
+}
 
-nav {
+/* Aplica este CSS a tu archivo estadisticas.css */
+nav.navbar {
   background-color: #27374D; /* Fondo del nav */
-  color: #ffffff; /* Color del texto en el nav */
+  color: #ffffff !important; /* Color del texto en el nav */
+}
+
+nav.navbar a.nav-link,
+nav.navbar .navbar-brand h3.so,
+nav.navbar .navbar-brand,
+nav.navbar a.nav-link.dropdown-toggle {
+  color: #ffffff !important; /* Asegúrate de que todos los enlaces y textos sean blancos */
+}
+
+nav.navbar a.nav-link:hover,
+nav.navbar a.nav-link.dropdown-toggle:hover {
+  color: #DDE6ED !important; /* Color al pasar el mouse */
 }
 
 .hero {
