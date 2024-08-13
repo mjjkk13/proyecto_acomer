@@ -1,73 +1,87 @@
 body {
-    padding-top: 0px;
-    background: linear-gradient(150deg, white, black, grey);
-    margin: 0; 
-    background-attachment: fixed; /* Fondo fijo */
-  }
-  
-  .hero {
-    padding: 10vh 0;
-    background: transparent; 
-    color: white;
-  }
-  
-  .features {
-    padding: 50px 0;
-  }
-  
-  .feature-box {
-    background-color: #adadad;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-  }
-  .feature-box:hover {
-    transform: scale(1.25);
-  }
-  
-  .footer {
-    background-color: #343a40;
-    color: #ffffff;
-    padding: 20px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;  
-  }
-  body{
-    color:white;
-  }
-
-   /* Estilos para el contenedor del ícono */
-   .qr-icon-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999; /* Asegura que esté encima de otros elementos */
-  }
-
-  /* Estilos para el ícono de escáner QR */
-  .qr-icon {
-    font-size: 5em; /* Tamaño del ícono */
-    color: #000; /* Color del ícono */
-  }
-
-  /* Estilos para el área de escaneo QR */
-  .qr-scan-area {
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .qr-scan-area p {
-    font-size: 18px;
-  }
-
-img{
-  width: 100px;
+  padding-top: 0;
+  background: linear-gradient(150deg, white, black, grey);
+  margin: 0;
+  background-attachment: fixed;
+  color: white;
+  font-size: 1rem; /* Fondo fijo */
 }
 
-#gatito{
-  width: 40px;
-  height: 40px;
+.hero {
+  padding: 10vh 0;
+  background: transparent; 
+  color: white;
+  text-align: center;
+}
+
+.features {
+  padding: 5vh 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-box {
+  background-color: #adadad;
+  border-radius: 10px;
+  padding: 2em;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  width: 80%;
+  max-width: 500px;
+  margin: 1em 0;
+}
+
+.feature-box:hover {
+  transform: scale(1.1);
+}
+
+.footer {
+  background-color: #343a40;
+  color: #ffffff;
+  padding: 1em 0;
+  width: 100%;  
+  text-align: center;
+  position: sticky;
+  bottom: 0;
+}
+
+/* Estilos para el contenedor del ícono */
+.qr-icon-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999; /* Asegura que esté encima de otros elementos */
+  text-align: center;
+  width: 80%;
+}
+
+
+  /* Estilos para el ícono de escáner QR */
+.qr-icon {
+  font-size: 10vw; /* Tamaño del ícono */
+  color: #000; /* Color del ícono */
+}
+
+
+  /* Estilos para el área de escaneo QR */
+.qr-scan-area {
+  margin-top: 2vh;
+}
+
+.qr-scan-area p {
+  font-size: 1.2em;
+}
+
+img {
+  width: 10vw;
+  max-width: 100px;
+}
+
+#gatito {
+  width: 5vw;
+  max-width: 40px;
+  height: auto;
 }
