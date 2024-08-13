@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
 body {
-<<<<<<< HEAD
-  background-color: #f8f9fa;
+  background-color: #DDE6ED;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
 }
 
 .navbar-brand img {
@@ -47,52 +49,16 @@ body {
 img{
   border-radius:100%;
 }  
-=======
-    background-color: #f8f9fa;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
+/* Media queries para hacer el contenido responsive */
+@media (max-width: 576px) {
   .navbar-brand img {
-    border-radius: 50%;
+    width: 30px;
+    height: 30px;
   }
-  
-  .container {
-    max-width: 900px;
-    margin-top: 50px;
-    flex: 1;
+  .navbar-nav .nav-link {
+    font-size: 14px;
   }
-  
-  .card {
-    padding: 20px;
-    border: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    background-color: #ffffff;
+  .container h3 {
+    font-size: 20px;
   }
-  
-  .form-label {
-    font-weight: bold;
-  }
-  
-  .btn-primary {
-    background-color: #007bff;
-    border: none;
-    transition: background-color 0.3s;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
-  
-  .footer {
-    background-color: #343a40;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-  }
-  img{
-    border-radius:100%;
-  }
->>>>>>> 976b71bfc8e3b8c29df9d7e5d06f11090c5b9c83
+}
