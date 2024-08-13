@@ -1,4 +1,5 @@
 body {
+<<<<<<< HEAD
   background-color: #f8f9fa;
   display: flex;
   flex-direction: column;
@@ -46,3 +47,52 @@ body {
 img{
   border-radius:100%;
 }  
+=======
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .navbar-brand img {
+    border-radius: 50%;
+  }
+  
+  .container {
+    max-width: 900px;
+    margin-top: 50px;
+    flex: 1;
+  }
+  
+  .card {
+    padding: 20px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #ffffff;
+  }
+  
+  .form-label {
+    font-weight: bold;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  .footer {
+    background-color: #343a40;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+  }
+  img{
+    border-radius:100%;
+  }
+>>>>>>> 976b71bfc8e3b8c29df9d7e5d06f11090c5b9c83
