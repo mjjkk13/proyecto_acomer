@@ -1,14 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
 body {
-  padding-top: 0px;
   background-color: #DDE6ED; /* Fondo general */
   margin: 0; 
   background-attachment: fixed; /* Fondo fijo */
-  }
+  padding-top: 0px;
+  font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
+}
+nav.navbar {
+  background-color: #27374D; /* Fondo del nav */
+  color: #ffffff !important; /* Color del texto en el nav */
+}
 
+nav.navbar a.nav-link,
+nav.navbar .navbar-brand h3.so,
+nav.navbar .navbar-brand,
+nav.navbar a.nav-link.dropdown-toggle {
+  color: #ffffff !important; /* Asegúrate de que todos los enlaces y textos sean blancos */
+}
+
+nav.navbar a.nav-link:hover,
+nav.navbar a.nav-link.dropdown-toggle:hover {
+  color: #DDE6ED !important; /* Color al pasar el mouse */
+}
 .hero {
   padding: 10vh 0;
   background: transparent; 
-  color: white;
+  color:black;
   padding: 5;
 }
 
@@ -28,10 +46,23 @@ body {
 }
 
 .footer {
-  background-color: #343a40;
-  color: #ffffff;
+  background-color: #27374D; /* Fondo del footer, oscuro para contraste */
+  color: #DDE6ED; /* Color del texto en el footer */
   padding: 20px 0;
+  width: 100%; 
   position: fixed;
-  bottom: 0;
-  width: 100%;  
+  bottom: 0; 
+}
+/* Media queries para hacer el contenido responsive */
+@media (max-width: 576px) {
+  .navbar-brand img {
+    width: 30px;
+    height: 30px;
+  }
+  .navbar-nav .nav-link {
+    font-size: 14px;
+  }
+  .container h3 {
+    font-size: 20px;
+  }
 }

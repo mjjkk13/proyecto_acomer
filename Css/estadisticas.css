@@ -60,7 +60,9 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   background-color: #27374D; /* Fondo del footer, oscuro para contraste */
   color: #DDE6ED; /* Color del texto en el footer */
   padding: 20px 0;
-  width: 100%;  
+  width: 100%; 
+  position: fixed;
+  bottom: 0; 
 }
 
 /* Media queries para hacer el contenido responsive */
