@@ -1,23 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
 body {
-<<<<<<< HEAD
-  background-color: #DDE6ED;
-=======
   background-color: #f8f9fa;
->>>>>>> refs/remotes/origin/main
   display: flex;
   text-align: center;
   flex-direction: column;
   min-height: 100vh;
   font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
-<<<<<<< HEAD
-=======
 }
+.so{
+  color: white;
+}
+
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
->>>>>>> refs/remotes/origin/main
 }
 
 nav.navbar a.nav-link,
@@ -66,14 +63,7 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   padding: 10px 0;
   text-align: center;
 }
-<<<<<<< HEAD
-img{
-  border-radius:100%;
-}  
-/* Media queries para hacer el contenido responsive */
-=======
 
->>>>>>> refs/remotes/origin/main
 @media (max-width: 576px) {
   .navbar-brand img {
     width: 30px;
