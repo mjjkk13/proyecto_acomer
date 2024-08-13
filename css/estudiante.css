@@ -59,9 +59,7 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   padding: 10px 0;
   text-align: center;
 }
-img{
-  border-radius:100%;
-}  
+
 @media (max-width: 576px) {
   .navbar-brand img {
     width: 30px;
