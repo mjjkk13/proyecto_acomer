@@ -5,7 +5,6 @@ body {
   display: flex;
   text-align: center;
   flex-direction: column;
-  min-height: 100vh;
   font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
 }
 .so{
@@ -58,10 +57,12 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
 }
 
 .footer {
-  background-color: #27374D;
-  color: white;
-  padding: 10px 0;
-  text-align: center;
+  background-color: #27374D; /* Fondo del footer, oscuro para contraste */
+  color: #DDE6ED; /* Color del texto en el footer */
+  padding: 20px 0;
+  width: 100%; 
+  position: fixed;
+  bottom: 0; 
 }
 
 /* Media queries para hacer el contenido responsive */
