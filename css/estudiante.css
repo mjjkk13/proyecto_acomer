@@ -64,6 +64,8 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   text-align: center;
 }
 
+/* Media queries para hacer el contenido responsive */
+
 @media (max-width: 576px) {
   .navbar-brand img {
     width: 30px;
