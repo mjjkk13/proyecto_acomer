@@ -8,7 +8,7 @@ body {
   font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
 }
 nav.navbar {
-  background-color: #27374D; /* Fondo del nav */
+  background-color: #343a40; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
 }
 
@@ -16,12 +16,12 @@ nav.navbar a.nav-link,
 nav.navbar .navbar-brand h3.so,
 nav.navbar .navbar-brand,
 nav.navbar a.nav-link.dropdown-toggle {
-  color: #ffffff !important; /* Asegúrate de que todos los enlaces y textos sean blancos */
+  color: #343a40 !important; /* Asegúrate de que todos los enlaces y textos sean blancos */
 }
 
 nav.navbar a.nav-link:hover,
 nav.navbar a.nav-link.dropdown-toggle:hover {
-  color: #DDE6ED !important; /* Color al pasar el mouse */
+  color: #343a40 !important; /* Color al pasar el mouse */
 }
 .hero {
   padding: 10vh 0;
@@ -46,7 +46,7 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
 }
 
 .footer {
-  background-color: #27374D; /* Fondo del footer, oscuro para contraste */
+  background-color: #343a40; /* Fondo del footer, oscuro para contraste */
   color: #DDE6ED; /* Color del texto en el footer */
   padding: 20px 0;
   width: 100%; 
