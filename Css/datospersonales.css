@@ -35,3 +35,15 @@ body {
     width: 100%;  
   }
   
+  @media (max-width: 576px) {
+    .navbar-brand img {
+      width: 30px;
+      height: 30px;
+    }
+    .navbar-nav .nav-link {
+      font-size: 14px;
+    }
+    .container h3 {
+      font-size: 20px;
+    }
+  }
