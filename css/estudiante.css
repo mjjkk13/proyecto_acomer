@@ -61,3 +61,18 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
 img{
   border-radius:100%;
 }  
+.container qr-scan-area{
+ text-align: center;
+}
+@media (max-width: 576px) {
+  .navbar-brand img {
+    width: 30px;
+    height: 30px;
+  }
+  .navbar-nav .nav-link {
+    font-size: 14px;
+  }
+  .container h3 {
+    font-size: 20px;
+  }
+}
