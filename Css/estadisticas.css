@@ -15,7 +15,6 @@ body {
   color: white;
 }
 
-/* Aplica este CSS a tu archivo estadisticas.css */
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
@@ -61,7 +60,19 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   background-color: #27374D; /* Fondo del footer, oscuro para contraste */
   color: #DDE6ED; /* Color del texto en el footer */
   padding: 20px 0;
-  position: fixed;
-  bottom: 0;
   width: 100%;  
+}
+
+/* Media queries para hacer el contenido responsive */
+@media (max-width: 576px) {
+  .navbar-brand img {
+    width: 30px;
+    height: 30px;
+  }
+  .navbar-nav .nav-link {
+    font-size: 14px;
+  }
+  .container h3 {
+    font-size: 20px;
+  }
 }
