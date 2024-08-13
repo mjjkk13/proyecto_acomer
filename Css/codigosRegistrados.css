@@ -80,8 +80,7 @@ img {
   max-width: 100px;
 }
 
-#gatito {
-  width: 5vw;
-  max-width: 40px;
-  height: auto;
+#logo{
+  width: 40px;
+  height: 40px;
 }
