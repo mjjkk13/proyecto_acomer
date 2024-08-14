@@ -7,34 +7,14 @@ body {
   background-color: white;
   font-family: 'Source Sans 3', sans-serif;
 }
-<<<<<<< HEAD
 .so{
   color: white;
 }
-=======
-
->>>>>>> 976b71bfc8e3b8c29df9d7e5d06f11090c5b9c83
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
 }
 
-<<<<<<< HEAD
-=======
-nav.navbar a.nav-link,
-nav.navbar .navbar-brand h3.so,
-nav.navbar .navbar-brand,
-nav.navbar a.nav-link.dropdown-toggle {
-  color: #ffffff !important; /* Asegúrate de que todos los enlaces y textos sean blancos */
-}
-
-nav.navbar a.nav-link:hover,
-nav.navbar a.nav-link.dropdown-toggle:hover {
-  color: #DDE6ED !important; /* Color al pasar el mouse */
-}
-
-
->>>>>>> 976b71bfc8e3b8c29df9d7e5d06f11090c5b9c83
 .card {
   background-color: #27374D;
   box-shadow: none;

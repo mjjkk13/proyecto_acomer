@@ -1,24 +1,42 @@
 <?php
-include 'conexion.php';
-header('Access-Control-Allow-Origin: *');
+// Activar la notificación de errores
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "acomer";
 
+// Crear la conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-// Obtener los datos de la tabla refrigerio
-$sql = "SELECT * FROM refrigerio";
+// Verificar la conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+
+$mealType = $_GET['mealType'] ?? '';
+$mealType = $conn->real_escape_string($mealType); // Evitar inyección SQL
+
+$sql = "SELECT nombreMenu, diaMenu, caracteristicasMenu FROM menu WHERE nombreMenu = '$mealType'";
+
 $result = $conn->query($sql);
 
-$refrigerio = array();
-if ($result->num_rows > 0) {
-  while($row = $result->fetch_assoc()) {
-    $refrigerio[] = $row;
-  }
-} else {
-  echo "0 resultados";
+if ($result === false) {
+    echo json_encode(['error' => 'Error en la consulta SQL: ' . $conn->error]);
+    exit();
 }
-$conn->close();
 
-// Devolver los datos en formato JSON
-header('Content-Type: application/json');
-echo json_encode($refrigerio);
+if ($result->num_rows > 0) {
+    $menu = array();
+    while($row = $result->fetch_assoc()) {
+        $menu[] = $row;
+    }
+    echo json_encode($menu);
+} else {
+    echo json_encode([]); // Devuelve un array vacío si no hay resultados
+}
+
+$conn->close();
 ?>
