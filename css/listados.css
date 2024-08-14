@@ -1,39 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
 body {
-    padding-top: 0px;
-    background: linear-gradient(150deg, white, black, grey);
-    margin: 0; 
-    background-attachment: fixed; /* Fondo fijo */
-    }
-  
-  .hero {
-    padding: 10vh 0;
-    background: transparent; 
-    color: white;
+  background-color: #DDE6ED; 
+  margin: 0; 
+  background-attachment: fixed; 
+  padding-top: 0px;
+  font-family: 'Source Sans 3', sans-serif; 
+}
+
+nav.navbar {
+  background-color: #27374D; /* Fondo del nav */
+  color: #ffffff !important; /* Color del texto en el nav */
+}
+
+nav.navbar a.nav-link,
+nav.navbar .navbar-brand h3.so,
+nav.navbar .navbar-brand,
+nav.navbar a.nav-link.dropdown-toggle {
+  color: #ffffff !important; /* Asegúrate de que todos los enlaces y textos sean blancos */
+}
+
+nav.navbar a.nav-link:hover,
+nav.navbar a.nav-link.dropdown-toggle:hover {
+  color: #DDE6ED !important; /* Color al pasar el mouse */
+}
+
+.hero {
+  padding: 10vh 0;
+  background: transparent; 
+  color: white;
+}
+
+.features {
+  padding: 50px 0;
+}
+
+.feature-box {
+  background-color: #adadad;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.feature-box:hover {
+  transform: scale(1.25);
+}
+
+.footer {
+  background-color: #27374D;
+  color: #ffffff;
+  padding: 20px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;  
+}
+
+img {
+  border-radius: 100%;
+}
+
+#tablaEstudiantes {
+  margin-top: 20px;
+}
+
+.btn {
+  background-color: #ffffff; /* Color de fondo inicial del botón */
+  color: #27374D; /* Color del texto */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #27374D; /* Color de fondo al pasar el mouse */
+  color: #DDE6ED; /* Cambia el color del texto al pasar el mouse */
+  transform: scale(1.1); /* Escala el botón al pasar el mouse */
+}
+
+@media (max-width: 576px) {
+  .navbar-brand img {
+    width: 30px;
+    height: 30px;
   }
-  
-  .features {
-    padding: 50px 0;
+  .navbar-nav .nav-link {
+    font-size: 14px;
   }
-  
-  .feature-box {
-    background-color: #adadad;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+  .container h3 {
+    font-size: 20px;
   }
-  .feature-box:hover {
-    transform: scale(1.25);
-  }
-  
-  .footer {
-    background-color: #343a40;
-    color: #ffffff;
-    padding: 20px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;  
-  }
-img{
-    border-radius:100%;
-}  
+}

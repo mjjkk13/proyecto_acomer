@@ -11,10 +11,10 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg ">
     <div class="container">
       <a class="navbar-brand" href="index.html">
-        <img src="../../css/img/images.jpg" alt="Logo" width="40" height="40"> A Comer
+        <img src="../../css/img/logo.png" alt="Logo" width="40" height="40"> A Comer
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -42,7 +42,7 @@
   </nav>
   
   <div class="container">
-    <h1>Listado de Estudiantes</h1>
+    <h1 style="text-align: center; margin-top: 20px; ">Listado de Estudiantes</h1>
     <table class="table">
       <thead class="table-dark">
         <tr>
@@ -53,10 +53,11 @@
         </tr>
       </thead>
       <tbody id="tablaEstudiantes">
-        <!-- Aquí se cargarán dinámicamente los datos de los estudiantes -->
       </tbody>
     </table>
-    <button class="btn btn-primary" id="btnGenerarQR">Generar Código QR</button>
+    <div class="text-center">
+      <button class="btn  mx-auto" id="btnGenerarQR">Generar Código QR</button>
+    </div>
   </div>
 
   <footer class="footer">
