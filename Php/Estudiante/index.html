@@ -13,7 +13,7 @@
 <body>
   <nav class="navbar navbar-expand-lg">
     <div class="container">
-      <div clas="so">
+      <div class="so">
         <a class="navbar-brand" href="index.html">
           <img id="logo" src="../../css/img/logo.png" alt="Logo" width="40" height="40"> A Comer
         </a>
@@ -52,7 +52,8 @@
       <img src="../../css/img/qr2.png" alt="Código QR Comedor Escolar" width="200" id="estudianteBox">
     </a>
     <canvas hidden="" id="qr-canvas" class="img-fluid"></canvas>
-    </div>
+  </div>
+
   <script>
     document.getElementById("estudianteBox").addEventListener("click", function() {
       // Mostrar un diálogo emergente utilizando SweetAlert2
@@ -70,15 +71,15 @@
         imageHeight: 100, // Alto de la imagen (en píxeles)
         imageAlt: 'Imagen de escaneo QR', // Texto alternativo para la imagen
       }).then((result) => {
-    if (result.isDenied) {
-        cerrarCamara(); // Si el usuario cancela, apagar la cámara
-    } else if (result.isConfirmed) {
-        encenderCamara(); // Si el usuario confirma, encender la cámara
-    }
-});
-
+        if (result.isDenied) {
+            cerrarCamara(); // Si el usuario cancela, apagar la cámara
+        } else if (result.isConfirmed) {
+            encenderCamara(); // Si el usuario confirma, encender la cámara
+        }
+      });
     });
   </script>
+
   <audio id="audioScaner" src="../../assets/sonido.mp3"></audio>
   <!-- Indica que las funciones de encender, apagar y leer se dejan a un archivo JS externo -->
   <script src="../../assets/js/index.js"></script>
@@ -87,5 +88,6 @@
       <p>&copy; 2024 Plataforma Educativa. Todos los derechos reservados.</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

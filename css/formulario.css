@@ -7,8 +7,8 @@ body {
   background-color: white;
   font-family: 'Source Sans 3', sans-serif;
 }
-.so{
-  color: white !important;
+.navbar-text {
+  color: white;
 }
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */

@@ -7,8 +7,12 @@ body {
   padding-top: 0px;
   font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
 }
+.navbar-text {
+  color: white;
+}
+
 nav.navbar {
-  background-color: #343a40; /* Fondo del nav */
+  background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
 }
 
@@ -46,7 +50,7 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
 }
 
 .footer {
-  background-color: #343a40; /* Fondo del footer, oscuro para contraste */
+  background-color: #27374D; /* Fondo del footer, oscuro para contraste */
   color: #DDE6ED; /* Color del texto en el footer */
   padding: 20px 0;
   width: 100%; 
