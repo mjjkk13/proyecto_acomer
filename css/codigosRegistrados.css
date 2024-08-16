@@ -76,7 +76,13 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   
 }
 
-
+.img-qr {
+    width: 80px;
+    height: 80px; 
+    display: block;
+    margin: 0 auto;
+  }
+  
 @media (max-width: 576px) {
   .navbar-brand img {
     width: 30px;
@@ -88,4 +94,8 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   .container h3 {
     font-size: 20px;
   }
+    .img-qr {
+      width: 60px; 
+      height: 60px;
+    }
 }

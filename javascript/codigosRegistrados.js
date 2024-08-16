@@ -13,7 +13,7 @@ const tablaCodigos = document.getElementById('tablaCodigos');
                     row.innerHTML = `
                         <th scope="row">${index + 1}</th>
                         <td>${codigo.fecha_hora}</td>
-                        <td><img src="../${codigo.imagen}" alt="Código QR"></td>
+                        <td><img src="../${codigo.imagen}" alt="Código QR" class="img-qr"></td>
                     `;
                     tablaCodigos.appendChild(row);
                 });

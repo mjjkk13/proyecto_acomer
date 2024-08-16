@@ -1,21 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
 body {
-  background-color: #DDE6ED; /* Fondo general */
+  background-color: #DDE6ED;
   margin: 0; 
-  background-attachment: fixed; /* Fondo fijo */
   padding-top: 0px;
-  font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
+  font-family: 'Source Sans 3', sans-serif; 
+  min-height: 100vh; /* Asegura que el body ocupe al menos el 100% de la pantalla */
+  flex-direction: column;
+  display: flex;
   text-align: center;
 }
-
-.table {
-  margin-top: 20px;
+#logo{
+  width: 40px !important;
+  height: 40px !important;
 }
-.so{
-  color: white;
+.container {
+  flex: 1; /* Hace que la .container ocupe todo el espacio disponible entre el navbar y el footer */
+  padding:0px; /* Espacio para el footer */
 }
-
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
@@ -36,39 +38,49 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
 .hero {
   padding: 10vh 0;
   background: transparent; 
-  color: #ffffff !important; /* Color del texto */
+  color: white;
+  text-align: center;
 }
 
 .features {
-  padding: 50px 0;
-  background-color: #9DB2BF; /* Fondo de la sección de características */
+  padding: 5vh 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.btn{
-  border: solid 1px;
-}
+
 .feature-box {
-  background-color: #526D82; /* Fondo de las cajas */
+  background-color: #DDE6ED;
   border-radius: 10px;
-  padding: 30px;
+  padding: 2em;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  color: #DDE6ED; /* Color del texto en las cajas */
+  transition: 0.3s ease;
+  width: 80%;
+  max-width: 500px;
+  margin: 1em 0;
 }
 
 .feature-box:hover {
-  transform: scale(1.25);
+  transform: scale(1.05); /* Ajuste de escala menor */
 }
 
 .footer {
-  background-color: #27374D; /* Fondo del footer, oscuro para contraste */
-  color: #DDE6ED; /* Color del texto en el footer */
-  padding: 20px 0;
-  width: 100%; 
-  position: fixed;
-  bottom: 0; 
+  background-color: #27374D;
+  color: #ffffff;
+  padding: 20px 0 0 0;
+  position: relative;
+  width: 100%;
+  text-align: center; /* Alinea el texto en el centro */
 }
 
-/* Media queries para hacer el contenido responsive */
+.img-qr {
+    width: 80px;
+    height: 80px; 
+    display: block;
+    margin: 0 auto;
+  }
+  
 @media (max-width: 576px) {
   .navbar-brand img {
     width: 30px;
@@ -80,5 +92,8 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   .container h3 {
     font-size: 20px;
   }
+    .img-qr {
+      width: 60px; 
+      height: 60px;
+    }
 }
-

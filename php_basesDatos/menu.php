@@ -1,5 +1,5 @@
 <?php
-// Activar la notificación de errores
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -17,8 +17,9 @@ if ($conn->connect_error) {
 }
 
 $mealType = $_GET['mealType'] ?? '';
-$mealType = $conn->real_escape_string($mealType); // Evitar inyección SQL
+$mealType = $conn->real_escape_string($mealType); 
 
+// Verifica si el tipo de comida es 'desayuno', 'almuerzo' o 'refrigerio'
 $sql = "SELECT nombreMenu, diaMenu, caracteristicasMenu FROM menu WHERE nombreMenu = '$mealType'";
 
 $result = $conn->query($sql);
