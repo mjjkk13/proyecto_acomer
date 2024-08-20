@@ -67,6 +67,18 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   position: fixed;
   bottom: 0; 
 }
+/* Estilos para los gráficos */
+canvas {
+  margin-top: 20px;
+  max-width: 100%;
+}
+/* Estilos para los gráficos */
+.chart-container {
+  align-content: center;
+  width: 100%;
+  height: 100%; /* Asegurar que ocupe toda la altura disponible */
+  min-height: 200px; /* Para asegurar un tamaño mínimo visible */
+}
 
 /* Media queries para hacer el contenido responsive */
 @media (max-width: 576px) {
@@ -80,5 +92,5 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   .container h3 {
     font-size: 20px;
   }
-}
 
+}

@@ -13,7 +13,10 @@ body {
   flex: 1; /* Hace que la .container ocupe todo el espacio disponible entre el navbar y el footer */
   padding:0px; /* Espacio para el footer */
 }
-
+#logo {
+  width: 40px !important;
+  height: 40px !important;
+}
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */

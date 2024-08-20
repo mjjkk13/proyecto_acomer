@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
 body {
-  background-color: #f8f9fa;
+  background-color: #DDE6ED;
   display: flex;
   text-align: center;
   flex-direction: column;
@@ -9,14 +9,9 @@ body {
   font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
   padding-bottom: 90px;
 }
-.so{
-  color:white !important;
-}
-
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
-
 }
 
 nav.navbar a.nav-link,

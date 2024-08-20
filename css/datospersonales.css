@@ -63,6 +63,23 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   max-width: 500px;
   margin: 1em 0;
 }
+.form-floating input {
+  padding: 1rem;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5); 
+  color: #27374D; 
+}
+
+.form-floating input:focus {
+  background-color: #657ea0; 
+}
+.form-check-input:checked {
+  background-color: #27374D;
+}
+
+.form-check-input:checked:hover {
+  background-color: #27374D;
+}
 
 .feature-box:hover {
   transform: scale(1.05); /* Ajuste de escala menor */

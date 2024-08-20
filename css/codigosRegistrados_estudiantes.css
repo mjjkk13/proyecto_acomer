@@ -1,16 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
 body {
-  background-color: #DDE6ED; 
+  background-color: #DDE6ED;
   margin: 0; 
   padding-top: 0px;
   font-family: 'Source Sans 3', sans-serif; 
   min-height: 100vh; /* Asegura que el body ocupe al menos el 100% de la pantalla */
-  display: flex;
   flex-direction: column;
+  display: flex;
   text-align: center;
 }
-
 #logo{
   width: 40px !important;
   height: 40px !important;
@@ -49,12 +48,10 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-
 }
 
 .feature-box {
-  background-color: #526D82;
+  background-color: #DDE6ED;
   border-radius: 10px;
   padding: 2em;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
@@ -62,10 +59,6 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   width: 80%;
   max-width: 500px;
   margin: 1em 0;
-  padding: 20px;
-  transition: 0.3s ease;
-  color: #DDE6ED;
-  
 }
 
 .feature-box:hover {
@@ -79,13 +72,16 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   position: relative;
   width: 100%;
   text-align: center; /* Alinea el texto en el centro */
+  
 }
 
-#logo{
-  width: 40px;
-  height: 40px;
-}
-
+.img-qr {
+    width: 80px;
+    height: 80px; 
+    display: block;
+    margin: 0 auto;
+  }
+  
 @media (max-width: 576px) {
   .navbar-brand img {
     width: 30px;
@@ -97,4 +93,8 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   .container h3 {
     font-size: 20px;
   }
+    .img-qr {
+      width: 60px; 
+      height: 60px;
+    }
 }
