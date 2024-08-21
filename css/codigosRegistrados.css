@@ -1,21 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
 body {
-<<<<<<< HEAD
-  background-color: #f8f9fa;
-  display: flex;
-  text-align: center;
-  flex-direction: column;
-  min-height: 100vh;
-  font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
-}
-.so{
-  color: white;
-}
-nav.navbar {
-  background-color: #27374D; /* Fondo del nav */
-  color: #ffffff !important; /* Color del texto en el nav */
-=======
   background-color: #DDE6ED;
   margin: 0; 
   padding-top: 0px;
@@ -49,20 +34,8 @@ nav.navbar a.nav-link.dropdown-toggle {
 nav.navbar a.nav-link:hover,
 nav.navbar a.nav-link.dropdown-toggle:hover {
   color: #DDE6ED !important; /* Color al pasar el mouse */
->>>>>>> 9efaea229bfa4105dafc127771c65ea3356f92fb
 }
 
-nav.navbar a.nav-link,
-nav.navbar .navbar-brand h3.so,
-nav.navbar .navbar-brand,
-nav.navbar a.nav-link.dropdown-toggle {
-  color: #ffffff !important; /* Asegúrate de que todos los enlaces y textos sean blancos */
-}
-
-nav.navbar a.nav-link:hover,
-nav.navbar a.nav-link.dropdown-toggle:hover {
-  color: #DDE6ED !important; /* Color al pasar el mouse */
-}
 .hero {
   padding: 10vh 0;
   background: transparent; 
@@ -103,38 +76,6 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   
 }
 
-<<<<<<< HEAD
-/* Estilos para el contenedor del ícono */
-.qr-icon-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999; /* Asegura que esté encima de otros elementos */
-  text-align: center;
-  width: 80%;
-}
-
-
-  /* Estilos para el ícono de escáner QR */
-.qr-icon {
-  font-size: 10vw; /* Tamaño del ícono */
-  color: #000; /* Color del ícono */
-}
-
-
-  /* Estilos para el área de escaneo QR */
-.qr-scan-area {
-  margin-top: 2vh;
-}
-
-.qr-scan-area p {
-  font-size: 1.2em;
-}
-
-
-
-=======
 .img-qr {
     width: 80px;
     height: 80px; 
@@ -142,7 +83,6 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
     margin: 0 auto;
   }
   
->>>>>>> 9efaea229bfa4105dafc127771c65ea3356f92fb
 @media (max-width: 576px) {
   .navbar-brand img {
     width: 30px;
@@ -154,13 +94,8 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
   .container h3 {
     font-size: 20px;
   }
-<<<<<<< HEAD
-}
-
-=======
     .img-qr {
       width: 60px; 
       height: 60px;
     }
 }
->>>>>>> 9efaea229bfa4105dafc127771c65ea3356f92fb

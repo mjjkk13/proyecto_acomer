@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnGenerarQR = document.getElementById('btnGenerarQR');
   
     btnGenerarQR.addEventListener('click', function () {
-        fetch('../../DataBase/generar_qr.php')
+        fetch('../../php_basesDatos/GenerarQR.php')
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
     const tablaEstudiantes = document.getElementById('tablaEstudiantes');
   
-    fetch('../../DataBase/cargar_estudiantes.php')
+    fetch('../../php_basesDatos/CargarEstudiantes.php')
         .then(response => {
             console.log('Response status:', response.status);
             return response.json();
@@ -49,11 +49,13 @@ document.addEventListener('DOMContentLoaded', function () {
             data.forEach(estudiante => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${estudiante.Id_Estudiantes}</td>
-                    <td>${estudiante.Nombre}</td>
-                    <td>${estudiante.Correo}</td>
+                    <td>${estudiante.idAlumnos}</td>
+                    <td>${estudiante.identificacionAlumnos}</td>
+                    <td>${estudiante.tipodocumentoAlumnos}</td>
+                    <td>${estudiante.nombreAlumnos}</td>
+                    <td>${estudiante.apellidosAlumnos}</td>
                     <td>
-                        <input type="checkbox" data-id="${estudiante.Id_Estudiantes}" class="asistencia-checkbox">
+                        <input type="checkbox" data-id="${estudiante.idAlumnos}" class="asistencia-checkbox">
                     </td>
                 `;
                 tablaEstudiantes.appendChild(row);
@@ -80,7 +82,4 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         })
         .catch(error => console.error('Error:', error));
-  
-    
-  });
-  
+});

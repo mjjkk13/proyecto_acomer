@@ -17,6 +17,7 @@ body {
 }
 .container {
   flex: 1; /* Hace que la .container ocupe todo el espacio disponible entre el navbar y el footer */
+  padding-bottom: 20px; /* Espacio para el footer */
 }
 
 nav.navbar {

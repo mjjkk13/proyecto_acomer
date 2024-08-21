@@ -1,69 +1,90 @@
-function fetchSimulatedData(mealType) {
-  // Datos simulados para cada tipo de menú
-  const simulatedData = {
-    desayuno: [
-      { nombreMenu: 'Desayuno ', diaMenu: 'Lunes', caracteristicasMenu: 'Café, Tostadas, Fruta' },
-      { nombreMenu: 'Desayuno ', diaMenu: 'Martes', caracteristicasMenu: 'Té, Yogur, Cereal' }
-    ],
-    almuerzo: [
-      { nombreMenu: 'Almuerzo ', diaMenu: 'Lunes', caracteristicasMenu: 'Pollo, Ensalada, Arroz' },
-      { nombreMenu: 'Almuerzo ', diaMenu: 'Martes', caracteristicasMenu: 'Carne Asada, Papas, Verduras' }
-    ],
-    refrigerio: [
-      { nombreMenu: 'Refrigerio ', diaMenu: 'Lunes', caracteristicasMenu: 'Jugo Natural, Barras de Cereal' },
-      { nombreMenu: 'Refrigerio ', diaMenu: 'Martes', caracteristicasMenu: 'Batido, Frutas Secas' }
-    ]
-  };
+async function fetchData(mealType) {
+    try {
+      // Reemplaza 'localhost/Proyecto/php_basesDatos/menu.php' con la URL completa
+      const url = `http://localhost/Proyecto/php_basesDatos/menu.php?mealType=${encodeURIComponent(mealType)}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log(data); // Para depurar: muestra los datos en la consola
+      return data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudieron obtener los datos. Por favor, intente de nuevo más tarde.',
+        icon: 'error'
+      });
+    }
+  }
   
-  // Retorna los datos correspondientes al tipo de menú
-  return simulatedData[mealType] || [];
-}
-
-function showData(title, data) {
-  // Genera la tabla con los datos proporcionados
-  const table = `
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Nombre del Menú</th>
-          <th>Día</th>
-          <th>Características</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${data.map(item => `
+  
+  function showData(title, data) {
+    const table = `
+      <table class="table">
+        <thead>
           <tr>
-            <td>${item.nombreMenu}</td>
-            <td>${item.diaMenu}</td>
-            <td>${item.caracteristicasMenu}</td>
+            <th>Nombre del Menú</th>
+            <th>Día</th>
+            <th>Características</th>
           </tr>
-        `).join('')}
-      </tbody>
-    </table>
-  `;
-
-  // Muestra la tabla en un SweetAlert
-  Swal.fire({
-    title: title,
-    html: table,
-    width: '600px'
+        </thead>
+        <tbody>
+          ${data.map(item => `
+            <tr>
+              <td>${item.nombreMenu}</td>
+              <td>${item.diaMenu}</td>
+              <td>${item.caracteristicasMenu}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  
+    Swal.fire({
+      title: title,
+      html: table,
+      width: '600px'
+    });
+  }
+  
+  document.getElementById("desayunoBox").addEventListener("click", async function() {
+    const data = await fetchData('desayuno');
+    if (data && data.length > 0) {
+      showData('Desayuno del día', data);
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se encontraron datos para el menú seleccionado.',
+        icon: 'error'
+      });
+    }
   });
-}
-
-// Event listener para el botón de Desayuno
-document.getElementById("desayunoBox").addEventListener("click", function() {
-  const data = fetchSimulatedData('desayuno');
-  showData('Desayuno del día', data);
-});
-
-// Event listener para el botón de Almuerzo
-document.getElementById("almuerzoBox").addEventListener("click", function() {
-  const data = fetchSimulatedData('almuerzo');
-  showData('Almuerzo del día', data);
-});
-
-// Event listener para el botón de Refrigerio
-document.getElementById("refrigerioBox").addEventListener("click", function() {
-  const data = fetchSimulatedData('refrigerio');
-  showData('Refrigerio del día', data);
-});
+  
+  document.getElementById("almuerzoBox").addEventListener("click", async function() {
+    const data = await fetchData('almuerzo');
+    if (data && data.length > 0) {
+      showData('Almuerzo del día', data);
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se encontraron datos para el menú seleccionado.',
+        icon: 'error'
+      });
+    }
+  });
+  
+  document.getElementById("refrigerioBox").addEventListener("click", async function() {
+    const data = await fetchData('refrigerio');
+    if (data && data.length > 0) {
+      showData('Refrigerio del día', data);
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se encontraron datos para el menú seleccionado.',
+        icon: 'error'
+      });
+    }
+  });
+  
