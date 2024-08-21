@@ -1,40 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
 body {
+  background-color: #DDE6ED;
   margin: 0;
   padding: 0;
   min-height: 100vh; 
   background-color: white;
   font-family: 'Source Sans 3', sans-serif;
 }
-<<<<<<< HEAD
-.so{
+.navbar-text {
   color: white;
 }
-=======
-
->>>>>>> 976b71bfc8e3b8c29df9d7e5d06f11090c5b9c83
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
 }
 
-<<<<<<< HEAD
-=======
-nav.navbar a.nav-link,
-nav.navbar .navbar-brand h3.so,
-nav.navbar .navbar-brand,
-nav.navbar a.nav-link.dropdown-toggle {
-  color: #ffffff !important; /* Asegúrate de que todos los enlaces y textos sean blancos */
-}
-
-nav.navbar a.nav-link:hover,
-nav.navbar a.nav-link.dropdown-toggle:hover {
-  color: #DDE6ED !important; /* Color al pasar el mouse */
-}
-
-
->>>>>>> 976b71bfc8e3b8c29df9d7e5d06f11090c5b9c83
 .card {
   background-color: #27374D;
   box-shadow: none;

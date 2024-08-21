@@ -1,8 +1,18 @@
 <?php
-include 'conexion.php';
 header('Access-Control-Allow-Origin: *');
 
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "control_estudiante";
 
+// Crear la conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar la conexión
+if ($conn->connect_error) {
+  die("Conexión fallida: " . $conn->connect_error);
+}
 
 // Obtener los datos de la tabla refrigerio
 $sql = "SELECT * FROM refrigerio";

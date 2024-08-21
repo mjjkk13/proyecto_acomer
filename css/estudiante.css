@@ -1,17 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
 body {
-  background-color: #f8f9fa;
+  background-color: #DDE6ED;
   display: flex;
   text-align: center;
   flex-direction: column;
-  min-height: 100vh;
+  padding: 0px;
   font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
+  padding-bottom: 90px;
 }
-.so{
-  color: white;
-}
-
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
@@ -28,15 +25,32 @@ nav.navbar a.nav-link:hover,
 nav.navbar a.nav-link.dropdown-toggle:hover {
   color: #DDE6ED !important; /* Color al pasar el mouse */
 }
+.features {
+  padding: 50px 0;
+  background-color: #9DB2BF; /* Fondo de la sección de características */
+}
+
+.feature-box {
+  background-color: #526D82; /* Fondo de las cajas */
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  transition:  0.3s ease;
+  color: #DDE6ED; /* Color del texto en las cajas */
+}
+
+.feature-box:hover {
+  transform: scale(1.25);
+}
 
 .container {
-  max-width: 900px;
-  margin-top: 50px;
+  max-width: 990px;
+  margin-top: 0px;
   flex: 1;
 }
 
 .card {
-  padding: 20px;
+  padding: 10px;
   border: none;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -48,20 +62,22 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: #27374D;
   border: none;
   transition: background-color 0.3s;
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #27374D;
 }
 
 .footer {
-  background-color: #27374D;
-  color: white;
-  padding: 10px 0;
-  text-align: center;
+  background-color: #27374D; /* Fondo del footer, oscuro para contraste */
+  color: #DDE6ED; /* Color del texto en el footer */
+  padding: 20px;
+  width: 100%; 
+  position: fixed;
+  bottom: 0; 
 }
 
 /* Media queries para hacer el contenido responsive */
