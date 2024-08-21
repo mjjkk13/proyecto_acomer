@@ -1,12 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
 body {
-  padding-top: 0;
-  background: linear-gradient(150deg, white, black, grey);
-  margin: 0;
-  background-attachment: fixed;
+  background-color: #f8f9fa;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Source Sans 3', sans-serif; /* Aplicación de la fuente */
+}
+.so{
   color: white;
-  font-size: 1rem; /* Fondo fijo */
+}
+nav.navbar {
+  background-color: #27374D; /* Fondo del nav */
+  color: #ffffff !important; /* Color del texto en el nav */
 }
 
+nav.navbar a.nav-link,
+nav.navbar .navbar-brand h3.so,
+nav.navbar .navbar-brand,
+nav.navbar a.nav-link.dropdown-toggle {
+  color: #ffffff !important; /* Asegúrate de que todos los enlaces y textos sean blancos */
+}
+
+nav.navbar a.nav-link:hover,
+nav.navbar a.nav-link.dropdown-toggle:hover {
+  color: #DDE6ED !important; /* Color al pasar el mouse */
+}
 .hero {
   padding: 10vh 0;
   background: transparent; 
@@ -38,7 +58,7 @@ body {
 }
 
 .footer {
-  background-color: #343a40;
+  background-color: #27374D;
   color: #ffffff;
   padding: 1em 0;
   width: 100%;  
@@ -75,12 +95,18 @@ body {
   font-size: 1.2em;
 }
 
-img {
-  width: 10vw;
-  max-width: 100px;
+
+
+@media (max-width: 576px) {
+  .navbar-brand img {
+    width: 30px;
+    height: 30px;
+  }
+  .navbar-nav .nav-link {
+    font-size: 14px;
+  }
+  .container h3 {
+    font-size: 20px;
+  }
 }
 
-#logo{
-  width: 40px;
-  height: 40px;
-}
