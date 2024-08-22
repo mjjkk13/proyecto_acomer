@@ -1,8 +1,7 @@
 document.getElementById('formAgregarEstudiante').addEventListener('submit', function(event) {
-    event.preventDefault(); // Previene el envío del formulario de forma tradicional
+    event.preventDefault(); 
     agregarEstudiante();
 });
-
 function agregarEstudiante() {
     const nombreEstudiante = document.getElementById('nombreEstudiante').value.trim();
     const apellidoEstudiante = document.getElementById('apellidoEstudiante').value.trim();
@@ -18,8 +17,7 @@ function agregarEstudiante() {
             }
         });
     } else {
-        // Enviar los datos al servidor usando fetch
-        fetch('../../php_basesDatos/AgregarEstudiante.php', { // Reemplaza con la ruta a tu archivo PHP
+        fetch('../../php_basesDatos/AgregarEstudiante.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -32,7 +30,6 @@ function agregarEstudiante() {
         })
         .then(response => response.text())
         .then(data => {
-            // Mostrar alerta basada en la respuesta del servidor
             Swal.fire({
                 icon: 'success',
                 title: 'Actualización Completa',
@@ -43,13 +40,16 @@ function agregarEstudiante() {
                 hideClass: {
                     popup: 'animate__animated animate__fadeOutUp'
                 }
+            }).then(() => {
+                // Recargar la página después de mostrar la alerta de éxito
+                location.reload();
             });
         })
         .catch(error => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Hubo un problema al procesar la solicitud.',
+                text: 'Hubo un problema al procesar la solicitud: ' + error.message,
                 showClass: {
                     popup: 'animate__animated animate__shakeX'
                 }
