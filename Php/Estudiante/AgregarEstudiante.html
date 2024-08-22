@@ -58,25 +58,25 @@
           <div class="card-body p-4">
             <form id="formAgregarEstudiante">
               <div class="mb-3">
-                <label for="nombreEstudiante" class="form-label"><i class="fas fa-user"></i> Nombre del Estudiante</label>
-                <input type="text" class="form-control" id="nombreEstudiante" placeholder="Escribe el nombre del estudiante">
+                  <label for="nombreEstudiante" class="form-label"><i class="fas fa-user"></i> Nombre del Estudiante</label>
+                  <input type="text" class="form-control" id="nombreEstudiante" name="nombreEstudiante" placeholder="Escribe el nombre del estudiante">
               </div>
               <div class="mb-3">
-                <label for="apellidoEstudiante" class="form-label"><i class="fas fa-user"></i> Apellido del Estudiante</label>
-                <input type="text" class="form-control" id="apellidoEstudiante" placeholder="Escribe el apellido del estudiante">
+                  <label for="apellidoEstudiante" class="form-label"><i class="fas fa-user"></i> Apellido del Estudiante</label>
+                  <input type="text" class="form-control" id="apellidoEstudiante" name="apellidoEstudiante" placeholder="Escribe el apellido del estudiante">
               </div>
               <div class="mb-3">    
-                <label for="asistio" class="form-label"><i class="fas fa-check-circle"></i> Asistió</label>
-                <select class="form-select" id="asistio">
-                  <option value="" disabled selected>Selecciona una opción</option>
-                  <option value="si">Sí</option>
-                  <option value="no">No</option>
-                </select>
+                  <label for="asistio" class="form-label"><i class="fas fa-check-circle"></i> Asistió</label>
+                  <select class="form-select" id="asistio" name="asistio">
+                      <option value="" disabled selected>Selecciona una opción</option>
+                      <option value="si">Sí</option>
+                      <option value="no">No</option>
+                  </select>
               </div>
               <div class="d-grid">
-                <button type="button" class="btn btn-success btn-block" onclick="agregarEstudiante()">Agregar Estudiante</button>
-              </div>
-            </form>
+                <button type="submit" class="btn btn-success btn-block" >Agregar Estudiante</button>
+            </div>
+        </form>
           </div>
         </div>
       </div>

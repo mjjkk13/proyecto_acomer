@@ -1,3 +1,8 @@
+document.getElementById('formAgregarEstudiante').addEventListener('submit', function(event) {
+    event.preventDefault(); // Previene el envío del formulario de forma tradicional
+    agregarEstudiante();
+});
+
 function agregarEstudiante() {
     const nombreEstudiante = document.getElementById('nombreEstudiante').value.trim();
     const apellidoEstudiante = document.getElementById('apellidoEstudiante').value.trim();
@@ -13,16 +18,42 @@ function agregarEstudiante() {
             }
         });
     } else {
-        Swal.fire({
-            icon: 'success',
-            title: 'Estudiante agregado',
-            text: 'El estudiante se ha agregado correctamente.',
-            showClass: {
-                popup: 'animate__animated animate__fadeInDown'
+        // Enviar los datos al servidor usando fetch
+        fetch('../../php_basesDatos/AgregarEstudiante.php', { // Reemplaza con la ruta a tu archivo PHP
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
-            }
+            body: new URLSearchParams({
+                'nombreEstudiante': nombreEstudiante,
+                'apellidoEstudiante': apellidoEstudiante,
+                'asistio': asistio
+            })
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Mostrar alerta basada en la respuesta del servidor
+            Swal.fire({
+                icon: 'success',
+                title: 'Actualización Completa',
+                text: data,
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            });
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al procesar la solicitud.',
+                showClass: {
+                    popup: 'animate__animated animate__shakeX'
+                }
+            });
         });
     }
 }
