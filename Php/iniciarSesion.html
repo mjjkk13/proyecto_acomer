@@ -22,14 +22,50 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title text-center mb-4">Iniciar Sesión</h5>
-          <form id="loginForm" novalidate>
+          <form id="loginForm" action="../php_basesDatos/login.php" method="POST">
             <div class="mb-3 form-floating">
-              <input type="email" class="form-control" id="inputEmail" placeholder="Tu correo electrónico" required>
-              <label for="inputEmail">Correo Electrónico</label>
-              <div class="invalid-feedback">Por favor ingresa un correo electrónico válido.</div>
+              <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario" required>
+              <label for="usuario">Usuario</label>
+              <div class="invalid-feedback">Por favor ingresa un usuario válido.</div>
             </div>
             <div class="mb-3 form-floating">
-              <input type="password" class="form-control" id="inputPassword" placeholder="Tu contraseña" required>
+              <input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="Contraseña" required>
+              <label for="inputPassword">Contraseña</label>
+              <div class="invalid-feedback">Por favor ingresa tu contraseña.</div>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+              <label class="form-check-label" for="rememberMe">Recordarme</label>
+            </div>
+            <div class="mb-3 form-check">
+              <a href="index.html" class="regresarpapu">Regresar</a>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title text-center mb-4">Iniciar Sesión</h5>
+          <form id="loginForm" action="../php_basesDatos/login.php" method="POST">
+            <div class="mb-3 form-floating">
+              <input type="text" class="form-control" id="usuario" placeholder="Usuario" required>
+              <label for="input">Usuario</label>
+              <div class="invalid-feedback">Por favor ingresa un usuario válido.</div>
+            </div>
+            <div class="mb-3 form-floating">
+              <input type="password" class="form-control" id="inputPassword" placeholder="contraseña" required>
               <label for="inputPassword">Contraseña</label>
               <div class="invalid-feedback">Por favor ingresa tu contraseña.</div>
             </div>

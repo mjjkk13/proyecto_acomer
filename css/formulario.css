@@ -6,6 +6,7 @@ body {
   min-height: 100vh; 
   background-color: white;
   font-family: 'Source Sans 3', sans-serif;
+  color: white;
 }
 .navbar-text {
   color: white;
