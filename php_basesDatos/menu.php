@@ -8,7 +8,7 @@ include('conexion.php');
 $mealType = $_GET['mealType'] ?? '';
 
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Preparar la consulta SQL para evitar inyecciones SQL

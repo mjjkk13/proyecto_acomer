@@ -9,7 +9,7 @@ $apellidosEstudiante = $_POST['apellidosAlumnos'];
 $asistio = $_POST['asistio'];
 
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $sql = "UPDATE alumnos_asistencia SET asistio = :asistio WHERE idAlumnos = :idAlumnos";

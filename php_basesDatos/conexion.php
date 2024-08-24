@@ -3,7 +3,7 @@
 $host = 'localhost';
 $db = 'acomer';
 $user = 'root';
-$pass = '';
+$pass = 'toor';
 $charset = 'utf8mb4';
 
 // Configuración de DSN (Data Source Name)
