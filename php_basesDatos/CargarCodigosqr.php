@@ -10,20 +10,21 @@ $sql = "SELECT l.FechaLecturaQR, q.CodigoQR
         JOIN qr q ON l.idQR = q.idQR 
         ORDER BY l.FechaLecturaQR DESC";
 
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
+try {
+    $stmt = $pdo->query($sql);
     $codigos = array();
-    while ($row = $result->fetch_assoc()) {
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $codigos[] = array(
             'fecha_hora' => $row['FechaLecturaQR'],
             'imagen' => $row['CodigoQR']
         );
     }
+
     echo json_encode($codigos);
-} else {
-    echo json_encode(array()); // Devuelve un array vacío si no hay códigos registrados
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
 }
 
-$conn->close();
+$pdo = null;
 ?>

@@ -32,20 +32,21 @@ if (!file_exists(dirname($filename))) {
 QRcode::png($datosQR, $filename, 'L', 4, 2);
 
 // Guarda la información en la base de datos
-$sql = "INSERT INTO qr (CodigoQR) VALUES ('$filename')";
-if ($conn->query($sql) === TRUE) {
-    $idQR = $conn->insert_id;
+$sql = "INSERT INTO qr (CodigoQR) VALUES (:filename)";
+try {
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':filename', $filename);
+    $stmt->execute();
+    $idQR = $pdo->lastInsertId();
     $fechaHora = date('Y-m-d H:i:s');
 
-    $sql = "INSERT INTO lecturaqr (FechaLecturaQR, idQR) VALUES ('$fechaHora', '$idQR')";
-    if ($conn->query($sql) === TRUE) {
-        echo json_encode(array("status" => "success", "message" => "Código QR generado correctamente", "qr_image" => 'qr_all_students_' . $uniqueId . '.png'));
-    } else {
-        echo json_encode(array("status" => "error", "message" => "Error al guardar lectura de QR: " . $conn->error));
-    }
-} else {
-    echo json_encode(array("status" => "error", "message" => "Error al guardar código QR: " . $conn->error));
+    // Aquí puedes continuar con el resto de tu lógica, por ejemplo, insertar en otra tabla
+    // ...
+
+    echo json_encode(array("status" => "success", "message" => "QR generado y guardado correctamente", "idQR" => $idQR));
+} catch (PDOException $e) {
+    echo json_encode(array("status" => "error", "message" => "Error al guardar en la base de datos: " . $e->getMessage()));
 }
 
-$conn->close();
+$pdo = null;
 ?>

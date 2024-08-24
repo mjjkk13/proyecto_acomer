@@ -2,28 +2,25 @@
 // Incluir el archivo de conexión a la base de datos
 include 'conexion.php';
 
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Consulta SQL para obtener los cursos
-$sql = "SELECT nombreCurso, Director FROM cursos";
-$result = $conn->query($sql);
+    // Consulta SQL para obtener los cursos
+    $sql = "SELECT nombreCurso, Director FROM cursos";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
 
-// Verificar si se obtuvieron resultados
-$cursos = array();
-if ($result->num_rows > 0) {
-    // Almacenar los resultados en un array
-    while ($row = $result->fetch_assoc()) {
-        $cursos[] = $row;
-    }
+    // Obtener los resultados
+    $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Devolver los resultados en formato JSON
+    header('Content-Type: application/json');
+    echo json_encode($cursos);
+} catch (PDOException $e) {
+    echo json_encode(['error' => 'Error en la consulta SQL: ' . $e->getMessage()]);
 }
 
 // Cerrar conexión
-$conn->close();
-
-// Devolver los resultados en formato JSON
-header('Content-Type: application/json');
-echo json_encode($cursos);
+$conn = null;
 ?>

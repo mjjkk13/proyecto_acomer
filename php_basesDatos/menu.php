@@ -4,33 +4,29 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include('conexion.php');
-// Verificar la conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
 
 $mealType = $_GET['mealType'] ?? '';
-$mealType = $conn->real_escape_string($mealType); 
 
-// Verifica si el tipo de comida es 'desayuno', 'almuerzo' o 'refrigerio'
-$sql = "SELECT nombreMenu, diaMenu, caracteristicasMenu FROM menu WHERE nombreMenu = '$mealType'";
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$result = $conn->query($sql);
+    // Preparar la consulta SQL para evitar inyecciones SQL
+    $sql = "SELECT nombreMenu, diaMenu, caracteristicasMenu FROM menu WHERE nombreMenu = :mealType";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':mealType', $mealType, PDO::PARAM_STR);
+    $stmt->execute();
 
-if ($result === false) {
-    echo json_encode(['error' => 'Error en la consulta SQL: ' . $conn->error]);
-    exit();
-}
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if ($result->num_rows > 0) {
-    $menu = array();
-    while($row = $result->fetch_assoc()) {
-        $menu[] = $row;
+    if ($result) {
+        echo json_encode($result);
+    } else {
+        echo json_encode([]); // Devuelve un array vacío si no hay resultados
     }
-    echo json_encode($menu);
-} else {
-    echo json_encode([]); // Devuelve un array vacío si no hay resultados
+} catch (PDOException $e) {
+    echo json_encode(['error' => 'Error en la consulta SQL: ' . $e->getMessage()]);
 }
 
-$conn->close();
+$conn = null;
 ?>
