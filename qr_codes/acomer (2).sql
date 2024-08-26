@@ -1,31 +1,5 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 22-08-2024 a las 06:46:06
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Base de datos: `acomer`
---
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `alumnos`
---
+CREATE SCHEMA `acomer` DEFAULT CHARACTER SET utf8 ;
+USE `acomer` ;
 
 CREATE TABLE `alumnos` (
   `idAlumnos` int(11) NOT NULL COMMENT 'Identifica a los alumnos y su identificacion es unica',
@@ -35,11 +9,7 @@ CREATE TABLE `alumnos` (
   `apellidosAlumnos` varchar(20) NOT NULL COMMENT 'Registro de los apellidos de los(as) alumnos(as)',
   `idUsuarios` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas',
   `idCursos` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `alumnos`
---
+);
 
 INSERT INTO `alumnos` (`idAlumnos`, `identificacionAlumnos`, `tipodocumentoAlumnos`, `nombreAlumnos`, `apellidosAlumnos`, `idUsuarios`, `idCursos`) VALUES
 (2, 87654321, 'Registro Civil', 'María', 'Gómez', 4, 2),
@@ -64,7 +34,7 @@ CREATE TABLE `alumnos_asistencia` (
   `apellidosAlumnos` varchar(45) NOT NULL COMMENT 'Muestra de los apellidos de los(as) alumnos(as)',
   `asistio` tinyint(1) NOT NULL COMMENT 'Indica si el alumno asistió (1 para sí, 0 para no)',
   `idAlumnos` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `alumnos_asistencia`
@@ -94,7 +64,7 @@ CREATE TABLE `asistencia` (
   `horaAsistencia` time NOT NULL COMMENT 'Hora en la que se registró la asistencia',
   `idQR_Asistencia` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas',
   `idAlumnos_Asistencia` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 -- --------------------------------------------------------
 
@@ -106,7 +76,7 @@ CREATE TABLE `cursos` (
   `idCursos` int(11) NOT NULL COMMENT 'Identifica el curso y su identificación es única',
   `nombreCurso` varchar(45) NOT NULL COMMENT 'Registra el nombre del curso (901, 902...)',
   `Director` varchar(45) NOT NULL COMMENT 'nombre de los docentes que se encargan de cada curso'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `cursos`
@@ -134,7 +104,7 @@ CREATE TABLE `estadisticaslecturaqr` (
   `idEstadisticasLecturaQR` int(11) NOT NULL,
   `idEstadisticasQR` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas',
   `idLecturaQR` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 -- --------------------------------------------------------
 
@@ -147,7 +117,7 @@ CREATE TABLE `estadisticasqr` (
   `CantidadAlimentosEntregados` varchar(500) NOT NULL COMMENT 'Número de alimentos entregados',
   `idUsuarios` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas',
   `idLecturaQR` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `estadisticasqr`
@@ -175,7 +145,7 @@ CREATE TABLE `lecturaqr` (
   `idLecturaQR` int(11) NOT NULL COMMENT 'Identifica la lectura QR realizada',
   `FechaLecturaQR` datetime NOT NULL COMMENT 'Registro día, mes y año y hora de la lectura del QR',
   `idQR` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `lecturaqr`
@@ -210,7 +180,7 @@ CREATE TABLE `menu` (
   `diaMenu` varchar(45) NOT NULL COMMENT 'Registro del día del respectivo menú',
   `caracteristicasMenu` varchar(45) NOT NULL COMMENT 'Registro de lo que contiene el menú dependiendo del nombre del menú',
   `idUsuarios` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `menu`
@@ -229,7 +199,7 @@ INSERT INTO `menu` (`idMenu`, `nombreMenu`, `diaMenu`, `caracteristicasMenu`, `i
 CREATE TABLE `qr` (
   `idQR` int(11) NOT NULL COMMENT 'Identificador del QR',
   `CodigoQR` varchar(45) NOT NULL COMMENT 'Captura la información registrada en la asistencia'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `qr`
@@ -239,17 +209,7 @@ INSERT INTO `qr` (`idQR`, `CodigoQR`) VALUES
 (22, '../qr_codes/qr_all_students_1724296178.png'),
 (23, '../qr_codes/qr_all_students_1724296237.png'),
 (24, '../qr_codes/qr_all_students_1724296591.png'),
-(1, 'QR_001'),
-(2, 'QR_002'),
-(3, 'QR_003'),
-(4, 'QR_004'),
-(5, 'QR_005'),
-(6, 'QR_006'),
-(7, 'QR_007'),
-(8, 'QR_008'),
-(9, 'QR_009'),
-(10, 'QR_010'),
-(14, 'qr_generado.png');
+
 
 -- --------------------------------------------------------
 
@@ -260,7 +220,7 @@ INSERT INTO `qr` (`idQR`, `CodigoQR`) VALUES
 CREATE TABLE `qr_asistencia` (
   `idQR_Asistencia` int(11) NOT NULL,
   `idQR` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `qr_asistencia`
@@ -287,7 +247,7 @@ INSERT INTO `qr_asistencia` (`idQR_Asistencia`, `idQR`) VALUES
 CREATE TABLE `tipousuario` (
   `idTipoUsuario` int(11) NOT NULL COMMENT 'Concede permisos según el usuario, tiene una identificación única',
   `nombreUsuario` varchar(20) NOT NULL COMMENT 'Registra el nombre del usuario para concederle permisos'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `tipousuario`
@@ -307,18 +267,18 @@ INSERT INTO `tipousuario` (`idTipoUsuario`, `nombreUsuario`) VALUES
 CREATE TABLE `tipo_documento` (
   `idtipo_documento` int(11) NOT NULL,
   `descripcion_documento` varchar(45) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `tipo_documento`
 --
 
 INSERT INTO `tipo_documento` (`idtipo_documento`, `descripcion_documento`) VALUES
-(1, 'Tarjeta de Identidad'),
-(2, 'Registro Civil'),
-(3, 'Cédula de Ciudadanía'),
-(4, 'Pasaporte'),
-(5, 'Permiso de Residencia');
+(1, 'TI'),
+(2, 'RC'),
+(3, 'CC'),
+(4, 'PS'),
+(5, 'PR');
 
 -- --------------------------------------------------------
 
@@ -334,7 +294,7 @@ CREATE TABLE `usuarios` (
   `Tipo_documento` varchar(45) NOT NULL COMMENT 'Registra el tipo de documento',
   `idTipoUsuario` int(11) NOT NULL COMMENT 'Llave foránea, une las tablas',
   `tipo_documento_idtipo_documento` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Volcado de datos para la tabla `usuarios`
@@ -351,10 +311,6 @@ INSERT INTO `usuarios` (`idUsuarios`, `user`, `passwordUsuario`, `correoUsuario`
 (8, 'sophiawilson', 'password8', 'sophia.wilson@example.com', 'Pasaporte', 2, 2),
 (9, 'benjaminmoore', 'password9', 'benjamin.moore@example.com', 'Tarjeta de Identidad', 1, 3),
 (10, 'isabellajohnson', 'password10', 'isabella.johnson@example.com', 'Cédula', 2, 1);
-
---
--- Índices para tablas volcadas
---
 
 --
 -- Indices de la tabla `alumnos`
@@ -450,10 +406,6 @@ ALTER TABLE `usuarios`
   ADD KEY `fk_usuarios_tipo_documento_idx` (`tipo_documento_idtipo_documento`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
 -- AUTO_INCREMENT de la tabla `alumnos`
 --
 ALTER TABLE `alumnos`
@@ -532,10 +484,6 @@ ALTER TABLE `usuarios`
   MODIFY `idUsuarios` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Sirve para identificar al usuario, la identificación del usuario es única', AUTO_INCREMENT=11;
 
 --
--- Restricciones para tablas volcadas
---
-
---
 -- Filtros para la tabla `alumnos`
 --
 ALTER TABLE `alumnos`
@@ -587,8 +535,5 @@ ALTER TABLE `qr_asistencia`
 ALTER TABLE `usuarios`
   ADD CONSTRAINT `fk_usuarios_tipo_documento` FOREIGN KEY (`tipo_documento_idtipo_documento`) REFERENCES `tipo_documento` (`idtipo_documento`),
   ADD CONSTRAINT `fk_usuarios_tipo_usuario` FOREIGN KEY (`idTipoUsuario`) REFERENCES `tipousuario` (`idTipoUsuario`);
-COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
