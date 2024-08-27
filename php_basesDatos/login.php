@@ -11,28 +11,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // Preparar la consulta SQL para evitar inyecciones SQL y obtener el tipo de usuario
-            $sql = "SELECT u.user, u.passwordUsuario, t.nombreUsuario 
+            $sql = "SELECT u.user, u.password, t.rol 
                     FROM usuarios u 
-                    JOIN tipousuario t ON u.idTipoUsuario = t.idTipoUsuario 
-                    WHERE u.user = :usuario";
+                    JOIN tipousuario t ON u.tipo_usuario_idtipo_usuario = t.idtipo_usuario 
+                    WHERE u.user = :user";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':usuario', $usuario);
+            $stmt->bindParam(':user', $usuario);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($result) {
                 // Verificar la contraseña en texto plano
-                if ($contrasena === $result['passwordUsuario']) {
+                if ($contrasena === $result['password']) {
                     // Inicio de sesión exitoso
                     session_start();
-                    $_SESSION['usuario'] = $usuario;
+                    $_SESSION['user'] = $usuario;
 
                     // Redirigir según el rol del usuario
                     switch ($result['nombreUsuario']) {
-                        case 'Administrador':
+                        case 'Admin':
                             header("Location: ../Php/Admin/index.html");
                             break;
-                        case 'Estudiante':
+                        case 'Estudiante SS':
                             header("Location: ../Php/Estudiante/index.html");
                             break;
                         case 'Docente':

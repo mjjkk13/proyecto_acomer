@@ -11,7 +11,7 @@ $sql = "SELECT a.idasistencia, a.fecha, a.estado, q.codigoqr, q.fechageneracion
         ORDER BY a.fecha DESC";
 
 try {
-    $stmt = $pdo->query($sql);
+    $stmt = $pdo->query($sqlSelect);
     $codigos = array();
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -24,6 +24,7 @@ try {
     echo json_encode($codigos);
 } catch (PDOException $e) {
     echo "Error en SELECT: " . $e->getMessage();
+<<<<<<< HEAD
     exit(); // Termina el script si ocurre un error en la consulta
 }
 
@@ -32,6 +33,14 @@ $sqlDelete = "DELETE a
               FROM asistencia a
               JOIN qrgenerados q ON a.qrgenerados_idqrgenerados = q.idqrgenerados
               WHERE q.codigoqr = ";
+=======
+}
+
+$sqlDelete = "DELETE a
+              FROM asistencia a
+              JOIN qrgenerados q ON a.qrgenerados_idqrgenerados = q.idqrgenerados
+              WHERE q.codigoqr = 'QR_CODE_EXAMPLE'";
+>>>>>>> 4ed3e83ba438d681d2ddf816cdbcb80d8cd016fc
 
 try {
     $stmt = $pdo->prepare($sqlDelete);
