@@ -1,12 +1,10 @@
 <?php
-// Configuración de la base de datos
 $host = 'localhost';
 $db = 'acomer';
 $user = 'root';
-$pass = 'toor';
+$pass = '';
 $charset = 'utf8mb4';
 
-// Configuración de DSN (Data Source Name)
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
 // Opciones de PDO

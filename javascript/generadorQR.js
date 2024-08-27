@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             icon: 'success',
                             title: 'Código QR generado correctamente',
                             text: data.message,
-                            imageUrl: '../../qr_codes/' + data.qr_image,
+                            imageUrl: `../${data.qr_image}`,
                             imageHeight: 100,
                             imageAlt: 'Código QR generado'
                         }).then((result) => {

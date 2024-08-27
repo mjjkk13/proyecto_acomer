@@ -20,16 +20,16 @@ include '../phpqrcode-master/qrlib.php';
 
 // Genera un identificador único basado en la marca de tiempo
 $uniqueId = time();
-$filename = "../qr_codes/qr_all_students_{$uniqueId}.png";
+$filename = "../qr_codes/qr_all_students_{$uniqueId}.png"; // Se ha eliminado "../" para que la ruta sea relativa desde la raíz del proyecto
 
 // Verifica si la carpeta existe
-if (!file_exists(dirname($filename))) {
+if (!file_exists(dirname(__DIR__ . '/' . $filename))) {
     echo json_encode(array("status" => "error", "message" => "La carpeta para guardar el QR no existe"));
     exit();
 }
 
 // Genera el QR
-QRcode::png($datosQR, $filename, 'L', 4, 2);
+QRcode::png($datosQR, __DIR__ . '/' . $filename, 'L', 4, 2);
 
 // Guarda la información en la base de datos
 $sql = "INSERT INTO qr (CodigoQR) VALUES (:filename)";
@@ -40,10 +40,12 @@ try {
     $idQR = $pdo->lastInsertId();
     $fechaHora = date('Y-m-d H:i:s');
 
-    // Aquí puedes continuar con el resto de tu lógica, por ejemplo, insertar en otra tabla
-    // ...
-
-    echo json_encode(array("status" => "success", "message" => "QR generado y guardado correctamente", "idQR" => $idQR));
+    echo json_encode(array(
+        "status" => "success",
+        "message" => "QR generado y guardado correctamente",
+        "qr_image" => $filename,
+        "idQR" => $idQR
+    ));
 } catch (PDOException $e) {
     echo json_encode(array("status" => "error", "message" => "Error al guardar en la base de datos: " . $e->getMessage()));
 }
