@@ -1,5 +1,5 @@
 const tablaCodigos = document.getElementById('tablaCodigos');
-  
+
 // Función para cargar los códigos QR registrados
 function cargarCodigosQR() {
     fetch('../../php_basesDatos/CargarCodigosqr.php')
@@ -7,19 +7,19 @@ function cargarCodigosQR() {
         .then(data => {
             console.log('Códigos QR:', data);
             tablaCodigos.innerHTML = ''; // Limpiamos la tabla antes de actualizar
-  
+
             data.forEach((codigo, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <th scope="row">${index + 1}</th>
-                    <td>${codigo.fecha_hora}</td> <!-- Cambio aquí -->
-                    <td><img src="../${codigo.imagen}" alt="Código QR" class="img-qr"></td> <!-- Cambio aquí -->
+                    <th scope="row">${index + 1 }</th>
+                    <td>${codigo.fecha_hora}</td> <!-- Columna 'fechageneracion' en el PHP -->
+                    <td><img src="../${codigo.imagen}" alt="Código QR" class="img-qr"></td> <!-- Columna 'codigoqr' en el PHP -->
                 `;
                 tablaCodigos.appendChild(row);
             });
         })
         .catch(error => console.error('Error:', error));
 }
-  
+
 // Cargar los códigos QR al cargar la página
 cargarCodigosQR();

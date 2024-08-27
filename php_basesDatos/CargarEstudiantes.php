@@ -1,7 +1,22 @@
 <?php
 include 'conexion.php';
 
-$sql = "SELECT idAlumnos, identificacionAlumnos, tipodocumentoAlumnos, nombreAlumnos, apellidosAlumnos FROM alumnos";
+$sql = "
+SELECT 
+    alumnos.idalumnos, 
+    alumnos.nombre AS nombreAlumno, 
+    alumnos.apellido AS apellidoAlumno, 
+    cursos.nombrecurso, 
+    usuarios.nombre AS nombreDocente
+FROM 
+    alumnos
+INNER JOIN 
+    cursos ON alumnos.cursos_idcursos = cursos.idcursos
+INNER JOIN 
+    docentealumnos ON alumnos.docentealumnos_iddocentealumnos = docentealumnos.iddocentealumnos
+INNER JOIN 
+    usuarios ON docentealumnos.docente_iddocente = usuarios.idusuarios;
+";
 
 try {
     $stmt = $pdo->query($sql);

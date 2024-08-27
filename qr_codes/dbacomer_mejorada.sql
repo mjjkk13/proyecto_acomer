@@ -101,7 +101,7 @@ CREATE TABLE `menu` (
   PRIMARY KEY (`idmenu`)
 );
 
-INSERT INTO `menu` (`idmenu`, `fecha`, `tipomenu`, `descripcion`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
+INSERT INTO `menu` (`idmenu`, `fecha`, `tipomenu`, `descripcion`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`) VALUES
 (1, '2024-08-27', 'Desayuno', 'Huevos revueltos con pan, jugo de naranja y café', 1, 'CC', 2, 1),
 (2, '2024-08-27', 'Almuerzo', 'Pasta con salsa boloñesa, ensalada y agua', 2, 'TI', 1, 2),
 (3, '2024-08-27', 'Refrigerio', 'Galletas y jugo de manzana', 3, 'CC', 1, 3),
@@ -183,11 +183,10 @@ CREATE TABLE `asistencia` (
   PRIMARY KEY (`idasistencia`)
 );
 
-INSERT INTO `asistencia` (`fecha`, `estado`, `registradopor`, `qrgenerados_idqrgenerados`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
-('2024-08-27', 1, 101, 1, 1, 'CC', 2, 1, 101),
-('2024-08-27', 0, 102, 2, 2, 'TI', 1, 2, NULL),
-('2024-08-27', 1, 103, 3, 3, 'CC', 1, 3, NULL),
-('2024-08-27', 0, 104, 4, 4, 'CC', 3, 4, NULL);
+INSERT INTO `asistencia` (`idasistencia`,`fecha`, `estado`, `registradopor`, `qrgenerados_idqrgenerados`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
+(1,'2024-08-27', 1, 101, 22, 1, 'CC', 2, 1, 101),
+(2,'2024-08-27', 0, 102, 23, 2, 'TI', 1, 2, NULL),
+(3,'2024-08-27', 1, 103, 24, 3, 'CC', 1, 3, NULL);
 
 ALTER TABLE `asistencia`
 ADD CONSTRAINT `fk_asistencia_qrgenerados1`
@@ -217,11 +216,10 @@ CREATE TABLE `cursos` (
   PRIMARY KEY (`idcursos`) 
 );
 
-INSERT INTO `cursos` (`nombrecurso`, `docente_iddocente`, `docente_usuarios_idusuarios`, `docente_usuarios_tipo_documento_tdoc`, `docente_usuarios_tipo_usuario_idtipo_usuario`, `docente_usuarios_credenciales_idcredenciales`, `docente_usuarios_docente_iddocente`, `asistencia_idasistencia`, `qrgenerados_idqrgenerados`) VALUES
-('Curso 901', 1, 1, 'CC', 2, 1, 101, 1, 1),
-('Curso 902', 2, 2, 'TI', 1, 2, NULL, 2, 2),
-('Curso 1103', 3, 3, 'CC', 1, 3, NULL, 3, 3),
-('Curso 1002', 4, 4, 'CC', 3, 4, NULL, 4, 4);
+INSERT INTO `cursos` (`idcursos`,`nombrecurso`, `docente_iddocente`, `docente_usuarios_idusuarios`, `docente_usuarios_tipo_documento_tdoc`, `docente_usuarios_tipo_usuario_idtipo_usuario`, `docente_usuarios_credenciales_idcredenciales`, `docente_usuarios_docente_iddocente`, `asistencia_idasistencia`, `qrgenerados_idqrgenerados`) VALUES
+(1,'Curso 901', 1, 1, 'CC', 2, 1, 101, 1, 22),
+(2,'Curso 902', 2, 2, 'TI', 1, 2, NULL, 2, 23),
+(3,'Curso 1103', 3, 3, 'CC', 1, 3, NULL, 3, 24);
 
 ALTER TABLE `cursos`
 ADD CONSTRAINT `fk_cursos_docente1`
@@ -255,9 +253,9 @@ CREATE TABLE `alumnos` (
 
 INSERT INTO `alumnos` (`nombre`, `apellido`, `docentealumnos_iddocentealumnos`, `cursos_idcursos`) VALUES
 ('Juan', 'Pérez', 1, 1),
-('Ana', 'Gómez', 2, 2),
-('Luis', 'Martínez', 1, 3),
-('Laura', 'Rodríguez', 3, 4);
+('Ana', 'Gómez', 1, 2),
+('Luis', 'Martínez', 1, 3);
+
 
 ALTER TABLE `alumnos`
 ADD CONSTRAINT `fk_alumnos_docentealumnos1`
@@ -353,11 +351,11 @@ CREATE TABLE `qrescaneados` (
   PRIMARY KEY (`idqrescaneados`)
 );
 
-INSERT INTO `qrescaneados` (`fecha_escaneo`, `estudiante_ss_idestudiante_ss`, `estudiante_ss_usuarios_idusuarios`, `estudiante_ss_usuarios_tipo_documento_tdoc`, `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`, `estudiante_ss_usuarios_credenciales_idcredenciales`, `estudiante_ss_usuarios_docente_iddocente`) VALUES
-('2024-08-27 08:30:00', 1, 1, 'CC', 2, 1, 101),
-('2024-08-27 09:15:00', 2, 2, 'TI', 1, 2, NULL),
-('2024-08-27 10:00:00', 3, 3, 'CC', 1, 3, NULL),
-('2024-08-27 11:45:00', 4, 4, 'CC', 3, 4, NULL);
+  INSERT INTO `qrescaneados` (`fecha_escaneo`, `estudiante_ss_idestudiante_ss`, `estudiante_ss_usuarios_idusuarios`, `estudiante_ss_usuarios_tipo_documento_tdoc`, `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`, `estudiante_ss_usuarios_credenciales_idcredenciales`, `estudiante_ss_usuarios_docente_iddocente`) VALUES
+  ('2024-08-27 08:30:00', 1, 1, 'CC', 2, 1, 101),
+  ('2024-08-27 09:15:00', 2, 2, 'TI', 1, 2, NULL),
+  ('2024-08-27 10:00:00', 3, 3, 'CC', 1, 3, NULL);
+
 
 ALTER TABLE `qrescaneados`
 ADD CONSTRAINT `fk_qrescaneados_estudiante_ss1`

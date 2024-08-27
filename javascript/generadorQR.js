@@ -16,8 +16,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = checkbox.closest('tr');
             return {
                 idAlumnos: checkbox.dataset.id,
-                nombreAlumnos: row.cells[3].textContent,
-                apellidosAlumnos: row.cells[4].textContent,
+                nombreAlumnos: row.cells[0].textContent,  // Suponiendo que el nombre está en la primera columna
+                apellidosAlumnos: row.cells[1].textContent,  // Suponiendo que el apellido está en la segunda columna
+                nombreCurso: row.cells[2].textContent,  // Suponiendo que el nombre del curso está en la tercera columna
+                nombreDocente: row.cells[3].textContent,  // Suponiendo que el nombre del docente está en la cuarta columna
                 asistio: checkbox.checked ? 1 : 0
             };
         });
@@ -29,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `idAlumnos=${estudiante.idAlumnos}&nombreAlumnos=${encodeURIComponent(estudiante.nombreAlumnos)}&apellidosAlumnos=${encodeURIComponent(estudiante.apellidosAlumnos)}&asistio=${estudiante.asistio}`
+                body: `idAlumnos=${estudiante.idAlumnos}&nombreAlumnos=${encodeURIComponent(estudiante.nombreAlumnos)}&apellidosAlumnos=${encodeURIComponent(estudiante.apellidosAlumnos)}&nombreCurso=${encodeURIComponent(estudiante.nombreCurso)}&nombreDocente=${encodeURIComponent(estudiante.nombreDocente)}&asistio=${estudiante.asistio}`
             }).then(response => response.text());
         }))
         .then(results => {
@@ -98,13 +100,12 @@ document.addEventListener('DOMContentLoaded', function () {
             data.forEach(estudiante => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${estudiante.idAlumnos}</td>
-                    <td>${estudiante.identificacionAlumnos}</td>
-                    <td>${estudiante.tipodocumentoAlumnos}</td>
-                    <td>${estudiante.nombreAlumnos}</td>
-                    <td>${estudiante.apellidosAlumnos}</td>
+                    <td>${estudiante.nombreAlumno}</td>
+                    <td>${estudiante.apellidoAlumno}</td>
+                    <td>${estudiante.nombrecurso}</td>
+                    <td>${estudiante.nombreDocente}</td>
                     <td>
-                        <input type="checkbox" class="asistencia-checkbox" data-id="${estudiante.idAlumnos}">
+                        <input type="checkbox" class="asistencia-checkbox" data-id="${estudiante.idalumnos}">
                     </td>
                 `;
                 tablaEstudiantes.appendChild(row);
