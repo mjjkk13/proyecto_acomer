@@ -54,15 +54,14 @@ CREATE TABLE `usuarios` (
   `tipo_documento_tdoc` VARCHAR(10) NOT NULL,
   `tipo_usuario_idtipo_usuario` INT NOT NULL,
   `credenciales_idcredenciales` INT NOT NULL,
-  `docente_iddocente` INT NOT NULL,
-  PRIMARY KEY (`idusuarios`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`, `docente_iddocente`)  
+  PRIMARY KEY (`idusuarios`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`)  
 );
 
-INSERT INTO `usuarios` (`idusuarios`, `nombre`, `apellido`, `email`, `telefono`, `direccion`, `numerodocumento`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`, `docente_iddocente`) VALUES
-(1, 'Juan Pablo', 'Rodriguez', 'juan.pablo@example.com', 3001234567, 'Calle 123', 123456789, 'CC', 2, 1, 101),
-(2, 'Claudia', 'Peres', 'claudia.peres@example.com', 3002345678, 'Calle 234', 987654321, 'TI', 1, 2, NULL),
-(3, 'Sandra', 'Torres', 'sandra.torres@example.com', 3003456789, 'Calle 345', 456789123, 'CC', 1, 3, NULL),
-(4, 'Pedro', 'Linares', 'pedro.linares@example.com', 3004567890, 'Calle 456', 789123456, 'CC', 3, 4, NULL);
+INSERT INTO `usuarios` (`idusuarios`, `nombre`, `apellido`, `email`, `telefono`, `direccion`, `numerodocumento`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`) VALUES
+(1, 'Juan Pablo', 'Rodriguez', 'juan.pablo@example.com', 3001234567, 'Calle 123', 123456789, 'CC', 2, 1),
+(2, 'Claudia', 'Peres', 'claudia.peres@example.com', 3002345678, 'Calle 234', 987654321, 'TI', 1, 2),
+(3, 'Sandra', 'Torres', 'sandra.torres@example.com', 3003456789, 'Calle 345', 456789123, 'CC', 1, 3),
+(4, 'Pedro', 'Linares', 'pedro.linares@example.com', 3004567890, 'Calle 456', 789123456, 'CC', 3, 4);
 
 ALTER TABLE `usuarios`
 ADD CONSTRAINT `fk_usuarios_tipo_documento`
@@ -95,24 +94,23 @@ CREATE TABLE `menu` (
   `tipomenu` VARCHAR(20) NOT NULL,
   `descripcion` LONGTEXT NOT NULL,
   `usuarios_idusuarios` INT NOT NULL,
-  `usuarios_tipo_documento_tdoc` VARCHAR(10) NOT NULL,
   `usuarios_tipo_usuario_idtipo_usuario` INT NOT NULL,
   `usuarios_credenciales_idcredenciales` INT NOT NULL,
   PRIMARY KEY (`idmenu`)
 );
 
-INSERT INTO `menu` (`idmenu`, `fecha`, `tipomenu`, `descripcion`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
-(1, '2024-08-27', 'Desayuno', 'Huevos revueltos con pan, jugo de naranja y café', 1, 'CC', 2, 1),
-(2, '2024-08-27', 'Almuerzo', 'Pasta con salsa boloñesa, ensalada y agua', 2, 'TI', 1, 2),
-(3, '2024-08-27', 'Refrigerio', 'Galletas y jugo de manzana', 3, 'CC', 1, 3),
-(4, '2024-08-28', 'Desayuno', 'Panqueques con miel, leche y fruta fresca', 4, 'CC', 3, 4);
+INSERT INTO `menu` (`idmenu`, `fecha`, `tipomenu`, `descripcion`, `usuarios_idusuarios`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`) VALUES
+(1, '2024-08-27', 'Desayuno', 'Huevos revueltos con pan, jugo de naranja y café', 1, 2, 1),
+(2, '2024-08-27', 'Almuerzo', 'Pasta con salsa boloñesa, ensalada y agua', 2, 1, 2),
+(3, '2024-08-27', 'Refrigerio', 'Galletas y jugo de manzana', 3, 1, 3),
+(4, '2024-08-28', 'Desayuno', 'Panqueques con miel, leche y fruta fresca', 4, 3, 4);
 
 ALTER TABLE `menu`
 ADD  CONSTRAINT `fk_menu_usuarios1`
-    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_documento_tdoc` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`)
-    REFERENCES `usuarios` (`idusuarios` , `tipo_documento_tdoc` , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales` , `docente_iddocente`);
+    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales`)
+    REFERENCES `usuarios` (`idusuarios` , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales` , `docente_iddocente`);
 
-CREATE INDEX `fk_menu_usuarios1_idx` ON `menu` (`usuarios_idusuarios` ASC, `usuarios_tipo_documento_tdoc` ASC, `usuarios_tipo_usuario_idtipo_usuario` ASC, `usuarios_credenciales_idcredenciales` ASC, `usuarios_docente_iddocente` ASC);
+CREATE INDEX `fk_menu_usuarios1_idx` ON `menu` (`usuarios_idusuarios` ASC,  `usuarios_tipo_usuario_idtipo_usuario` ASC, `usuarios_credenciales_idcredenciales` ASC);
 
 CREATE TABLE `docente` (
   `iddocente` INT NOT NULL,
@@ -120,22 +118,21 @@ CREATE TABLE `docente` (
   `usuarios_tipo_documento_tdoc` VARCHAR(10) NOT NULL,
   `usuarios_tipo_usuario_idtipo_usuario` INT NOT NULL,
   `usuarios_credenciales_idcredenciales` INT NOT NULL,
-  `usuarios_docente_iddocente` INT NOT NULL,
-  PRIMARY KEY (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`)
+  PRIMARY KEY (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`)
 );
 
-INSERT INTO `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
-(1, 1, 'CC', 2, 1, 101),
-(2, 2, 'TI', 1, 2, NULL),
-(3, 3, 'CC', 1, 3, NULL),
-(4, 4, 'CC', 3, 4, NULL);
+INSERT INTO `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`) VALUES
+(1, 1, 'CC', 2, 1),
+(2, 2, 'TI', 1, 2),
+(3, 3, 'CC', 1, 3),
+(4, 4, 'CC', 3, 4);
 
 ALTER TABLE `docente`
 ADD CONSTRAINT `fk_docente_usuarios1`
-    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_documento_tdoc` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`)
-    REFERENCES `usuarios` (`idusuarios` , `tipo_documento_tdoc` , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales` , `docente_iddocente`);
+    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_documento_tdoc` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales`)
+    REFERENCES `usuarios` (`idusuarios` , `tipo_documento_tdoc` , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales`);
 
-CREATE INDEX `fk_docente_usuarios1_idx` ON `docente` (`usuarios_idusuarios` ASC, `usuarios_tipo_documento_tdoc` ASC, `usuarios_tipo_usuario_idtipo_usuario` ASC, `usuarios_credenciales_idcredenciales` ASC, `usuarios_docente_iddocente` ASC);
+CREATE INDEX `fk_docente_usuarios1_idx` ON `docente` (`usuarios_idusuarios` ASC, `usuarios_tipo_documento_tdoc` ASC, `usuarios_tipo_usuario_idtipo_usuario` ASC, `usuarios_credenciales_idcredenciales` ASC);
 
 CREATE TABLE `docentealumnos` (
   `iddocentealumnos` INT NOT NULL,
@@ -176,18 +173,17 @@ CREATE TABLE `asistencia` (
   `registradopor` INT NOT NULL,
   `qrgenerados_idqrgenerados` INT NOT NULL,
   `usuarios_idusuarios` INT NOT NULL,
-  `usuarios_tipo_documento_tdoc` VARCHAR(10) NOT NULL,
   `usuarios_tipo_usuario_idtipo_usuario` INT NOT NULL,
   `usuarios_credenciales_idcredenciales` INT NOT NULL,
   `usuarios_docente_iddocente` INT NOT NULL,
   PRIMARY KEY (`idasistencia`)
 );
 
-INSERT INTO `asistencia` (`fecha`, `estado`, `registradopor`, `qrgenerados_idqrgenerados`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
-('2024-08-27', 1, 101, 1, 1, 'CC', 2, 1, 101),
-('2024-08-27', 0, 102, 2, 2, 'TI', 1, 2, NULL),
-('2024-08-27', 1, 103, 3, 3, 'CC', 1, 3, NULL),
-('2024-08-27', 0, 104, 4, 4, 'CC', 3, 4, NULL);
+INSERT INTO `asistencia` (`fecha`, `estado`, `registradopor`, `qrgenerados_idqrgenerados`, `usuarios_idusuarios`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
+('2024-08-27', 1, 101, 1, 1, 2, 1, 101),
+('2024-08-27', 0, 102, 2, 2, 1, 2, NULL),
+('2024-08-27', 1, 103, 3, 3, 1, 3, NULL),
+('2024-08-27', 0, 104, 4, 4, 3, 4, NULL);
 
 ALTER TABLE `asistencia`
 ADD CONSTRAINT `fk_asistencia_qrgenerados1`
@@ -196,8 +192,8 @@ ADD CONSTRAINT `fk_asistencia_qrgenerados1`
     
 ALTER TABLE `asistencia`
 ADD CONSTRAINT `fk_asistencia_usuarios1`
-    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_documento_tdoc` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`)
-    REFERENCES `usuarios` (`idusuarios` , `tipo_documento_tdoc` , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales` , `docente_iddocente`);
+    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`)
+    REFERENCES `usuarios` (`idusuarios`  , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales` , `docente_iddocente`);
 
 CREATE INDEX `fk_asistencia_qrgenerados1_idx` ON `asistencia` (`qrgenerados_idqrgenerados` ASC);
 
@@ -208,7 +204,6 @@ CREATE TABLE `cursos` (
   `nombrecurso` VARCHAR(20) NOT NULL,
   `docente_iddocente` INT NOT NULL,
   `docente_usuarios_idusuarios` INT NOT NULL,
-  `docente_usuarios_tipo_documento_tdoc` VARCHAR(10) NOT NULL,
   `docente_usuarios_tipo_usuario_idtipo_usuario` INT NOT NULL,
   `docente_usuarios_credenciales_idcredenciales` INT NOT NULL,
   `docente_usuarios_docente_iddocente` INT NOT NULL,
@@ -217,16 +212,16 @@ CREATE TABLE `cursos` (
   PRIMARY KEY (`idcursos`) 
 );
 
-INSERT INTO `cursos` (`nombrecurso`, `docente_iddocente`, `docente_usuarios_idusuarios`, `docente_usuarios_tipo_documento_tdoc`, `docente_usuarios_tipo_usuario_idtipo_usuario`, `docente_usuarios_credenciales_idcredenciales`, `docente_usuarios_docente_iddocente`, `asistencia_idasistencia`, `qrgenerados_idqrgenerados`) VALUES
-('Curso 901', 1, 1, 'CC', 2, 1, 101, 1, 1),
-('Curso 902', 2, 2, 'TI', 1, 2, NULL, 2, 2),
-('Curso 1103', 3, 3, 'CC', 1, 3, NULL, 3, 3),
-('Curso 1002', 4, 4, 'CC', 3, 4, NULL, 4, 4);
+INSERT INTO `cursos` (`nombrecurso`, `docente_iddocente`, `docente_usuarios_idusuarios`, `docente_usuarios_tipo_usuario_idtipo_usuario`, `docente_usuarios_credenciales_idcredenciales`, `docente_usuarios_docente_iddocente`, `asistencia_idasistencia`, `qrgenerados_idqrgenerados`) VALUES
+('Curso 901', 1, 1, 2, 1, 101, 1, 1),
+('Curso 902', 2, 2, 1, 2, NULL, 2, 2),
+('Curso 1103', 3, 3, 1, 3, NULL, 3, 3),
+('Curso 1002', 4, 4, 3, 4, NULL, 4, 4);
 
 ALTER TABLE `cursos`
 ADD CONSTRAINT `fk_cursos_docente1`
-    FOREIGN KEY (`docente_iddocente` , `docente_usuarios_idusuarios` , `docente_usuarios_tipo_documento_tdoc` , `docente_usuarios_tipo_usuario_idtipo_usuario` , `docente_usuarios_credenciales_idcredenciales` , `docente_usuarios_docente_iddocente`)
-    REFERENCES `docente` (`iddocente` , `usuarios_idusuarios` , `usuarios_tipo_documento_tdoc` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`);
+    FOREIGN KEY (`docente_iddocente` , `docente_usuarios_idusuarios` , `docente_usuarios_tipo_usuario_idtipo_usuario` , `docente_usuarios_credenciales_idcredenciales` , `docente_usuarios_docente_iddocente`)
+    REFERENCES `docente` (`iddocente` , `usuarios_idusuarios` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`);
     
 ALTER TABLE `cursos`
 ADD CONSTRAINT `fk_cursos_asistencia1`
@@ -238,7 +233,7 @@ ADD CONSTRAINT `fk_cursos_qrgenerados1`
     FOREIGN KEY (`qrgenerados_idqrgenerados`)
     REFERENCES `qrgenerados` (`idqrgenerados`);
 
-CREATE INDEX `fk_cursos_docente1_idx` ON `cursos` (`docente_iddocente` ASC, `docente_usuarios_idusuarios` ASC, `docente_usuarios_tipo_documento_tdoc` ASC, `docente_usuarios_tipo_usuario_idtipo_usuario` ASC, `docente_usuarios_credenciales_idcredenciales` ASC, `docente_usuarios_docente_iddocente` ASC);
+CREATE INDEX `fk_cursos_docente1_idx` ON `cursos` (`docente_iddocente` ASC, `docente_usuarios_idusuarios` ASC, `docente_usuarios_tipo_usuario_idtipo_usuario` ASC, `docente_usuarios_credenciales_idcredenciales` ASC, `docente_usuarios_docente_iddocente` ASC);
 
 CREATE INDEX `fk_cursos_asistencia1_idx` ON `cursos` (`asistencia_idasistencia` ASC);
 
@@ -290,31 +285,30 @@ INSERT INTO `estadisticasqr` (`fecha`, `estudiantesqasistieron`) VALUES
 CREATE TABLE `admin` (
   `idadmin` INT NOT NULL,
   `usuarios_idusuarios` INT NOT NULL,
-  `usuarios_tipo_documento_tdoc` VARCHAR(10) NOT NULL,
   `usuarios_tipo_usuario_idtipo_usuario` INT NOT NULL,
   `usuarios_credenciales_idcredenciales` INT NOT NULL,
   `usuarios_docente_iddocente` INT NOT NULL,
   `estadisticasqr_idestadisticasqr` INT NOT NULL,
-  PRIMARY KEY (`idadmin`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`)  
+  PRIMARY KEY (`idadmin`, `usuarios_idusuarios`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`)  
 );
 
-INSERT INTO `admin` (`usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`, `estadisticasqr_idestadisticasqr`) VALUES
-(1, 'CC', 2, 1, 101, 1),
-(2, 'TI', 1, 2, NULL, 2),
-(3, 'CC', 3, 3, NULL, 3),
-(4, 'CC', 1, 4, NULL, 4);
+INSERT INTO `admin` (`usuarios_idusuarios`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`, `estadisticasqr_idestadisticasqr`) VALUES
+(1, 2, 1, 101, 1),
+(2, 1, 2, NULL, 2),
+(3, 3, 3, NULL, 3),
+(4, 1, 4, NULL, 4);
 
 ALTER TABLE `admin`
 ADD CONSTRAINT `fk_admin_usuarios1`
-    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_documento_tdoc` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`)
-    REFERENCES `usuarios` (`idusuarios` , `tipo_documento_tdoc` , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales` , `docente_iddocente`);
+    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`)
+    REFERENCES `usuarios` (`idusuarios` , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales` , `docente_iddocente`);
 
 ALTER TABLE `admin`
 ADD CONSTRAINT `fk_admin_estadisticasqr1`
     FOREIGN KEY (`estadisticasqr_idestadisticasqr`)
     REFERENCES `estadisticasqr` (`idestadisticasqr`);
 
-CREATE INDEX `fk_admin_usuarios1_idx` ON `admin` (`usuarios_idusuarios` ASC, `usuarios_tipo_documento_tdoc` ASC, `usuarios_tipo_usuario_idtipo_usuario` ASC, `usuarios_credenciales_idcredenciales` ASC, `usuarios_docente_iddocente` ASC);
+CREATE INDEX `fk_admin_usuarios1_idx` ON `admin` (`usuarios_idusuarios` ASC, `usuarios_tipo_usuario_idtipo_usuario` ASC, `usuarios_credenciales_idcredenciales` ASC, `usuarios_docente_iddocente` ASC);
 
 CREATE INDEX `fk_admin_estadisticasqr1_idx` ON `admin` (`estadisticasqr_idestadisticasqr` ASC);
 
@@ -322,46 +316,44 @@ CREATE TABLE `estudiante_ss` (
   `idestudiante_ss` INT NOT NULL,
   `qr_registrados` TEXT NOT NULL,
   `usuarios_idusuarios` INT NOT NULL,
-  `usuarios_tipo_documento_tdoc` VARCHAR(10) NOT NULL,
   `usuarios_tipo_usuario_idtipo_usuario` INT NOT NULL,
   `usuarios_credenciales_idcredenciales` INT NOT NULL,
   `usuarios_docente_iddocente` INT NOT NULL,
-  PRIMARY KEY (`idestudiante_ss`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`)
+  PRIMARY KEY (`idestudiante_ss`, `usuarios_idusuarios`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`)
 );
 
-INSERT INTO `estudiante_ss` (`qr_registrados`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
+INSERT INTO `estudiante_ss` (`qr_registrados`, `usuarios_idusuarios`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
 ('../qr_codes/qr_all_students_1724296178.png', 1, 'CC', 2, 1, 101),
 ('../qr_codes/qr_all_students_1724296237.png', 2, 'TI', 1, 2, NULL),
 ('../qr_codes/qr_all_students_1724296591.png', 3, 'CC', 1, 3, NULL);
 
 ALTER TABLE `estudiante_ss`
 ADD CONSTRAINT `fk_estudiante_ss_usuarios1`
-    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_documento_tdoc` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`)
-    REFERENCES `usuarios` (`idusuarios` , `tipo_documento_tdoc` , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales` , `docente_iddocente`);
+    FOREIGN KEY (`usuarios_idusuarios` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`)
+    REFERENCES `usuarios` (`idusuarios` , `tipo_usuario_idtipo_usuario` , `credenciales_idcredenciales` , `docente_iddocente`);
 
-CREATE INDEX `fk_estudiante_ss_usuarios1_idx` ON `estudiante_ss` (`usuarios_idusuarios` ASC, `usuarios_tipo_documento_tdoc` ASC, `usuarios_tipo_usuario_idtipo_usuario` ASC, `usuarios_credenciales_idcredenciales` ASC, `usuarios_docente_iddocente` ASC);
+CREATE INDEX `fk_estudiante_ss_usuarios1_idx` ON `estudiante_ss` (`usuarios_idusuarios` ASC, `usuarios_tipo_usuario_idtipo_usuario` ASC, `usuarios_credenciales_idcredenciales` ASC, `usuarios_docente_iddocente` ASC);
 
 CREATE TABLE `qrescaneados` (
   `idqrescaneados` INT NOT NULL,
   `fecha_escaneo` DATETIME NOT NULL,
   `estudiante_ss_idestudiante_ss` INT NOT NULL,
   `estudiante_ss_usuarios_idusuarios` INT NOT NULL,
-  `estudiante_ss_usuarios_tipo_documento_tdoc` VARCHAR(10) NOT NULL,
   `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario` INT NOT NULL,
   `estudiante_ss_usuarios_credenciales_idcredenciales` INT NOT NULL,
   `estudiante_ss_usuarios_docente_iddocente` INT NOT NULL,
   PRIMARY KEY (`idqrescaneados`)
 );
 
-INSERT INTO `qrescaneados` (`fecha_escaneo`, `estudiante_ss_idestudiante_ss`, `estudiante_ss_usuarios_idusuarios`, `estudiante_ss_usuarios_tipo_documento_tdoc`, `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`, `estudiante_ss_usuarios_credenciales_idcredenciales`, `estudiante_ss_usuarios_docente_iddocente`) VALUES
-('2024-08-27 08:30:00', 1, 1, 'CC', 2, 1, 101),
-('2024-08-27 09:15:00', 2, 2, 'TI', 1, 2, NULL),
-('2024-08-27 10:00:00', 3, 3, 'CC', 1, 3, NULL),
-('2024-08-27 11:45:00', 4, 4, 'CC', 3, 4, NULL);
+INSERT INTO `qrescaneados` (`fecha_escaneo`, `estudiante_ss_idestudiante_ss`, `estudiante_ss_usuarios_idusuarios`, `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`, `estudiante_ss_usuarios_credenciales_idcredenciales`, `estudiante_ss_usuarios_docente_iddocente`) VALUES
+('2024-08-27 08:30:00', 1, 1, 2, 1, 101),
+('2024-08-27 09:15:00', 2, 2, 1, 2, NULL),
+('2024-08-27 10:00:00', 3, 3, 1, 3, NULL),
+('2024-08-27 11:45:00', 4, 4, 3, 4, NULL);
 
 ALTER TABLE `qrescaneados`
 ADD CONSTRAINT `fk_qrescaneados_estudiante_ss1`
-    FOREIGN KEY (`estudiante_ss_idestudiante_ss` , `estudiante_ss_usuarios_idusuarios` , `estudiante_ss_usuarios_tipo_documento_tdoc` , `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario` , `estudiante_ss_usuarios_credenciales_idcredenciales` , `estudiante_ss_usuarios_docente_iddocente`)
-    REFERENCES `estudiante_ss` (`idestudiante_ss` , `usuarios_idusuarios` , `usuarios_tipo_documento_tdoc` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`);
+    FOREIGN KEY (`estudiante_ss_idestudiante_ss` , `estudiante_ss_usuarios_idusuarios` , `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario` , `estudiante_ss_usuarios_credenciales_idcredenciales` , `estudiante_ss_usuarios_docente_iddocente`)
+    REFERENCES `estudiante_ss` (`idestudiante_ss` , `usuarios_idusuarios` , `usuarios_tipo_usuario_idtipo_usuario` , `usuarios_credenciales_idcredenciales` , `usuarios_docente_iddocente`);
 
-CREATE INDEX `fk_qrescaneados_estudiante_ss1_idx` ON `qrescaneados` (`estudiante_ss_idestudiante_ss` ASC, `estudiante_ss_usuarios_idusuarios` ASC, `estudiante_ss_usuarios_tipo_documento_tdoc` ASC, `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario` ASC, `estudiante_ss_usuarios_credenciales_idcredenciales` ASC, `estudiante_ss_usuarios_docente_iddocente` ASC);
+CREATE INDEX `fk_qrescaneados_estudiante_ss1_idx` ON `qrescaneados` (`estudiante_ss_idestudiante_ss` ASC, `estudiante_ss_usuarios_idusuarios` ASC, `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario` ASC, `estudiante_ss_usuarios_credenciales_idcredenciales` ASC, `estudiante_ss_usuarios_docente_iddocente` ASC);
