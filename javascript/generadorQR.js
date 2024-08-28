@@ -15,23 +15,23 @@ document.addEventListener('DOMContentLoaded', function () {
         const estudiantesSeleccionados = Array.from(checkboxes).map(checkbox => {
             const row = checkbox.closest('tr');
             return {
-                idAlumnos: checkbox.dataset.id,
-                nombreAlumnos: row.cells[0].textContent,  // Suponiendo que el nombre está en la primera columna
-                apellidosAlumnos: row.cells[1].textContent,  // Suponiendo que el apellido está en la segunda columna
-                nombreCurso: row.cells[2].textContent,  // Suponiendo que el nombre del curso está en la tercera columna
-                nombreDocente: row.cells[3].textContent,  // Suponiendo que el nombre del docente está en la cuarta columna
-                asistio: checkbox.checked ? 1 : 0
+                idalumnos: checkbox.dataset.id,  // ID del estudiante
+                nombreAlumnos: row.cells[0].textContent,
+                apellidosAlumnos: row.cells[1].textContent,
+                nombreCurso: row.cells[2].textContent,
+                nombreDocente: row.cells[3].textContent,
+                estado: checkbox.checked ? 1 : 0  // Estado de asistencia
             };
         });
 
-        // Enviar la información de asistencia
+        // Enviar la información de asistencia y generar el código QR
         Promise.all(estudiantesSeleccionados.map(estudiante => {
             return fetch('../../php_basesDatos/GuardarAsistencia.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `idAlumnos=${estudiante.idAlumnos}&nombreAlumnos=${encodeURIComponent(estudiante.nombreAlumnos)}&apellidosAlumnos=${encodeURIComponent(estudiante.apellidosAlumnos)}&nombreCurso=${encodeURIComponent(estudiante.nombreCurso)}&nombreDocente=${encodeURIComponent(estudiante.nombreDocente)}&asistio=${estudiante.asistio}`
+                body: `idalumnos=${estudiante.idalumnos}&estado=${estudiante.estado}`  // ID y estado del estudiante
             }).then(response => response.text());
         }))
         .then(results => {
@@ -43,12 +43,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `estudiantes=${JSON.stringify(estudiantesSeleccionados)}`
+                body: `estudiantes=${JSON.stringify(estudiantesSeleccionados)}`  // Enviar datos de estudiantes seleccionados
             });
         })
         .then(response => {
             return response.text().then(text => {
-                console.log('Respuesta del servidor:', text); // Añadido para depuración
+                console.log('Respuesta del servidor:', text);
                 try {
                     const data = JSON.parse(text);
                     if (data.status === 'success') {
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             icon: 'success',
                             title: 'Código QR generado correctamente',
                             text: data.message,
-                            imageUrl: `../${data.qr_image}`,
+                            imageUrl: `../${data.qr_image}`,  // Mostrar la imagen del QR generado
                             imageHeight: 100,
                             imageAlt: 'Código QR generado'
                         }).then((result) => {
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${estudiante.nombrecurso}</td>
                     <td>${estudiante.nombreDocente}</td>
                     <td>
-                        <input type="checkbox" class="asistencia-checkbox" data-id="${estudiante.idalumnos}">
+                        <input type="checkbox" class="asistencia-checkbox" data-id="${estudiante.idalumnos}">  
                     </td>
                 `;
                 tablaEstudiantes.appendChild(row);

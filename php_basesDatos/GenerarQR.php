@@ -20,7 +20,7 @@ include '../phpqrcode-master/qrlib.php';
 
 // Genera un identificador único basado en la marca de tiempo
 $uniqueId = time();
-$filename = "../qr_codes/qr_all_students_{$uniqueId}.png"; // Se ha eliminado "../" para que la ruta sea relativa desde la raíz del proyecto
+$filename = "../qr_codes/qr_all_students_{$uniqueId}.png";  
 
 // Verifica si la carpeta existe
 if (!file_exists(dirname(__DIR__ . '/' . $filename))) {
