@@ -2,12 +2,13 @@ document.getElementById('formAgregarEstudiante').addEventListener('submit', func
     event.preventDefault(); 
     agregarEstudiante();
 });
+
 function agregarEstudiante() {
     const nombreEstudiante = document.getElementById('nombreEstudiante').value.trim();
     const apellidoEstudiante = document.getElementById('apellidoEstudiante').value.trim();
-    const asistio = document.getElementById('asistio').value;
+    const estado = document.getElementById('asistio').value;
 
-    if (!nombreEstudiante || !apellidoEstudiante || asistio === "") {
+    if (!nombreEstudiante || !apellidoEstudiante || estado === "") {
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -25,15 +26,15 @@ function agregarEstudiante() {
             body: new URLSearchParams({
                 'nombreEstudiante': nombreEstudiante,
                 'apellidoEstudiante': apellidoEstudiante,
-                'asistio': asistio
+                'estado': estado
             })
         })
-        .then(response => response.text())
+        .then(response => response.json()) // Asegúrate de tratar la respuesta como JSON
         .then(data => {
             Swal.fire({
-                icon: 'success',
-                title: 'Actualización Completa',
-                text: data,
+                icon: data.status === 'success' ? 'success' : 'error',
+                title: data.status === 'success' ? 'Actualización Completa' : 'Error',
+                text: data.message,
                 showClass: {
                     popup: 'animate__animated animate__fadeInDown'
                 },
@@ -41,8 +42,9 @@ function agregarEstudiante() {
                     popup: 'animate__animated animate__fadeOutUp'
                 }
             }).then(() => {
-                // Recargar la página después de mostrar la alerta de éxito
-                location.reload();
+                if (data.status === 'success') {
+                    location.reload();
+                }
             });
         })
         .catch(error => {

@@ -7,34 +7,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recibir los datos del formulario
     $nombre = $_POST['nombreEstudiante'];
     $apellido = $_POST['apellidoEstudiante'];
-    $asistio = $_POST['asistio'] === 'si' ? 1 : 0;
+    $estado = $_POST['estado'] === 'si' ? 1 : 0;
 
-    // Consulta SQL para actualizar el registro
-    $sql = "UPDATE alumnos_asistencia 
-            SET asistio = :asistio 
-            WHERE nombreAlumnos = :nombre AND apellidosAlumnos = :apellido";
+    $response = array('status' => 'error', 'message' => '');
 
     try {
-        // Preparar la declaración
-        $stmt = $pdo->prepare($sql);
+        // Primero, obtener el idalumnos
+        $stmt1 = $pdo->prepare("SELECT idalumnos FROM alumnos WHERE nombre = :nombre AND apellido = :apellido");
+        $stmt1->bindParam(':nombre', $nombre);
+        $stmt1->bindParam(':apellido', $apellido);
+        $stmt1->execute();
 
-        // Vincular los parámetros
-        $stmt->bindParam(':nombre', $nombre);
-        $stmt->bindParam(':apellido', $apellido);
-        $stmt->bindParam(':asistio', $asistio);
+        // Obtener el resultado
+        $idalumnos = $stmt1->fetchColumn();
 
-        // Ejecutar la declaración
-        $stmt->execute();
+        if ($idalumnos) {
+            // Si se encuentra el idalumnos, proceder a actualizar la tabla asistencia
+            $stmt2 = $pdo->prepare("UPDATE asistencia SET fecha = NOW(), estado = :estado WHERE alumnos_idalumnos = :idalumnos");
+            $stmt2->bindParam(':estado', $estado);
+            $stmt2->bindParam(':idalumnos', $idalumnos);
+            $stmt2->execute();
 
-        // Verificar si se actualizó algún registro
-        if ($stmt->rowCount() > 0) {
-            echo "Asistencia actualizada correctamente.";
+            // Verificar si se actualizó algún registro
+            if ($stmt2->rowCount() > 0) {
+                $response['status'] = 'success';
+                $response['message'] = 'Asistencia actualizada correctamente.';
+            } else {
+                $response['message'] = 'No se encontró el registro de asistencia para el estudiante.';
+            }
         } else {
-            echo "No se encontró el registro del estudiante.";
+            $response['message'] = 'No se encontró el registro del estudiante.';
         }
     } catch (PDOException $e) {
         // Mostrar el mensaje de error
-        echo "Error al procesar la solicitud: " . $e->getMessage();
+        $response['message'] = 'Error al procesar la solicitud: ' . $e->getMessage();
     }
+
+    // Devolver la respuesta en formato JSON
+    echo json_encode($response);
 }
 ?>
