@@ -52,45 +52,41 @@
 
 
   <div class="container">
-    <div class="card mt-5">
+    <div class="card mt-5 mx-auto">
       <h2 class="text-center mb-4">Registrar Usuario</h2>
       <form>
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">
-              <label for="nombre" class="form-label">Nombre:</label>
-              <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre">
+              <label for="nombre" class="form-label">Nombres:</label>
+              <input type="text" class="form-control" id="nombre" placeholder="Ingrese sus nombres">
+            </div>
+            <div class="mb-3">
+              <label for="apellido" class="form-label">Apellidos:</label>
+              <input type="text" class="form-control" id="apellido" placeholder="Ingrese sus apellidos">
             </div>
             <div class="mb-3">
               <label for="correo" class="form-label">Correo:</label>
               <input type="email" class="form-control" id="correo" placeholder="Ingrese su correo electrónico">
             </div>
+            <div class="mb-3" class="centered">
+              <label for="celular" class="form-label">Celular:</label>
+              <input type="tel" class="form-control" id="celular" class="centered" placeholder="Ingrese su número de celular">
+            </div>
+          </div>
+          <div class="col-md-6">
             <div class="mb-3">
               <label for="documento" class="form-label">Documento de Identidad:</label>
               <input type="text" class="form-control" id="documento" placeholder="Ingrese su número de documento">
             </div>
             <div class="mb-3">
-              <label for="age" class="form-label">Fecha de Nacimiento:</label>
-              <input type="date" class="form-control" id="age" placeholder="Ingrese su Fecha de Nacimiento">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="apellido" class="form-label">Apellido:</label>
-              <input type="text" class="form-control" id="apellido" placeholder="Ingrese su apellido">
-            </div>
-            <div class="mb-3">
               <label for="tipoDocumento" class="form-label">Tipo de Documento:</label>
               <select class="form-select" id="tipoDocumento">
-                <option value="tarjeta_identidad">Tarjeta de Indentidad</option>
+                <option value="tarjeta_identidad">Tarjeta de Identidad</option>
                 <option value="pasaporte">Pasaporte</option>
                 <option value="PEP">Permiso Especial de Permanencia</option>
-                <option value="cedula">Cédula de Ciudadania</option>
+                <option value="cedula">Cédula de Ciudadanía</option>
               </select>
-            </div>
-            <div class="mb-3">
-              <label for="celular" class="form-label">Número de Celular:</label>
-              <input type="text" class="form-control" id="celular" placeholder="Ingrese su número de celular">
             </div>
             <div class="mb-3">
               <label for="rol" class="form-label">Rol:</label>
@@ -100,14 +96,13 @@
                 <option value="admin">Admin</option>
               </select>
             </div>
-    
-            
           </div>
         </div>
         <button type="submit" class="btn btn-primary w-100">Enviar</button>
       </form>
     </div>
   </div>
+  
 
   <footer class="footer">
     <div class="container">
