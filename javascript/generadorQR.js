@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(results => {
             console.log('Resultados de actualización de asistencia:', results);
 
-            // Después de guardar la asistencia, generar el código QR
+            // Después de guardar la asistencia,    r el código QR
             return fetch('../../php_basesDatos/GenerarQR.php', {
                 method: 'POST',
                 headers: {
@@ -100,8 +100,8 @@ document.addEventListener('DOMContentLoaded', function () {
             data.forEach(estudiante => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${estudiante.nombreAlumno}</td>
-                    <td>${estudiante.apellidoAlumno}</td>
+                    <td>${estudiante.nombre}</td>
+                    <td>${estudiante.apellido}</td>
                     <td>${estudiante.nombrecurso}</td>
                     <td>${estudiante.nombreDocente}</td>
                     <td>

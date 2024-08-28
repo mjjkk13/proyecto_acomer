@@ -14,7 +14,7 @@ try {
     // Actualizar el estado y la fecha/hora en la tabla asistencia
     $sql = "
         UPDATE asistencia a
-        INNER JOIN alumnos al ON al.idalumnos = a.usuarios_idusuarios
+        INNER JOIN alumnos al ON al.idalumnos = a.alumnos_idalumnos
         SET a.estado = :estado, a.fecha = :fechaHora
         WHERE al.idalumnos = :idalumnos  // Cambiado a 'idalumnos'
     ";

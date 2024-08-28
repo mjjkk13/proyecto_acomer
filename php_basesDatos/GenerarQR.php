@@ -1,54 +1,59 @@
 <?php
-include 'conexion.php';
+include 'conexion.php';  // Incluye la conexión a la base de datos
 
 header('Content-Type: application/json');
 
-$estudiantes = json_decode($_POST['estudiantes'], true);
+// Recibe los datos de los estudiantes seleccionados desde la petición POST
+$estudiantesSeleccionados = json_decode($_POST['estudiantes'], true);
 
-if (!$estudiantes) {
-    echo json_encode(array("status" => "error", "message" => "No se recibieron datos de estudiantes"));
+// Verifica que haya estudiantes seleccionados
+if (empty($estudiantesSeleccionados)) {
+    echo json_encode(array("status" => "error", "message" => "No hay estudiantes seleccionados"));
     exit();
 }
 
 $datosQR = "";
-foreach ($estudiantes as $estudiante) {
-    $datosQR .= "ID: " . $estudiante['idAlumnos'] . " - Nombre: " . $estudiante['nombreAlumnos'] . " - Apellidos: " . $estudiante['apellidosAlumnos'] . "\n";
+foreach ($estudiantesSeleccionados as $estudiante) {
+    $datosQR .= "ID: " . $estudiante['idalumnos'] . " - Nombre: " . $estudiante['nombreAlumnos'] . " - Apellidos: " . $estudiante['apellidosAlumnos'] . "\n";
 }
-$datosQR .= "Total de estudiantes: " . count($estudiantes);
+$datosQR .= "Total de estudiantes: " . count($estudiantesSeleccionados);
 
+// Incluye la librería para generación de códigos QR
 include '../phpqrcode-master/qrlib.php';
 
 // Genera un identificador único basado en la marca de tiempo
 $uniqueId = time();
-$filename = "../qr_codes/qr_all_students_{$uniqueId}.png";  
+$filename = "../qr_codes/qr_all_students_{$uniqueId}.png";
 
-// Verifica si la carpeta existe
-if (!file_exists(dirname(__DIR__ . '/' . $filename))) {
-    echo json_encode(array("status" => "error", "message" => "La carpeta para guardar el QR no existe"));
-    exit();
+// Verifica si la carpeta existe, si no, la crea
+$directory = dirname(__DIR__) . '/qr_codes';
+if (!file_exists($directory)) {
+    mkdir($directory, 0777, true);
 }
 
-// Genera el QR
-QRcode::png($datosQR, __DIR__ . '/' . $filename, 'L', 4, 2);
+// Genera el código QR
+QRcode::png($datosQR, $filename, 'L', 4, 2);
 
-// Guarda la información en la base de datos
-$sql = "INSERT INTO qr (CodigoQR) VALUES (:filename)";
 try {
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':filename', $filename);
-    $stmt->execute();
-    $idQR = $pdo->lastInsertId();
-    $fechaHora = date('Y-m-d H:i:s');
+    // Guarda la información en la tabla `qrgenerados`
+    $sqlInsertQR = "INSERT INTO qrgenerados (codigoqr, fechageneracion) VALUES (:filename, :fechageneracion)";
+    $stmtQR = $pdo->prepare($sqlInsertQR);
+    $stmtQR->bindValue(':filename', $filename, PDO::PARAM_STR);
+    $fechageneracion = date('Y-m-d H:i:s');
+    $stmtQR->bindValue(':fechageneracion', $fechageneracion, PDO::PARAM_STR);
+    $stmtQR->execute();
 
-    echo json_encode(array(
-        "status" => "success",
-        "message" => "QR generado y guardado correctamente",
-        "qr_image" => $filename,
-        "idQR" => $idQR
-    ));
+    // Guarda el total de estudiantes que asistieron en la tabla `estadisticasqr`
+    $sqlInsertEstadisticas = "INSERT INTO estadisticasqr (fecha, estudiantesqasistieron) VALUES (:fecha, :estudiantesqasistieron)";
+    $stmtEstadisticas = $pdo->prepare($sqlInsertEstadisticas);
+    $stmtEstadisticas->bindValue(':fecha', $fechageneracion, PDO::PARAM_STR);
+    $stmtEstadisticas->bindValue(':estudiantesqasistieron', count($estudiantesSeleccionados), PDO::PARAM_INT);
+    $stmtEstadisticas->execute();
+
+    echo json_encode(array("status" => "success", "message" => "Código QR generado correctamente", "qr_image" => $filename));
 } catch (PDOException $e) {
-    echo json_encode(array("status" => "error", "message" => "Error al guardar en la base de datos: " . $e->getMessage()));
+    echo json_encode(array("status" => "error", "message" => "Error al generar el código QR: " . $e->getMessage()));
 }
 
-$pdo = null;
+$conn = null;
 ?>

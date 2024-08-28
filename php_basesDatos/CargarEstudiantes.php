@@ -1,7 +1,6 @@
 <?php
 include 'conexion.php';
 
-// Consulta SQL sin alias
 $sql = "
 SELECT 
     alumnos.idalumnos, 
@@ -20,7 +19,6 @@ INNER JOIN
 ";
 
 try {
-    // Ejecuta la consulta SQL
     $stmt = $pdo->query($sql);
     $estudiantes = array();
 
@@ -29,13 +27,11 @@ try {
         $estudiantes[] = $row;
     }
 
-    // Envia la respuesta en formato JSON
     echo json_encode($estudiantes);
 } catch (PDOException $e) {
     // Manejo de errores
     echo "Error: " . $e->getMessage();
 }
 
-// Cierra la conexión a la base de datos
 $pdo = null;
 ?>
