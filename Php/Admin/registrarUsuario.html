@@ -54,43 +54,45 @@
   <div class="container">
     <div class="card mt-5 mx-auto">
       <h2 class="text-center mb-4">Registrar Usuario</h2>
-      <form>
+      <form method="post" action="../../php_basesDatos/registrarUsuario.php">
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">
               <label for="nombre" class="form-label">Nombres:</label>
-              <input type="text" class="form-control" id="nombre" placeholder="Ingrese sus nombres">
+              <input type="text" class="form-control" name="nombre" placeholder="Ingrese sus nombres">
             </div>
             <div class="mb-3">
               <label for="apellido" class="form-label">Apellidos:</label>
-              <input type="text" class="form-control" id="apellido" placeholder="Ingrese sus apellidos">
+              <input type="text" class="form-control" name="apellido" placeholder="Ingrese sus apellidos">
             </div>
             <div class="mb-3">
               <label for="correo" class="form-label">Correo:</label>
-              <input type="email" class="form-control" id="correo" placeholder="Ingrese su correo electrónico">
+              <input type="email" class="form-control" name="correo" placeholder="Ingrese su correo electrónico">
             </div>
             <div class="mb-3" class="centered">
               <label for="celular" class="form-label">Celular:</label>
-              <input type="tel" class="form-control" id="celular" class="centered" placeholder="Ingrese su número de celular">
+              <input type="tel" class="form-control" name="celular" class="centered" placeholder="Ingrese su número de celular">
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
               <label for="documento" class="form-label">Documento de Identidad:</label>
-              <input type="text" class="form-control" id="documento" placeholder="Ingrese su número de documento">
+              <input type="text" class="form-control" name="documento" placeholder="Ingrese su número de documento">
             </div>
             <div class="mb-3">
               <label for="tipoDocumento" class="form-label">Tipo de Documento:</label>
-              <select class="form-select" id="tipoDocumento">
-                <option value="tarjeta_identidad">Tarjeta de Identidad</option>
-                <option value="pasaporte">Pasaporte</option>
-                <option value="PEP">Permiso Especial de Permanencia</option>
-                <option value="cedula">Cédula de Ciudadanía</option>
+              <select class="form-select" name="tipoDocumento">
+                <option value="TI">Tarjeta de Identidad</option>
+                <option value="PA">Pasaporte</option>
+                <option value="PR">Permiso Especial de Permanencia</option>
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjería</option>
+                <option value="RC">Registro Civil</option>
               </select>
             </div>
             <div class="mb-3">
               <label for="rol" class="form-label">Rol:</label>
-              <select class="form-select" id="rol">
+              <select class="form-select" name="rol">
                 <option value="docente">Docente</option>
                 <option value="estudiante">Estudiante</option>
                 <option value="admin">Admin</option>
