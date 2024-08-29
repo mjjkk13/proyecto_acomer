@@ -13,7 +13,7 @@ try {
     $rol_desc = $_POST['rol'];
 
     // Obtener el ID del tipo de documento
-    $sql_doc = "SELECT idtipo_documento FROM tipo_documento WHERE descripcion = :descripcion";
+    $sql_doc = "SELECT tdoc FROM tipo_documento WHERE descripcion = :descripcion";
     $stmt_doc = $pdo->prepare($sql_doc);
     $stmt_doc->bindParam(':descripcion', $tipo_documento_desc);
     $stmt_doc->execute();
