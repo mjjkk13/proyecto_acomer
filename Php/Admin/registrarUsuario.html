@@ -69,15 +69,19 @@
               <label for="correo" class="form-label">Correo:</label>
               <input type="email" class="form-control" name="correo" placeholder="Ingrese su correo electrónico">
             </div>
-            <div class="mb-3" class="centered">
+            <div class="mb-3">
               <label for="celular" class="form-label">Celular:</label>
-              <input type="tel" class="form-control" name="celular" class="centered" placeholder="Ingrese su número de celular">
+              <input type="num" class="form-control" name="celular" placeholder="Ingrese su número de celular">
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
+              <label for="celular" class="form-label">Dirección:</label>
+              <input type="text" class="form-control" name="direccion"  placeholder="Ingrese su dirección">
+            </div>
+            <div class="mb-3">
               <label for="documento" class="form-label">Documento de Identidad:</label>
-              <input type="text" class="form-control" name="documento" placeholder="Ingrese su número de documento">
+              <input type="num" class="form-control" name="documento" placeholder="Ingrese su número de documento">
             </div>
             <div class="mb-3">
               <label for="tipoDocumento" class="form-label">Tipo de Documento:</label>
@@ -92,10 +96,19 @@
             </div>
             <div class="mb-3">
               <label for="rol" class="form-label">Rol:</label>
-              <select class="form-select" name="rol">
-                <option value="docente">Docente</option>
+              <select class="form-select" id="rol">
                 <option value="estudiante">Estudiante</option>
+                <option value="docente">Docente</option>
                 <option value="admin">Admin</option>
+              </select>
+            </div>
+            <!-- Campo oculto inicialmente -->
+            <div class="mb-3" id="cursososDisponibles" style="display: none;">
+              <label for="cursos" class="form-label">Cursos Disponibles:</label>
+              <select class="form-select" id="cursos">
+                <option value="901">Grado 901</option>
+                <option value="1103">Grado 1103</option>
+                <option value="1003">Grado 1003</option>
               </select>
             </div>
           </div>
@@ -111,7 +124,7 @@
       <p>&copy; 2024 Plataforma Educativa. Todos los derechos reservados.</p>
     </div>
   </footer>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/javascript/registroUsuarios.js"></script>
 </body>
 </html>

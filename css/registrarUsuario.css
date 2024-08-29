@@ -94,6 +94,9 @@ img {
   width: 40px;
   height: 40px;
 }
+#cursosDisponibles{
+  display: none;
+}
 
 @media (max-width: 576px) {
   .navbar-brand img {

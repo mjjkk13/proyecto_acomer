@@ -7,6 +7,7 @@ try {
     $apellido = $_POST['apellido'];
     $email = $_POST['correo'];
     $telefono = $_POST['celular'];
+    $direccion = $_POST['direccion'];
     $numerodocumento = $_POST['documento'];
     $tipo_documento_desc = $_POST['tipoDocumento'];
     $rol_desc = $_POST['rol'];
@@ -26,17 +27,18 @@ try {
     $tipo_usuario = $stmt_rol->fetchColumn();
 
     // Consulta SQL para insertar un nuevo usuario usando una consulta preparada
-    $sql = "INSERT INTO usuarios (nombre, apellido, email, telefono, numerodocumento, tipo_documento_tdoc, tipo_usuario_idtipo_usuario) 
-            VALUES (:nombre, :apellido, :email, :telefono, :numerodocumento, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario)";
+    $sql = "INSERT INTO usuarios (nombre, apellido, email, telefono, direccion, numerodocumento, tipo_documento_tdoc, tipo_usuario_idtipo_usuario) 
+            VALUES (:nombre, :apellido, :email, :telefono, :direccion, :numerodocumento, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario)";
 
     // Preparar la consulta
-    $stmt = $pdo->prepare($sql);
+    $stmt = $pdo->prepare($sql);  
 
-    // Vincular los parámetros
+    // Vincular los parámetros  
     $stmt->bindParam(':nombre', $nombre);
     $stmt->bindParam(':apellido', $apellido);
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':telefono', $telefono);
+    $stmt->bindParam(':direccion', $direccion);
     $stmt->bindParam(':numerodocumento', $numerodocumento);
     $stmt->bindParam(':tipo_documento_tdoc', $tipo_documento);
     $stmt->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
