@@ -49,11 +49,13 @@ try {
         case 'update':
             $idmenu = $_POST['idmenu'] ?? 0;
             $descripcion = $_POST['descripcion'] ?? '';
-            $query = "UPDATE menu SET descripcion = :descripcion WHERE idmenu = :idmenu";
+            $fecha = $_POST['fecha'] ?? date('Y-m-d'); // Obtener la fecha o usar la actual por defecto
+            $query = "UPDATE menu SET descripcion = :descripcion, fecha = :fecha WHERE idmenu = :idmenu";
             $stmt = $conn->prepare($query);
-            $stmt->execute(['descripcion' => $descripcion, 'idmenu' => $idmenu]);
+            $stmt->execute(['descripcion' => $descripcion, 'fecha' => $fecha, 'idmenu' => $idmenu]);
             echo json_encode(['success' => 'Menú actualizado exitosamente.']);
             break;
+            
 
         case 'delete':
             $idmenu = $_POST['idmenu'] ?? 0;
