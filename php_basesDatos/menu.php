@@ -12,7 +12,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Preparar la consulta SQL para evitar inyecciones SQL
-    $sql = "SELECT nombreMenu, diaMenu, caracteristicasMenu FROM menu WHERE nombreMenu = :mealType";
+    $sql = "SELECT tipomenu, fecha, descripcion FROM menu WHERE tipomenu = :mealType";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':mealType', $mealType, PDO::PARAM_STR);
     $stmt->execute();
