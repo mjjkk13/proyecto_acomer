@@ -2,16 +2,20 @@
 include 'conexion.php';
 
 try {
-    // Consulta para los datos diarios (estudiantes por día)
-    $sqlDaily = 'SELECT fecha, estudiantesqasistieron 
+    $sqlDaily = 'SELECT DATE_FORMAT(fecha, "%Y-%m-%d") as fecha, 
+                        DATE_FORMAT(fecha, "%W") as dia, 
+                        SUM(estudiantesqasistieron) as totalEstudiantes 
                  FROM estadisticasqr 
+                 GROUP BY fecha 
                  ORDER BY fecha ASC';
     $stmtDaily = $pdo->prepare($sqlDaily);
     $stmtDaily->execute();
     $dailyData = $stmtDaily->fetchAll(PDO::FETCH_ASSOC);
 
     // Consulta para calcular estadísticas semanales cada 5 días
-    $sqlWeekly = 'SELECT WEEK(fecha, 1) as semana, SUM(estudiantesqasistieron) as totalEstudiantes 
+    $sqlWeekly = 'SELECT WEEK(fecha, 1) as semana, 
+                        MONTHNAME(fecha) as mes, 
+                        SUM(estudiantesqasistieron) as totalEstudiantes 
                   FROM estadisticasqr 
                   WHERE DAYOFWEEK(fecha) BETWEEN 2 AND 6
                   GROUP BY semana 
@@ -21,7 +25,7 @@ try {
     $stmtWeekly->execute();
     $weeklyData = $stmtWeekly->fetchAll(PDO::FETCH_ASSOC);
 
-    // Convertir los resultados a JSON
+
     $data = [
         'daily' => $dailyData,
         'weekly' => $weeklyData
@@ -31,5 +35,4 @@ try {
 } catch (PDOException $e) {
     echo 'Error: ' . $e->getMessage();
 }
-
 ?>

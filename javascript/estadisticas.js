@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', function() {
           new Chart(ctxDaily, {
               type: 'bar',
               data: {
-                  labels: data.daily.map(item => item.fecha),
+                  labels: data.daily.map(item => `${item.fecha} - ${item.dia}`),
                   datasets: [{
                       label: 'Cantidad de Estudiantes',
-                      data: data.daily.map(item => item.estudiantesqasistieron),
+                      data: data.daily.map(item => item.totalEstudiantes),
                       backgroundColor: 'rgba(54, 162, 235, 0.2)',
                       borderColor: 'rgba(54, 162, 235, 1)',
                       borderWidth: 1
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
           new Chart(ctxWeekly, {
               type: 'line',
               data: {
-                  labels: data.weekly.map(item => 'Semana ' + item.semana),
+                  labels: data.weekly.map(item => `Semana ${item.semana} - Mes ${item.mes}`),
                   datasets: [{
                       label: 'Cantidad de Estudiantes',
                       data: data.weekly.map(item => item.totalEstudiantes),
@@ -67,5 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
                   }
               }
           });
-      });
+      })
+      .catch(error => console.error('Error fetching data:', error));
 });
