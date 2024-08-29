@@ -15,30 +15,23 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   });
 
-  // Cargar datos desde el PHP
   fetch('../../php_basesDatos/estadisticas.php')
       .then(response => response.json())
       .then(data => {
-          // Preparar datos diarios
-          const dailyLabels = data.daily.map(entry => entry.fecha);
-          const dailyCounts = data.daily.map(entry => entry.estudiantesqasistieron);
-
-          const dailyData = {
-              labels: dailyLabels,
-              datasets: [{
-                  label: 'Cantidad de Estudiantes',
-                  data: dailyCounts,
-                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                  borderColor: 'rgba(54, 162, 235, 1)',
-                  borderWidth: 1
-              }]
-          };
-
           // Crear gráfico de barras para el ingreso diario
           const ctxDaily = document.getElementById('dailyChart').getContext('2d');
           new Chart(ctxDaily, {
               type: 'bar',
-              data: dailyData,
+              data: {
+                  labels: data.daily.map(item => `${item.fecha} - ${item.dia}`),
+                  datasets: [{
+                      label: 'Cantidad de Estudiantes',
+                      data: data.daily.map(item => item.totalEstudiantes),
+                      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                      borderColor: 'rgba(54, 162, 235, 1)',
+                      borderWidth: 1
+                  }]
+              },
               options: {
                   responsive: true,
                   maintainAspectRatio: false,
@@ -50,26 +43,20 @@ document.addEventListener('DOMContentLoaded', function() {
               }
           });
 
-          // Preparar datos semanales
-          const weeklyLabels = data.weekly.map(entry => 'Semana ' + entry.semana);
-          const weeklyCounts = data.weekly.map(entry => entry.totalEstudiantes);
-
-          const weeklyData = {
-              labels: weeklyLabels,
-              datasets: [{
-                  label: 'Cantidad de Estudiantes',
-                  data: weeklyCounts,
-                  fill: false,
-                  borderColor: 'rgba(75, 192, 192, 1)',
-                  tension: 0.1
-              }]
-          };
-
           // Crear gráfico lineal para el ingreso semanal
           const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
           new Chart(ctxWeekly, {
               type: 'line',
-              data: weeklyData,
+              data: {
+                  labels: data.weekly.map(item => `Semana ${item.semana} - Mes ${item.mes}`),
+                  datasets: [{
+                      label: 'Cantidad de Estudiantes',
+                      data: data.weekly.map(item => item.totalEstudiantes),
+                      fill: false,
+                      borderColor: 'rgba(75, 192, 192, 1)',
+                      tension: 0.1
+                  }]
+              },
               options: {
                   responsive: true,
                   maintainAspectRatio: false,
@@ -81,5 +68,5 @@ document.addEventListener('DOMContentLoaded', function() {
               }
           });
       })
-      .catch(error => console.error('Error al cargar los datos:', error));
+      .catch(error => console.error('Error fetching data:', error));
 });
