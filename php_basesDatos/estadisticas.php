@@ -2,7 +2,7 @@
 include 'conexion.php';
 
 try {
-    // Consulta para los datos diarios (estudiantes por día), ordenados del más antiguo al más reciente
+    // Consulta para los datos diarios (estudiantes por día)
     $sqlDaily = 'SELECT fecha, estudiantesqasistieron 
                  FROM estadisticasqr 
                  ORDER BY fecha ASC';
@@ -10,10 +10,12 @@ try {
     $stmtDaily->execute();
     $dailyData = $stmtDaily->fetchAll(PDO::FETCH_ASSOC);
 
-    // Consulta para los datos semanales (total de estudiantes por semana), ordenados del más antiguo al más reciente
-    $sqlWeekly = 'SELECT WEEK(fecha) as semana, SUM(estudiantesqasistieron) as totalEstudiantes 
+    // Consulta para calcular estadísticas semanales cada 5 días
+    $sqlWeekly = 'SELECT WEEK(fecha, 1) as semana, SUM(estudiantesqasistieron) as totalEstudiantes 
                   FROM estadisticasqr 
+                  WHERE DAYOFWEEK(fecha) BETWEEN 2 AND 6
                   GROUP BY semana 
+                  HAVING COUNT(fecha) = 5
                   ORDER BY MIN(fecha) ASC';
     $stmtWeekly = $pdo->prepare($sqlWeekly);
     $stmtWeekly->execute();
