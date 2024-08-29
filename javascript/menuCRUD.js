@@ -169,7 +169,7 @@ async function editItem(id) {
         const { description, date } = currentData;
         if (description && date) {
             // Convertir el nombre del día en una fecha válida
-            const validDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : getNextDate(date);
+            const validDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? adjustDate(date) : getNextDate(date);
             if (validDate) {
                 const payload = { idmenu: id, descripcion: description, fecha: validDate, action: 'update' };
                 if (await sendData(payload)) {
