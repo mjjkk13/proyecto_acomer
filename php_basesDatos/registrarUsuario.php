@@ -8,14 +8,14 @@ try {
     $nombre = trim($_POST['nombre']);
     $apellido = trim($_POST['apellido']);
     $email = filter_var(trim($_POST['correo']), FILTER_VALIDATE_EMAIL);
-    $password = trim($_POST['password']); 
+    $contrasena = trim($_POST['contrasena']); 
     $telefono = trim($_POST['celular']);
     $direccion = trim($_POST['direccion']);
     $numerodocumento = trim($_POST['documento']);
     $tipo_documento_desc = trim($_POST['tipoDocumento']);
     $rol_desc = isset($_POST['rol']) ? trim($_POST['rol']) : null;
     $user = trim($_POST['user']);
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
 
     // Verifica los datos recibidos
     echo "<pre>";
@@ -46,20 +46,20 @@ try {
         throw new Exception("Rol de usuario no encontrado");
     }
 
-    // Insertar credenciales
-    $sql_cred = "INSERT INTO credenciales (user, password, fecharegistro) 
-                 VALUES (:user, :password, NOW())";
-    $stmt_cred = $pdo->prepare($sql_cred);
-    $stmt_cred->bindParam(':user', $user);
-    $stmt_cred->bindParam(':password', $hashed_password);
-    $stmt_cred->execute();
+    // Insertar inicio de sesión sin fecha de registro
+    $sql_iniciosesion = "INSERT INTO iniciosesion (user, contrasena) 
+                         VALUES (:user, :contrasena)";
+    $stmt_iniciosesion = $pdo->prepare($sql_iniciosesion);
+    $stmt_iniciosesion->bindParam(':user', $user);
+    $stmt_iniciosesion->bindParam(':contrasena', $hashed_password);
+    $stmt_iniciosesion->execute();
 
-    // Obtener el ID de las credenciales insertadas
-    $credenciales_id = $pdo->lastInsertId();
+    // Obtener el ID del inicio de sesión insertado
+    $iniciosesion_id = $pdo->lastInsertId();
 
     // Insertar nuevo usuario
-    $sql_usr = "INSERT INTO usuarios (nombre, apellido, email, telefono, direccion, numerodocumento, tipo_documento_tdoc, tipo_usuario_idtipo_usuario, credenciales_idcredenciales) 
-                VALUES (:nombre, :apellido, :email, :telefono, :direccion, :numerodocumento, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
+    $sql_usr = "INSERT INTO usuarios (nombre, apellido, email, telefono, direccion, numerodocumento, tipo_documento_tdoc, tipo_usuario_idtipo_usuario, iniciosesion_idiniciosesion) 
+                VALUES (:nombre, :apellido, :email, :telefono, :direccion, :numerodocumento, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :iniciosesion_idiniciosesion)";
     
     $stmt_usr = $pdo->prepare($sql_usr);
     
@@ -72,7 +72,7 @@ try {
     $stmt_usr->bindParam(':numerodocumento', $numerodocumento);
     $stmt_usr->bindParam(':tipo_documento_tdoc', $tipo_documento);
     $stmt_usr->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
-    $stmt_usr->bindParam(':credenciales_idcredenciales', $credenciales_id);
+    $stmt_usr->bindParam(':iniciosesion_idiniciosesion', $iniciosesion_id);
 
     // Ejecutar la consulta
     $stmt_usr->execute();
