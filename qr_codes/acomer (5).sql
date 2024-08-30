@@ -33,7 +33,6 @@ CREATE TABLE `admin` (
   `usuarios_tipo_documento_tdoc` varchar(10) NOT NULL,
   `usuarios_tipo_usuario_idtipo_usuario` int(11) NOT NULL,
   `usuarios_credenciales_idcredenciales` int(11) NOT NULL,
-  `usuarios_docente_iddocente` int(11) NOT NULL,
   `estadisticasqr_idestadisticasqr` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -41,11 +40,11 @@ CREATE TABLE `admin` (
 -- Volcado de datos para la tabla `admin`
 --
 
-INSERT INTO `admin` (`idadmin`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`, `estadisticasqr_idestadisticasqr`) VALUES
-(1, 1, 'CC', 2, 1, 101, 1),
-(2, 2, 'TI', 1, 2, 0, 2),
-(3, 3, 'CC', 3, 3, 0, 3),
-(4, 4, 'CC', 1, 4, 0, 4);
+INSERT INTO `admin` (`idadmin`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`  , `estadisticasqr_idestadisticasqr`) VALUES
+(1, 1, 'CC', 2, 1, 1),
+(2, 2, 'TI', 1, 2, 2),
+(3, 3, 'CC', 3, 3, 3),
+(4, 4, 'CC', 1, 4, 4);
 
 -- --------------------------------------------------------
 
@@ -82,7 +81,7 @@ CREATE TABLE `asistencia` (
   `estado` tinyint(4) NOT NULL,
   `registradopor` int(11) NOT NULL,
   `qrgenerados_idqrgenerados` int(11) NOT NULL,
-  `usuarios_docente_iddocente` int(11) NOT NULL,
+  `docente_iddocente` int(11) NOT NULL,
   `alumnos_idalumnos` int(11) NOT NULL,
   `alumnos_nombre` varchar(20) NOT NULL,
   `alumnos_apellido` varchar(20) NOT NULL
@@ -92,10 +91,10 @@ CREATE TABLE `asistencia` (
 -- Volcado de datos para la tabla `asistencia`
 --
 
-INSERT INTO `asistencia` (`idasistencia`, `fecha`, `estado`, `registradopor`, `qrgenerados_idqrgenerados`, `usuarios_docente_iddocente`, `alumnos_idalumnos`, `alumnos_nombre`, `alumnos_apellido`) VALUES
-(1, '2024-08-27', 1, 101, 22, 101, 8, 'Juan', 'Pérez'),
-(2, '2024-08-27', 0, 102, 23, 0, 9, 'Ana', 'Gómez'),
-(3, '2024-08-27', 1, 103, 24, 0, 10, 'Luis', 'Martínez');
+INSERT INTO `asistencia` (`idasistencia`, `fecha`, `estado`, `registradopor`, `qrgenerados_idqrgenerados` ,`docente_iddocente`, `alumnos_idalumnos`, `alumnos_nombre`, `alumnos_apellido`) VALUES
+(1, '2024-08-27', 1, 101, 22, 1, 8, 'Juan', 'Pérez'),
+(2, '2024-08-27', 0, 102, 23, 2, 9, 'Ana', 'Gómez'),
+(3, '2024-08-27', 1, 103, 24, 3, 10, 'Luis', 'Martínez');
 
 -- --------------------------------------------------------
 
@@ -150,7 +149,6 @@ CREATE TABLE `cursos` (
   `docente_usuarios_tipo_documento_tdoc` varchar(10) NOT NULL,
   `docente_usuarios_tipo_usuario_idtipo_usuario` int(11) NOT NULL,
   `docente_usuarios_credenciales_idcredenciales` int(11) NOT NULL,
-  `docente_usuarios_docente_iddocente` int(11) NOT NULL,
   `asistencia_idasistencia` int(11) NOT NULL,
   `qrgenerados_idqrgenerados` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -159,10 +157,10 @@ CREATE TABLE `cursos` (
 -- Volcado de datos para la tabla `cursos`
 --
 
-INSERT INTO `cursos` (`idcursos`, `nombrecurso`, `docente_iddocente`, `docente_usuarios_idusuarios`, `docente_usuarios_tipo_documento_tdoc`, `docente_usuarios_tipo_usuario_idtipo_usuario`, `docente_usuarios_credenciales_idcredenciales`, `docente_usuarios_docente_iddocente`, `asistencia_idasistencia`, `qrgenerados_idqrgenerados`) VALUES
-(1, 'Curso 901', 1, 1, 'CC', 2, 1, 101, 1, 22),
-(2, 'Curso 902', 2, 2, 'TI', 1, 2, 0, 2, 23),
-(3, 'Curso 1103', 3, 3, 'CC', 1, 3, 0, 3, 24);
+INSERT INTO `cursos` (`idcursos`, `nombrecurso`, `docente_iddocente`, `docente_usuarios_idusuarios`, `docente_usuarios_tipo_documento_tdoc`, `docente_usuarios_tipo_usuario_idtipo_usuario`, `docente_usuarios_credenciales_idcredenciales`, `asistencia_idasistencia`, `qrgenerados_idqrgenerados`) VALUES
+(1, 'Curso 901', 1, 1, 'CC', 2, 1, 1, 22),
+(2, 'Curso 902', 2, 2, 'TI', 1, 2, 2, 23),
+(3, 'Curso 1103', 3, 3, 'CC', 1, 3, 3, 24);
 
 -- --------------------------------------------------------
 
@@ -175,19 +173,18 @@ CREATE TABLE `docente` (
   `usuarios_idusuarios` int(11) NOT NULL,
   `usuarios_tipo_documento_tdoc` varchar(10) NOT NULL,
   `usuarios_tipo_usuario_idtipo_usuario` int(11) NOT NULL,
-  `usuarios_credenciales_idcredenciales` int(11) NOT NULL,
-  `usuarios_docente_iddocente` int(11) NOT NULL
+  `usuarios_credenciales_idcredenciales` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `docente`
 --
 
-INSERT INTO `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
-(1, 1, 'CC', 2, 1, 101),
-(2, 2, 'TI', 1, 2, 0),
-(3, 3, 'CC', 1, 3, 0),
-(4, 4, 'CC', 3, 4, 0);
+INSERT INTO `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`  ) VALUES
+(1, 1, 'CC', 2, 1),
+(2, 2, 'TI', 1, 2),
+(3, 3, 'CC', 1, 3),
+(4, 4, 'CC', 3, 4);
 
 -- --------------------------------------------------------
 
@@ -201,16 +198,15 @@ CREATE TABLE `docentealumnos` (
   `docente_usuarios_idusuarios` int(11) NOT NULL,
   `docente_usuarios_tipo_documento_tdoc` varchar(10) NOT NULL,
   `docente_usuarios_tipo_usuario_idtipo_usuario` int(11) NOT NULL,
-  `docente_usuarios_credenciales_idcredenciales` int(11) NOT NULL,
-  `docente_usuarios_docente_iddocente` int(11) NOT NULL
+  `docente_usuarios_credenciales_idcredenciales` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `docentealumnos`
 --
 
-INSERT INTO `docentealumnos` (`iddocentealumnos`, `docente_iddocente`, `docente_usuarios_idusuarios`, `docente_usuarios_tipo_documento_tdoc`, `docente_usuarios_tipo_usuario_idtipo_usuario`, `docente_usuarios_credenciales_idcredenciales`, `docente_usuarios_docente_iddocente`) VALUES
-(1, 1, 1, 'CC', 1, 1, 1);
+INSERT INTO `docentealumnos` (`iddocentealumnos`, `docente_iddocente`, `docente_usuarios_idusuarios`, `docente_usuarios_tipo_documento_tdoc`, `docente_usuarios_tipo_usuario_idtipo_usuario`, `docente_usuarios_credenciales_idcredenciales`) VALUES
+(1, 1, 1, 'CC', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -267,18 +263,17 @@ CREATE TABLE `estudiante_ss` (
   `usuarios_idusuarios` int(11) NOT NULL,
   `usuarios_tipo_documento_tdoc` varchar(10) NOT NULL,
   `usuarios_tipo_usuario_idtipo_usuario` int(11) NOT NULL,
-  `usuarios_credenciales_idcredenciales` int(11) NOT NULL,
-  `usuarios_docente_iddocente` int(11) NOT NULL
+  `usuarios_credenciales_idcredenciales` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `estudiante_ss`
 --
 
-INSERT INTO `estudiante_ss` (`idestudiante_ss`, `qr_registrados`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`) VALUES
-(1, '../qr_codes/qr_all_students_1724296178.png', 1, 'CC', 2, 1, 101),
-(2, '../qr_codes/qr_all_students_1724296237.png', 2, 'TI', 1, 2, 0),
-(3, '../qr_codes/qr_all_students_1724296591.png', 3, 'CC', 1, 3, 0);
+INSERT INTO `estudiante_ss` (`idestudiante_ss`, `qr_registrados`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`  ) VALUES
+(1, '../qr_codes/qr_all_students_1724296178.png', 1, 'CC', 2, 1),
+(2, '../qr_codes/qr_all_students_1724296237.png', 2, 'TI', 1, 2),
+(3, '../qr_codes/qr_all_students_1724296591.png', 3, 'CC', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -317,18 +312,17 @@ CREATE TABLE `qrescaneados` (
   `estudiante_ss_usuarios_idusuarios` int(11) NOT NULL,
   `estudiante_ss_usuarios_tipo_documento_tdoc` varchar(10) NOT NULL,
   `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario` int(11) NOT NULL,
-  `estudiante_ss_usuarios_credenciales_idcredenciales` int(11) NOT NULL,
-  `estudiante_ss_usuarios_docente_iddocente` int(11) NOT NULL
+  `estudiante_ss_usuarios_credenciales_idcredenciales` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `qrescaneados`
 --
 
-INSERT INTO `qrescaneados` (`idqrescaneados`, `fecha_escaneo`, `estudiante_ss_idestudiante_ss`, `estudiante_ss_usuarios_idusuarios`, `estudiante_ss_usuarios_tipo_documento_tdoc`, `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`, `estudiante_ss_usuarios_credenciales_idcredenciales`, `estudiante_ss_usuarios_docente_iddocente`) VALUES
-(1, '2024-08-27 08:30:00', 1, 1, 'CC', 2, 1, 101),
-(2, '2024-08-27 09:15:00', 2, 2, 'TI', 1, 2, 0),
-(3, '2024-08-27 10:00:00', 3, 3, 'CC', 1, 3, 0);
+INSERT INTO `qrescaneados` (`idqrescaneados`, `fecha_escaneo`, `estudiante_ss_idestudiante_ss`, `estudiante_ss_usuarios_idusuarios`, `estudiante_ss_usuarios_tipo_documento_tdoc`, `estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`, `estudiante_ss_usuarios_credenciales_idcredenciales`) VALUES
+(1, '2024-08-27 08:30:00', 1, 1, 'CC', 2, 1),
+(2, '2024-08-27 09:15:00', 2, 2, 'TI', 1, 2),
+(3, '2024-08-27 10:00:00', 3, 3, 'CC', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -407,24 +401,24 @@ CREATE TABLE `usuarios` (
   `nombre` varchar(20) NOT NULL,
   `apellido` varchar(20) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `telefono` bigint(12) NOT NULL,
+  `contraseña` VARCHAR(40) NOT NULL,
+  `telefono` VARCHAR(20) NOT NULL,
   `direccion` varchar(255) NOT NULL,
   `numerodocumento` int(10) NOT NULL,
   `tipo_documento_tdoc` varchar(10) NOT NULL,
   `tipo_usuario_idtipo_usuario` int(11) NOT NULL,
-  `credenciales_idcredenciales` int(11) NOT NULL,
-  `docente_iddocente` int(11) NOT NULL
+  `credenciales_idcredenciales` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`idusuarios`, `nombre`, `apellido`, `email`, `telefono`, `direccion`, `numerodocumento`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`, `docente_iddocente`) VALUES
-(1, 'Juan Pablo', 'Rodriguez', 'juan.pablo@example.com', 2147483647, 'Calle 123', 123456789, 'CC', 2, 1, 101),
-(2, 'Claudia', 'Peres', 'claudia.peres@example.com', 2147483647, 'Calle 234', 987654321, 'TI', 1, 2, 0),
-(3, 'Sandra', 'Torres', 'sandra.torres@example.com', 2147483647, 'Calle 345', 456789123, 'CC', 1, 3, 0),
-(4, 'Pedro', 'Linares', 'pedro.linares@example.com', 2147483647, 'Calle 456', 789123456, 'CC', 3, 4, 0);
+INSERT INTO `usuarios` (`idusuarios`, `nombre`, `apellido`, `email`, `contraseña`, `telefono`, `direccion`, `numerodocumento`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`) VALUES
+(1, 'Juan Pablo', 'Rodriguez', 'juan.pablo@example.com', 'pablo123', 2147483647, 'Calle 123', 123456789, 'CC', 2, 1),
+(2, 'Claudia', 'Peres', 'claudia.peres@example.com','RioVerde34', 2147483647, 'Calle 234', 987654321, 'TI', 1, 2),
+(3, 'Sandra', 'Torres', 'sandra.torres@example.com','Luna1234', 2147483647, 'Calle 345', 456789123, 'CC', 1, 3),
+(4, 'Pedro', 'Linares', 'pedro.linares@example.com','SolMar82', 2147483647, 'Calle 456', 789123456, 'CC', 3, 4);
 
 -- --------------------------------------------------------
 
@@ -443,8 +437,8 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- Indices de la tabla `admin`
 --
 ALTER TABLE `admin`
-  ADD PRIMARY KEY (`idadmin`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`,`usuarios_docente_iddocente`),
-  ADD KEY `fk_admin_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`,`usuarios_docente_iddocente`),
+  ADD PRIMARY KEY (`idadmin`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales` ),
+  ADD KEY `fk_admin_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales` ),
   ADD KEY `fk_admin_estadisticasqr1_idx` (`estadisticasqr_idestadisticasqr`);
 
 --
@@ -461,7 +455,6 @@ ALTER TABLE `alumnos`
 ALTER TABLE `asistencia`
   ADD PRIMARY KEY (`idasistencia`),
   ADD KEY `fk_asistencia_qrgenerados1_idx` (`qrgenerados_idqrgenerados`),
-  ADD KEY `fk_asistencia_usuarios1_idx` (`usuarios_docente_iddocente`),
   ADD KEY `fk_asistencia_alumnos` (`alumnos_idalumnos`);
 
 --
@@ -475,7 +468,7 @@ ALTER TABLE `credenciales`
 --
 ALTER TABLE `cursos`
   ADD PRIMARY KEY (`idcursos`),
-  ADD KEY `fk_cursos_docente1_idx` (`docente_iddocente`,`docente_usuarios_idusuarios`,`docente_usuarios_tipo_documento_tdoc`,`docente_usuarios_tipo_usuario_idtipo_usuario`,`docente_usuarios_credenciales_idcredenciales`,`docente_usuarios_docente_iddocente`),
+  ADD KEY `fk_cursos_docente1_idx` (`docente_iddocente`,`docente_usuarios_idusuarios`,`docente_usuarios_tipo_documento_tdoc`,`docente_usuarios_tipo_usuario_idtipo_usuario`,`docente_usuarios_credenciales_idcredenciales`),
   ADD KEY `fk_cursos_asistencia1_idx` (`asistencia_idasistencia`),
   ADD KEY `fk_cursos_qrgenerados1_idx` (`qrgenerados_idqrgenerados`);
 
@@ -483,15 +476,15 @@ ALTER TABLE `cursos`
 -- Indices de la tabla `docente`
 --
 ALTER TABLE `docente`
-  ADD PRIMARY KEY (`iddocente`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`,`usuarios_docente_iddocente`),
-  ADD KEY `fk_docente_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`,`usuarios_docente_iddocente`);
+  ADD PRIMARY KEY (`iddocente`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales` ),
+  ADD KEY `fk_docente_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales` );
 
 --
 -- Indices de la tabla `docentealumnos`
 --
 ALTER TABLE `docentealumnos`
   ADD PRIMARY KEY (`iddocentealumnos`),
-  ADD KEY `fk_docentealumnos_docente1_idx` (`docente_iddocente`,`docente_usuarios_idusuarios`,`docente_usuarios_tipo_documento_tdoc`,`docente_usuarios_tipo_usuario_idtipo_usuario`,`docente_usuarios_credenciales_idcredenciales`,`docente_usuarios_docente_iddocente`);
+  ADD KEY `fk_docentealumnos_docente1_idx` (`docente_iddocente`,`docente_usuarios_idusuarios`,`docente_usuarios_tipo_documento_tdoc`,`docente_usuarios_tipo_usuario_idtipo_usuario`,`docente_usuarios_credenciales_idcredenciales`);
 
 --
 -- Indices de la tabla `estadisticasqr`
@@ -503,8 +496,8 @@ ALTER TABLE `estadisticasqr`
 -- Indices de la tabla `estudiante_ss`
 --
 ALTER TABLE `estudiante_ss`
-  ADD PRIMARY KEY (`idestudiante_ss`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`,`usuarios_docente_iddocente`),
-  ADD KEY `fk_estudiante_ss_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`,`usuarios_docente_iddocente`);
+  ADD PRIMARY KEY (`idestudiante_ss`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`),
+  ADD KEY `fk_estudiante_ss_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`);
 
 --
 -- Indices de la tabla `menu`
@@ -517,7 +510,7 @@ ALTER TABLE `menu`
 --
 ALTER TABLE `qrescaneados`
   ADD PRIMARY KEY (`idqrescaneados`),
-  ADD KEY `fk_qrescaneados_estudiante_ss1_idx` (`estudiante_ss_idestudiante_ss`,`estudiante_ss_usuarios_idusuarios`,`estudiante_ss_usuarios_tipo_documento_tdoc`,`estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`,`estudiante_ss_usuarios_credenciales_idcredenciales`,`estudiante_ss_usuarios_docente_iddocente`);
+  ADD KEY `fk_qrescaneados_estudiante_ss1_idx` (`estudiante_ss_idestudiante_ss`,`estudiante_ss_usuarios_idusuarios`,`estudiante_ss_usuarios_tipo_documento_tdoc`,`estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`,`estudiante_ss_usuarios_credenciales_idcredenciales`);
 
 --
 -- Indices de la tabla `qrgenerados`
@@ -542,7 +535,7 @@ ALTER TABLE `tipo_usuario`
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`idusuarios`,`tipo_documento_tdoc`,`tipo_usuario_idtipo_usuario`,`credenciales_idcredenciales`,`docente_iddocente`),
+  ADD PRIMARY KEY (`idusuarios`,`tipo_documento_tdoc`,`tipo_usuario_idtipo_usuario`,`credenciales_idcredenciales`),
   ADD UNIQUE KEY `email_UNIQUE` (`email`),
   ADD UNIQUE KEY `numerodocumento_UNIQUE` (`numerodocumento`),
   ADD KEY `fk_usuarios_tipo_documento_idx` (`tipo_documento_tdoc`),
@@ -600,26 +593,26 @@ ALTER TABLE `asistencia`
 --
 ALTER TABLE `cursos`
   ADD CONSTRAINT `fk_cursos_asistencia1` FOREIGN KEY (`asistencia_idasistencia`) REFERENCES `asistencia` (`idasistencia`),
-  ADD CONSTRAINT `fk_cursos_docente1` FOREIGN KEY (`docente_iddocente`,`docente_usuarios_idusuarios`,`docente_usuarios_tipo_documento_tdoc`,`docente_usuarios_tipo_usuario_idtipo_usuario`,`docente_usuarios_credenciales_idcredenciales`,`docente_usuarios_docente_iddocente`) REFERENCES `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`),
+  ADD CONSTRAINT `fk_cursos_docente1` FOREIGN KEY (`docente_iddocente`,`docente_usuarios_idusuarios`,`docente_usuarios_tipo_documento_tdoc`,`docente_usuarios_tipo_usuario_idtipo_usuario`,`docente_usuarios_credenciales_idcredenciales`) REFERENCES `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales` ),
   ADD CONSTRAINT `fk_cursos_qrgenerados1` FOREIGN KEY (`qrgenerados_idqrgenerados`) REFERENCES `qrgenerados` (`idqrgenerados`);
 
 --
 -- Filtros para la tabla `docente`
 --
 ALTER TABLE `docente`
-  ADD CONSTRAINT `fk_docente_usuarios1` FOREIGN KEY (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`,`usuarios_docente_iddocente`) REFERENCES `usuarios` (`idusuarios`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`, `docente_iddocente`);
+  ADD CONSTRAINT `fk_docente_usuarios1` FOREIGN KEY (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`) REFERENCES `usuarios` (`idusuarios`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`);
 
 --
 -- Filtros para la tabla `estudiante_ss`
 --
 ALTER TABLE `estudiante_ss`
-  ADD CONSTRAINT `fk_estudiante_ss_usuarios1` FOREIGN KEY (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`,`usuarios_docente_iddocente`) REFERENCES `usuarios` (`idusuarios`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`, `docente_iddocente`);
+  ADD CONSTRAINT `fk_estudiante_ss_usuarios1` FOREIGN KEY (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`) REFERENCES `usuarios` (`idusuarios`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`);
 
 --
 -- Filtros para la tabla `qrescaneados`
 --
 ALTER TABLE `qrescaneados`
-  ADD CONSTRAINT `fk_qrescaneados_estudiante_ss1` FOREIGN KEY (`estudiante_ss_idestudiante_ss`,`estudiante_ss_usuarios_idusuarios`,`estudiante_ss_usuarios_tipo_documento_tdoc`,`estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`,`estudiante_ss_usuarios_credenciales_idcredenciales`,`estudiante_ss_usuarios_docente_iddocente`) REFERENCES `estudiante_ss` (`idestudiante_ss`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `usuarios_docente_iddocente`);
+  ADD CONSTRAINT `fk_qrescaneados_estudiante_ss1` FOREIGN KEY (`estudiante_ss_idestudiante_ss`,`estudiante_ss_usuarios_idusuarios`,`estudiante_ss_usuarios_tipo_documento_tdoc`,`estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`,`estudiante_ss_usuarios_credenciales_idcredenciales`) REFERENCES `estudiante_ss` (`idestudiante_ss`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`  );
 
 --
 -- Filtros para la tabla `usuarios`

@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($result) {
                 // Verificar la contraseña en texto plano
-                if ($contrasena === $result['password']) {
+                if (password_verify($contrasena, $result['password'])) {
                     // Inicio de sesión exitoso
                     session_start();
                     $_SESSION['user'] = $usuario;

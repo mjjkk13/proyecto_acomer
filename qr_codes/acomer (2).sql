@@ -389,7 +389,7 @@ CREATE TABLE `usuarios` (
   `nombre` varchar(20) NOT NULL,
   `apellido` varchar(20) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `telefono` int(10) NOT NULL,
+  `telefono` BIGINT NOT NULL,
   `direccion` varchar(255) NOT NULL,
   `numerodocumento` int(10) NOT NULL,
   `tipo_documento_tdoc` varchar(10) NOT NULL,
