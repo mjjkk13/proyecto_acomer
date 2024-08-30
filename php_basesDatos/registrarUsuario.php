@@ -2,7 +2,6 @@
 include("conexion.php");
 
 try {
-    // Iniciar la transacción
     $pdo->beginTransaction();
 
     // Recibir y limpiar datos del formulario
@@ -15,11 +14,13 @@ try {
     $numerodocumento = trim($_POST['documento']);
     $tipo_documento_desc = trim($_POST['tipoDocumento']);
     $rol_desc = isset($_POST['rol']) ? trim($_POST['rol']) : null;
+    $user = trim($_POST['user']);
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    if (strlen($telefono) > 20) {
-        $telefono = substr($telefono, 0, 20);
-    }
+    // Verifica los datos recibidos
+    echo "<pre>";
+    var_dump($nombre, $apellido, $email, $hashed_password, $telefono, $direccion, $numerodocumento, $tipo_documento_desc, $rol_desc, $user);
+    echo "</pre>";
 
     // Obtener el ID del tipo de documento
     $sql_doc = "SELECT tdoc FROM tipo_documento WHERE descripcion = :descripcion";
@@ -28,6 +29,10 @@ try {
     $stmt_doc->execute();
     $tipo_documento = $stmt_doc->fetchColumn();
 
+    // Verifica el ID del tipo de documento
+    if ($tipo_documento === false) {
+        throw new Exception("Tipo de documento no encontrado");
+    }
 
     // Obtener el ID del tipo de usuario (rol)
     $sql_rol = "SELECT idtipo_usuario FROM tipo_usuario WHERE rol = :rol";
@@ -36,39 +41,41 @@ try {
     $stmt_rol->execute();
     $tipo_usuario = $stmt_rol->fetchColumn();
 
+    // Verifica el ID del tipo de usuario
+    if ($tipo_usuario === false) {
+        throw new Exception("Rol de usuario no encontrado");
+    }
+
+    // Insertar credenciales
+    $sql_cred = "INSERT INTO credenciales (user, password, fecharegistro) 
+                 VALUES (:user, :password, NOW())";
+    $stmt_cred = $pdo->prepare($sql_cred);
+    $stmt_cred->bindParam(':user', $user);
+    $stmt_cred->bindParam(':password', $hashed_password);
+    $stmt_cred->execute();
+
+    // Obtener el ID de las credenciales insertadas
+    $credenciales_id = $pdo->lastInsertId();
 
     // Insertar nuevo usuario
-    $sql = "INSERT INTO usuarios (nombre, apellido, email, contraseña, telefono, direccion, numerodocumento, tipo_documento_tdoc, tipo_usuario_idtipo_usuario) 
-            VALUES (:nombre, :apellido, :email, :contraseña, :telefono, :direccion, :numerodocumento, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario)";
+    $sql_usr = "INSERT INTO usuarios (nombre, apellido, email, telefono, direccion, numerodocumento, tipo_documento_tdoc, tipo_usuario_idtipo_usuario, credenciales_idcredenciales) 
+                VALUES (:nombre, :apellido, :email, :telefono, :direccion, :numerodocumento, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
     
-    $stmt = $pdo->prepare($sql);
+    $stmt_usr = $pdo->prepare($sql_usr);
     
     // Vincular parámetros
-    $stmt->bindParam(':nombre', $nombre);
-    $stmt->bindParam(':apellido', $apellido);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':contraseña', $hashed_password);
-    $stmt->bindParam(':telefono', $telefono);
-    $stmt->bindParam(':direccion', $direccion);
-    $stmt->bindParam(':numerodocumento', $numerodocumento);
-    $stmt->bindParam(':tipo_documento_tdoc', $tipo_documento);
-    $stmt->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
-
-    echo "SQL Query: " . $sql . "\n";
-    echo "Parameters: " . json_encode([
-        'nombre' => $nombre,
-        'apellido' => $apellido,
-        'email' => $email,
-        'contraseña' => $hashed_password,
-        'telefono' => $telefono,
-        'direccion' => $direccion,
-        'numerodocumento' => $numerodocumento,
-        'tipo_documento_tdoc' => $tipo_documento,
-        'tipo_usuario_idtipo_usuario' => $tipo_usuario
-    ]) . "\n";
+    $stmt_usr->bindParam(':nombre', $nombre);
+    $stmt_usr->bindParam(':apellido', $apellido);
+    $stmt_usr->bindParam(':email', $email);
+    $stmt_usr->bindParam(':telefono', $telefono);
+    $stmt_usr->bindParam(':direccion', $direccion);
+    $stmt_usr->bindParam(':numerodocumento', $numerodocumento);
+    $stmt_usr->bindParam(':tipo_documento_tdoc', $tipo_documento);
+    $stmt_usr->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
+    $stmt_usr->bindParam(':credenciales_idcredenciales', $credenciales_id);
 
     // Ejecutar la consulta
-    $stmt->execute();
+    $stmt_usr->execute();
 
     // Confirmar la transacción
     $pdo->commit();
@@ -83,6 +90,4 @@ try {
     $pdo->rollBack();
     echo "Error en la base de datos: " . $e->getMessage();
 }
-
-// PHP cierra automáticamente la conexión al final del script
 ?>
