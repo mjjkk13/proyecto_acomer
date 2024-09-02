@@ -11,34 +11,8 @@ body {
 }
 
 .container {
-  padding: 0 15px; /* Espaciado horizontal en el contenedor */
-}
-
-.table {
-  margin: 20px auto; /* Centra la tabla y añade espacio superior e inferior */
-  width: 90%; /* Ancho de la tabla como porcentaje del contenedor */
-  max-width: 800px; /* Ancho máximo más pequeño para la tabla */
-  border-collapse: collapse; /* Quitar espacios entre celdas */
-  overflow-x: auto; /* Permite el desplazamiento horizontal en pantallas pequeñas */
-}
-
-.table th, .table td {
-  padding: 15px; /* Espaciado dentro de las celdas */
-  border: 1px solid #ddd; /* Borde de las celdas */
-  text-align: left;
-}
-
-.table thead {
-  background-color: #27374D; /* Fondo del encabezado */
-  color: #ffffff; /* Color del texto del encabezado */
-}
-
-.table tbody tr:nth-child(even) {
-  background-color: #f2f2f2; /* Fondo alternativo para las filas */
-}
-
-.so {
-  color: white;
+  flex: 1; /* Hace que la .container ocupe todo el espacio disponible entre el navbar y el footer */
+  padding:0px; /* Espacio para el footer */
 }
 
 nav.navbar {
@@ -61,38 +35,76 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
 .hero {
   padding: 10vh 0;
   background: transparent; 
-  color: #ffffff !important; /* Color del texto */
+  color: white;
+  text-align: center;
 }
 
 .features {
   padding: 50px 0;
-  background-color: #9DB2BF; /* Fondo de la sección de características */
-}
-
-.btn {
-  border: solid 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .feature-box {
-  background-color: #526D82; /* Fondo de las cajas */
+  background-color: #DDE6ED;
   border-radius: 10px;
   padding: 30px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  color: #DDE6ED; /* Color del texto en las cajas */
+  transition: 0.3s ease;
+  width: 80%;
+  max-width: 500px;
+  margin: 1em 0;
 }
 
 .feature-box:hover {
-  transform: scale(1.25);
+  transform: scale(1.05); /* Ajuste de escala menor */
 }
 
+/* Estilos para la tabla */
+.table {
+  margin: 20px auto; /* Centrar la tabla */
+  width: 80%; /* Reducir el ancho de la tabla */
+  max-width: 700px; /* Ancho máximo para pantallas grandes */
+  border-collapse: collapse;
+  background-color: #FFF; /* Fondo blanco para la tabla */
+  border-radius: 10px; /* Bordes redondeados */
+  overflow: hidden; /* Para evitar que los bordes redondeados se desborden */
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* Sombra para el efecto de elevación */
+}
+
+.table th, .table td {
+  padding: 12px 15px; /* Espaciado dentro de las celdas */
+  border-bottom: 1px solid #ddd; /* Borde inferior en cada celda */
+  text-align: left;
+  font-size: 16px; /* Tamaño de fuente ajustado */
+}
+
+.table thead {
+  background-color: #27374D; /* Fondo del encabezado */
+  color: #ffffff; /* Color del texto del encabezado */
+  text-transform: uppercase; /* Texto en mayúsculas para el encabezado */
+  letter-spacing: 0.05em; /* Espaciado entre letras en el encabezado */
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* Fondo alternativo para las filas */
+}
+
+.table tbody tr:hover {
+  background-color: #E3E7EB; /* Color de fondo al pasar el ratón */
+}
+
+/* Footer fijo en la parte inferior */
 .footer {
-  background-color: #27374D; /* Fondo del footer, oscuro para contraste */
-  color: #DDE6ED; /* Color del texto en el footer */
+  background-color: #27374D;
+  color: #ffffff;
   padding: 20px 0;
-  width: 100%; 
-  position: relative; /* Ajusta el footer sin superponerse */
-  bottom: 0; 
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center; /* Alinea el texto en el centro */
 }
 
 /* Media queries para hacer el contenido responsive */
@@ -108,6 +120,7 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
     font-size: 20px;
   }
   .table {
+    width: 100%; /* Ajuste del ancho de la tabla para pantallas pequeñas */
     font-size: 14px; /* Ajuste del tamaño de fuente en la tabla para pantallas pequeñas */
   }
 }

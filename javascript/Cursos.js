@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 data.forEach(curso => {
                     const row = document.createElement('tr');
                     const cursoCell = document.createElement('td');
-                    cursoCell.textContent = curso.nombreCurso; // Ajusta según la clave en el JSON
+                    cursoCell.textContent = curso.nombrecurso; // Ajusta según la clave en el JSON
                     const directorCell = document.createElement('td');
-                    directorCell.textContent = curso.Director; // Ajusta según la clave en el JSON
+                    directorCell.textContent = curso.nombredocente + ' ' + curso.apellidodocente; // Ajusta según la clave en el JSON
                     row.appendChild(cursoCell);
                     row.appendChild(directorCell);
                     fragment.appendChild(row);
