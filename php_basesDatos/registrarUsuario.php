@@ -1,6 +1,10 @@
 <?php
 include("conexion.php");
 
+header('Content-Type: application/json');
+
+$response = array('success' => false, 'message' => '');
+
 try {
     $pdo->beginTransaction();
 
@@ -17,13 +21,8 @@ try {
     $user = trim($_POST['user']);
     $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
 
-    // Verifica los datos recibidos
-    echo "<pre>";
-    var_dump($nombre, $apellido, $email, $hashed_password, $telefono, $direccion, $numerodocumento, $tipo_documento_desc, $rol_desc, $user);
-    echo "</pre>";
-
     // Obtener el ID del tipo de documento
-    $sql_doc = "SELECT tdoc FROM tipo_documento WHERE descripcion = :descripcion";
+    $sql_doc = "SELECT tdoc FROM tipo_documento WHERE tdoc = :descripcion";
     $stmt_doc = $pdo->prepare($sql_doc);
     $stmt_doc->bindParam(':descripcion', $tipo_documento_desc);
     $stmt_doc->execute();
@@ -46,20 +45,26 @@ try {
         throw new Exception("Rol de usuario no encontrado");
     }
 
-    // Insertar inicio de sesión sin fecha de registro
-    $sql_iniciosesion = "INSERT INTO iniciosesion (user, contrasena) 
-                         VALUES (:user, :contrasena)";
-    $stmt_iniciosesion = $pdo->prepare($sql_iniciosesion);
-    $stmt_iniciosesion->bindParam(':user', $user);
-    $stmt_iniciosesion->bindParam(':contrasena', $hashed_password);
-    $stmt_iniciosesion->execute();
+    // Verifica si el usuario ya existe
+    $sql_usr_check = "SELECT idusuarios FROM usuarios WHERE email = :email";
+    $stmt_usr_check = $pdo->prepare($sql_usr_check);
+    $stmt_usr_check->bindParam(':email', $email);
+    $stmt_usr_check->execute();
+    if ($stmt_usr_check->fetchColumn()) {
+        throw new Exception("El usuario con el correo electrónico proporcionado ya existe.");
+    }
 
-    // Obtener el ID del inicio de sesión insertado
-    $iniciosesion_id = $pdo->lastInsertId();
+    // Insertar en la tabla de credenciales
+    $sql_cred = "INSERT INTO credenciales (user, contrasena) VALUES (:user, :contrasena)";
+    $stmt_cred = $pdo->prepare($sql_cred);
+    $stmt_cred->bindParam(':user', $user);
+    $stmt_cred->bindParam(':contrasena', $hashed_password);
+    $stmt_cred->execute();
+    $credenciales_id = $pdo->lastInsertId();
 
     // Insertar nuevo usuario
-    $sql_usr = "INSERT INTO usuarios (nombre, apellido, email, telefono, direccion, numerodocumento, tipo_documento_tdoc, tipo_usuario_idtipo_usuario, iniciosesion_idiniciosesion) 
-                VALUES (:nombre, :apellido, :email, :telefono, :direccion, :numerodocumento, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :iniciosesion_idiniciosesion)";
+    $sql_usr = "INSERT INTO usuarios (nombre, apellido, email, telefono, direccion, numerodocumento, tipo_documento_tdoc, tipo_usuario_idtipo_usuario, credenciales_idcredenciales) 
+                VALUES (:nombre, :apellido, :email, :telefono, :direccion, :numerodocumento, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
     
     $stmt_usr = $pdo->prepare($sql_usr);
     
@@ -72,7 +77,7 @@ try {
     $stmt_usr->bindParam(':numerodocumento', $numerodocumento);
     $stmt_usr->bindParam(':tipo_documento_tdoc', $tipo_documento);
     $stmt_usr->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
-    $stmt_usr->bindParam(':iniciosesion_idiniciosesion', $iniciosesion_id);
+    $stmt_usr->bindParam(':credenciales_idcredenciales', $credenciales_id);
 
     // Ejecutar la consulta
     $stmt_usr->execute();
@@ -80,14 +85,17 @@ try {
     // Confirmar la transacción
     $pdo->commit();
 
-    echo "Nuevo usuario registrado exitosamente";
+    $response['success'] = true;
+    $response['message'] = "Nuevo usuario registrado exitosamente";
 } catch (Exception $e) {
     // En caso de error, revertir la transacción
     $pdo->rollBack();
-    echo "Error: " . $e->getMessage();
+    $response['message'] = "Error: " . $e->getMessage();
 } catch (PDOException $e) {
     // Manejar excepciones PDO
     $pdo->rollBack();
-    echo "Error en la base de datos: " . $e->getMessage();
+    $response['message'] = "Error en la base de datos: " . $e->getMessage();
 }
+
+echo json_encode($response);
 ?>
