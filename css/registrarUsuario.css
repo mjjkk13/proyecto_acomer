@@ -13,6 +13,18 @@ body {
   flex: 1; 
   padding-bottom: 10px; 
 }
+
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Chrome, Safari, Edge */
+  margin: 0; /* Ajustar margen si es necesario */
+}
+
+input[type="number"] {
+  appearance: textfield; /* Para el resto de los navegadores */
+}
+
 .card {
   padding: 20px;
   border-radius: 10px;

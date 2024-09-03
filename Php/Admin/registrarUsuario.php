@@ -89,7 +89,7 @@
             </div>
             <div class="mb-3">
               <label for="documento" class="form-label">Documento de Identidad:</label>
-              <input type="text" class="form-control" name="documento" placeholder="Ingrese su número de documento">
+              <input type="number" class="form-control" name="documento" placeholder="Ingrese su número de documento">
             </div>
             <div class="mb-3">
               <label for="tipoDocumento" class="form-label">Tipo de Documento:</label>
