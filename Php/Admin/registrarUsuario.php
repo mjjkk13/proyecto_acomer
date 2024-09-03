@@ -94,6 +94,7 @@
             <div class="mb-3">
               <label for="tipoDocumento" class="form-label">Tipo de Documento:</label>
               <select class="form-select" name="tipoDocumento">
+              <option value="" disabled selected>Seleccionar</option>
                 <option value="TI">Tarjeta de Identidad</option>
                 <option value="PA">Pasaporte</option>
                 <option value="PR">Permiso Especial de Permanencia</option>
@@ -106,17 +107,29 @@
               <label for="rol" class="form-label">Rol:</label>
               <select class="form-select" id="rol" name="rol">
                 <option value="" disabled selected>Seleccionar</option>
-                <option value="Estudiante SS ">Estudiante Servicio Social</option>
+                <option value="Estudiante SS">Estudiante Servicio Social</option>
                 <option value="Docente">Docente</option>
                 <option value="Administrador">Administrador</option>
-              </select>   
+              </select>
             </div>
             <div class="mb-3" id="cursosDisponibles" style="display: none;">
               <label for="cursos" class="form-label">Cursos Disponibles:</label>
-              <select class="form-select" id="cursos">
-                <option value="901">Grado 901</option>
-                <option value="1103">Grado 1103</option>
-                <option value="1003">Grado 1003</option>
+              <select class="form-select" id="cursos" name="cursos">
+                <?php
+                // Include database connection
+                include("../../php_basesDatos/conexion.php");
+
+                // Query to get courses
+                $sql = "SELECT idcursos, nombrecurso FROM cursos";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Generate dropdown options
+                foreach ($cursos as $curso) {
+                  echo '<option value="' . htmlspecialchars($curso['idcursos']) . '"> ' . htmlspecialchars($curso['nombrecurso']) . '</option>';
+                }
+                ?>
               </select>
             </div>
           </div>
