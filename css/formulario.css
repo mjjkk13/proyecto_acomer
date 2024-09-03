@@ -8,9 +8,11 @@ body {
   font-family: 'Source Sans 3', sans-serif;
   color: white;
 }
+
 .navbar-text {
   color: white;
 }
+
 nav.navbar {
   background-color: #27374D; /* Fondo del nav */
   color: #ffffff !important; /* Color del texto en el nav */
@@ -37,13 +39,14 @@ nav.navbar {
 
 .form-floating input {
   padding: 1rem;
-  background-color: transparent;
+  background-color: #ffffff; /* Fondo blanco para el input */
   border: 1px solid rgba(255, 255, 255, 0.5); 
-  color: #27374D; 
+  color: #27374D; /* Color del texto del input */
 }
 
 .form-floating input:focus {
-  background-color: #657ea0; 
+  background-color: #ffffff; /* Fondo blanco cuando está en foco */
+  border-color: #657ea0; /* Borde cuando está en foco */
 }
 
 .form-floating label {
@@ -53,7 +56,7 @@ nav.navbar {
   padding: 1rem;
   pointer-events: none;
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-  color: #fff; 
+  color: #000; /* Color del texto del label en negro */
 }
 
 .form-floating input:focus ~ label,
@@ -100,9 +103,18 @@ nav.navbar {
   background-color: #657ea0; 
 }
 
-.regresarpapu{
-  color:white;
+.regresarpapu {
+  color: white;
 }
+
+/* Icono de mostrar contraseña */
+#togglePassword {
+  color: #000; /* Color negro para el icono */
+}
+.form-floating.position-relative {
+  position: relative;
+}
+
 /* Media queries para hacer el contenido responsive */
 @media (max-width: 576px) {
   .navbar-brand img {

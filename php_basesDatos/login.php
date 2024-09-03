@@ -7,28 +7,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $contrasena = $_POST['inputPassword'];
 
         try {
+            // Conexión a la base de datos
             $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Preparar la consulta SQL para evitar inyecciones SQL y obtener el tipo de usuario
-            $sql = "SELECT u.user, u.password, t.rol 
-                    FROM usuarios u 
-                    JOIN tipousuario t ON u.tipo_usuario_idtipo_usuario = t.idtipo_usuario 
-                    WHERE u.user = :user";
+            // Consulta SQL para obtener los datos de la tabla credenciales y el rol
+            $sql = "SELECT c.user, c.contrasena, tu.rol 
+                    FROM credenciales c
+                    JOIN usuarios u ON c.idcredenciales = u.credenciales_idcredenciales
+                    JOIN tipo_usuario tu ON u.tipo_usuario_idtipo_usuario = tu.idtipo_usuario
+                    WHERE c.user = :user";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':user', $usuario);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            // Mostrar valores para depuración
+            echo "Usuario ingresado: " . htmlspecialchars($usuario) . "<br>";
+            echo "Contraseña ingresada: " . htmlspecialchars($contrasena) . "<br>";
+            echo "Hash almacenado: " . htmlspecialchars($result['contrasena']) . "<br>";
+
             if ($result) {
-                // Verificar la contraseña en texto plano
-                if (password_verify($contrasena, $result['password'])) {
+                // Verifica la contraseña encriptada
+                if (password_verify($contrasena, $result['contrasena'])) {
+                    echo "Contraseña verificada exitosamente.";
                     // Inicio de sesión exitoso
                     session_start();
                     $_SESSION['user'] = $usuario;
 
                     // Actualizar la fecha y hora del último acceso
-                    $updateSql = "UPDATE usuarios SET last_login = NOW() WHERE user = :user";
+                    $updateSql = "UPDATE credenciales SET ultimoacceso = NOW() WHERE user = :user";
                     $updateStmt = $conn->prepare($updateSql);
                     $updateStmt->bindParam(':user', $usuario);
                     $updateStmt->execute();
@@ -43,6 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             break;
                         case 'Docente':
                             header("Location: ../Php/Docente/index.html");
+                            break;
+                        default:
+                            echo "Rol no reconocido.";
                             break;
                     }
                     exit();
