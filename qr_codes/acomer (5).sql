@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-08-2024 a las 21:08:19
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 03-09-2024 a las 05:05:15
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -40,7 +40,7 @@ CREATE TABLE `admin` (
 -- Volcado de datos para la tabla `admin`
 --
 
-INSERT INTO `admin` (`idadmin`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`  , `estadisticasqr_idestadisticasqr`) VALUES
+INSERT INTO `admin` (`idadmin`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`, `estadisticasqr_idestadisticasqr`) VALUES
 (1, 1, 'CC', 2, 1, 1),
 (2, 2, 'TI', 1, 2, 2),
 (3, 3, 'CC', 3, 3, 3),
@@ -91,7 +91,7 @@ CREATE TABLE `asistencia` (
 -- Volcado de datos para la tabla `asistencia`
 --
 
-INSERT INTO `asistencia` (`idasistencia`, `fecha`, `estado`, `registradopor`, `qrgenerados_idqrgenerados` ,`docente_iddocente`, `alumnos_idalumnos`, `alumnos_nombre`, `alumnos_apellido`) VALUES
+INSERT INTO `asistencia` (`idasistencia`, `fecha`, `estado`, `registradopor`, `qrgenerados_idqrgenerados`, `docente_iddocente`, `alumnos_idalumnos`, `alumnos_nombre`, `alumnos_apellido`) VALUES
 (1, '2024-08-27', 1, 101, 22, 1, 8, 'Juan', 'Pérez'),
 (2, '2024-08-27', 0, 102, 23, 2, 9, 'Ana', 'Gómez'),
 (3, '2024-08-27', 1, 103, 24, 3, 10, 'Luis', 'Martínez');
@@ -120,7 +120,7 @@ CREATE TABLE `asistencia_completa` (
 CREATE TABLE `credenciales` (
   `idcredenciales` int(11) NOT NULL,
   `user` varchar(20) NOT NULL,
-  `password` varchar(40) NOT NULL,
+  `contrasena` varchar(40) NOT NULL,
   `fecharegistro` datetime NOT NULL,
   `ultimoacceso` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -129,11 +129,13 @@ CREATE TABLE `credenciales` (
 -- Volcado de datos para la tabla `credenciales`
 --
 
-INSERT INTO `credenciales` (`idcredenciales`, `user`, `password`, `fecharegistro`, `ultimoacceso`) VALUES
+INSERT INTO `credenciales` (`idcredenciales`, `user`, `contrasena`, `fecharegistro`, `ultimoacceso`) VALUES
 (1, 'juanpablo', 'password123', '2024-08-27 10:00:00', '2024-08-27 15:00:00'),
 (2, 'claudia', 'password456', '2024-08-27 11:00:00', '2024-08-27 16:00:00'),
 (3, 'sandra', 'password789', '2024-08-27 12:00:00', '2024-08-27 17:00:00'),
-(4, 'pedro', 'password321', '2024-08-27 13:00:00', '2024-08-27 18:00:00');
+(4, 'pedro', 'password321', '2024-08-27 13:00:00', '2024-08-27 18:00:00'),
+(5, 'Santiago', '$2y$10$DKxYBi6VcKwbZ0.npqNHbOsempwC8Hl6J', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(6, 'mariana', '$2y$10$I1CVzxXQAYbHlxBACf2CwuDMLxIm/vExK', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -180,7 +182,7 @@ CREATE TABLE `docente` (
 -- Volcado de datos para la tabla `docente`
 --
 
-INSERT INTO `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`  ) VALUES
+INSERT INTO `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`) VALUES
 (1, 1, 'CC', 2, 1),
 (2, 2, 'TI', 1, 2),
 (3, 3, 'CC', 1, 3),
@@ -270,7 +272,7 @@ CREATE TABLE `estudiante_ss` (
 -- Volcado de datos para la tabla `estudiante_ss`
 --
 
-INSERT INTO `estudiante_ss` (`idestudiante_ss`, `qr_registrados`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`  ) VALUES
+INSERT INTO `estudiante_ss` (`idestudiante_ss`, `qr_registrados`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`) VALUES
 (1, '../qr_codes/qr_all_students_1724296178.png', 1, 'CC', 2, 1),
 (2, '../qr_codes/qr_all_students_1724296237.png', 2, 'TI', 1, 2),
 (3, '../qr_codes/qr_all_students_1724296591.png', 3, 'CC', 1, 3);
@@ -401,8 +403,8 @@ CREATE TABLE `usuarios` (
   `nombre` varchar(20) NOT NULL,
   `apellido` varchar(20) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `contraseña` VARCHAR(40) NOT NULL,
-  `telefono` VARCHAR(20) NOT NULL,
+  `contraseña` varchar(40) NOT NULL,
+  `telefono` varchar(20) NOT NULL,
   `direccion` varchar(255) NOT NULL,
   `numerodocumento` int(10) NOT NULL,
   `tipo_documento_tdoc` varchar(10) NOT NULL,
@@ -415,10 +417,12 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`idusuarios`, `nombre`, `apellido`, `email`, `contraseña`, `telefono`, `direccion`, `numerodocumento`, `tipo_documento_tdoc`, `tipo_usuario_idtipo_usuario`, `credenciales_idcredenciales`) VALUES
-(1, 'Juan Pablo', 'Rodriguez', 'juan.pablo@example.com', 'pablo123', 2147483647, 'Calle 123', 123456789, 'CC', 2, 1),
-(2, 'Claudia', 'Peres', 'claudia.peres@example.com','RioVerde34', 2147483647, 'Calle 234', 987654321, 'TI', 1, 2),
-(3, 'Sandra', 'Torres', 'sandra.torres@example.com','Luna1234', 2147483647, 'Calle 345', 456789123, 'CC', 1, 3),
-(4, 'Pedro', 'Linares', 'pedro.linares@example.com','SolMar82', 2147483647, 'Calle 456', 789123456, 'CC', 3, 4);
+(1, 'Juan Pablo', 'Rodriguez', 'juan.pablo@example.com', 'pablo123', '2147483647', 'Calle 123', 123456789, 'CC', 2, 1),
+(2, 'Claudia', 'Peres', 'claudia.peres@example.com', 'RioVerde34', '2147483647', 'Calle 234', 987654321, 'TI', 1, 2),
+(3, 'Sandra', 'Torres', 'sandra.torres@example.com', 'Luna1234', '2147483647', 'Calle 345', 456789123, 'CC', 1, 3),
+(4, 'Pedro', 'Linares', 'pedro.linares@example.com', 'SolMar82', '2147483647', 'Calle 456', 789123456, 'CC', 3, 4),
+(7, 'Kevin Santiago', 'Garcia', 'kevingarciago3@gmail.com', '', '3163237616', 'calle 56f sur #92a-29', 1032940369, 'TI', 1, 5),
+(8, 'Mariana', 'Jimenez', 'mjimenez@gmail.com', '', '3163237616', 'Suba', 1010344900, 'CC', 3, 6);
 
 -- --------------------------------------------------------
 
@@ -437,8 +441,8 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- Indices de la tabla `admin`
 --
 ALTER TABLE `admin`
-  ADD PRIMARY KEY (`idadmin`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales` ),
-  ADD KEY `fk_admin_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales` ),
+  ADD PRIMARY KEY (`idadmin`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`),
+  ADD KEY `fk_admin_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`),
   ADD KEY `fk_admin_estadisticasqr1_idx` (`estadisticasqr_idestadisticasqr`);
 
 --
@@ -476,8 +480,8 @@ ALTER TABLE `cursos`
 -- Indices de la tabla `docente`
 --
 ALTER TABLE `docente`
-  ADD PRIMARY KEY (`iddocente`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales` ),
-  ADD KEY `fk_docente_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales` );
+  ADD PRIMARY KEY (`iddocente`,`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`),
+  ADD KEY `fk_docente_usuarios1_idx` (`usuarios_idusuarios`,`usuarios_tipo_documento_tdoc`,`usuarios_tipo_usuario_idtipo_usuario`,`usuarios_credenciales_idcredenciales`);
 
 --
 -- Indices de la tabla `docentealumnos`
@@ -553,6 +557,12 @@ ALTER TABLE `alumnos`
   MODIFY `idalumnos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT de la tabla `credenciales`
+--
+ALTER TABLE `credenciales`
+  MODIFY `idcredenciales` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT de la tabla `estadisticasqr`
 --
 ALTER TABLE `estadisticasqr`
@@ -569,6 +579,12 @@ ALTER TABLE `menu`
 --
 ALTER TABLE `qrescaneados`
   MODIFY `idqrescaneados` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `idusuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas
@@ -593,7 +609,7 @@ ALTER TABLE `asistencia`
 --
 ALTER TABLE `cursos`
   ADD CONSTRAINT `fk_cursos_asistencia1` FOREIGN KEY (`asistencia_idasistencia`) REFERENCES `asistencia` (`idasistencia`),
-  ADD CONSTRAINT `fk_cursos_docente1` FOREIGN KEY (`docente_iddocente`,`docente_usuarios_idusuarios`,`docente_usuarios_tipo_documento_tdoc`,`docente_usuarios_tipo_usuario_idtipo_usuario`,`docente_usuarios_credenciales_idcredenciales`) REFERENCES `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales` ),
+  ADD CONSTRAINT `fk_cursos_docente1` FOREIGN KEY (`docente_iddocente`,`docente_usuarios_idusuarios`,`docente_usuarios_tipo_documento_tdoc`,`docente_usuarios_tipo_usuario_idtipo_usuario`,`docente_usuarios_credenciales_idcredenciales`) REFERENCES `docente` (`iddocente`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`),
   ADD CONSTRAINT `fk_cursos_qrgenerados1` FOREIGN KEY (`qrgenerados_idqrgenerados`) REFERENCES `qrgenerados` (`idqrgenerados`);
 
 --
@@ -612,7 +628,7 @@ ALTER TABLE `estudiante_ss`
 -- Filtros para la tabla `qrescaneados`
 --
 ALTER TABLE `qrescaneados`
-  ADD CONSTRAINT `fk_qrescaneados_estudiante_ss1` FOREIGN KEY (`estudiante_ss_idestudiante_ss`,`estudiante_ss_usuarios_idusuarios`,`estudiante_ss_usuarios_tipo_documento_tdoc`,`estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`,`estudiante_ss_usuarios_credenciales_idcredenciales`) REFERENCES `estudiante_ss` (`idestudiante_ss`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`  );
+  ADD CONSTRAINT `fk_qrescaneados_estudiante_ss1` FOREIGN KEY (`estudiante_ss_idestudiante_ss`,`estudiante_ss_usuarios_idusuarios`,`estudiante_ss_usuarios_tipo_documento_tdoc`,`estudiante_ss_usuarios_tipo_usuario_idtipo_usuario`,`estudiante_ss_usuarios_credenciales_idcredenciales`) REFERENCES `estudiante_ss` (`idestudiante_ss`, `usuarios_idusuarios`, `usuarios_tipo_documento_tdoc`, `usuarios_tipo_usuario_idtipo_usuario`, `usuarios_credenciales_idcredenciales`);
 
 --
 -- Filtros para la tabla `usuarios`

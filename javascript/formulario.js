@@ -20,3 +20,13 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         passwordInput.nextElementSibling.style.display = 'none';
     }
 });
+document.getElementById('showPassword').addEventListener('change', function() {
+    const passwordField = document.getElementById('inputPassword');
+    
+    if (this.checked) {
+        passwordField.type = 'text';
+    } else {
+        passwordField.type = 'password';
+    }
+});
+

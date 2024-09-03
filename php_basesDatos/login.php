@@ -27,12 +27,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     session_start();
                     $_SESSION['user'] = $usuario;
 
+                    // Actualizar la fecha y hora del último acceso
+                    $updateSql = "UPDATE usuarios SET last_login = NOW() WHERE user = :user";
+                    $updateStmt = $conn->prepare($updateSql);
+                    $updateStmt->bindParam(':user', $usuario);
+                    $updateStmt->execute();
+
                     // Redirigir según el rol del usuario
-                    switch ($result['nombreUsuario']) {
+                    switch ($result['rol']) {
                         case 'Admin':
                             header("Location: ../Php/Admin/index.html");
                             break;
-                        case 'Estudiante SS':
+                        case 'Estudiante':
                             header("Location: ../Php/Estudiante/index.html");
                             break;
                         case 'Docente':
