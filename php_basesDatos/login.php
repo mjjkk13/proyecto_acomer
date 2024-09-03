@@ -43,10 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     // Redirigir según el rol del usuario
                     switch ($result['rol']) {
-                        case 'Admin':
+                        case 'Administrador':
                             header("Location: ../Php/Admin/index.html");
                             break;
-                        case 'Estudiante':
+                        case 'Estudiante SS':
                             header("Location: ../Php/Estudiante/index.html");
                             break;
                         case 'Docente':
