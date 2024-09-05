@@ -28,7 +28,7 @@ function createNewCourse() {
     const docente_id = prompt('Ingrese el ID del docente:');
     
     if (nombrecurso && docente_id) {
-        fetch('ruta_php.php', {
+        fetch('../php_basesDatos/Cursos.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -53,7 +53,7 @@ function editItem(idcurso) {
     const docente_id = prompt('Ingrese el nuevo ID del docente:');
     
     if (nombrecurso && docente_id) {
-        fetch('ruta_php.php', {
+        fetch('../php_basesDatos/Cursos.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -76,7 +76,7 @@ function editItem(idcurso) {
 // Función para eliminar un curso
 function deleteItem(idcurso) {
     if (confirm('¿Estás seguro de eliminar este curso?')) {
-        fetch('ruta_php.php', {
+        fetch('../php_basesDatos/Cursos.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
