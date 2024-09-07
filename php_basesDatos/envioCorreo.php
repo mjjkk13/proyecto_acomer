@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php'; // Asegúrate de tener PHPMailer instalado
+require '../../vendor/autoload.php'; // Asegúrate de tener PHPMailer instalado
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;

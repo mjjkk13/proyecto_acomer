@@ -50,3 +50,32 @@ document.getElementById('registroForm').addEventListener('submit', function(even
     });
   });
 });
+
+document.getElementById('registroForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  var formData = new FormData(this);
+
+  // Enviar datos a registrarUsuario.php
+  fetch('../../php_basesDatos/registrarUsuario.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    console.log('Usuario registrado:', data);
+
+    // Enviar datos a envioCorreo.php
+    return fetch('../../php_basesDatos/envioCorreo.php', {
+      method: 'POST',
+      body: formData
+    });
+  })
+  .then(response => response.text())
+  .then(data => {
+    console.log('Correo enviado:', data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+});

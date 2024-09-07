@@ -54,7 +54,7 @@
   <div class="container">
     <div class="card mt-5 mx-auto">
       <h2 class="text-center mb-4">Registrar Usuario</h2>
-      <form method="post" action="../../php_basesDatos/registrarUsuario.php" id="registroForm">
+      <form method="POST" action="../../php_basesDatos/registrarUsuario.php" id="registroForm">
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">
@@ -135,7 +135,7 @@
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary w-100" name="submit">Enviar</button>
+        <button type="submit" class="btn btn-primary w-100" name="submit" id="submit">Enviar</button>
         <?php
         include('../../php_basesDatos/envioCorreo.php');
         ?>
@@ -148,8 +148,7 @@
       <p>&copy; 2024 Plataforma Educativa. Todos los derechos reservados.</p>
     </div>
   </footer>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../../javascript/registroUsuarios.js"></script>
+  <script src="../../javascript/registroUsuarios"></script>
 </body>
 </html>
