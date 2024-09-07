@@ -6,3 +6,4 @@
 
     echo json_encode($credenciales);
     ?>
+ 
