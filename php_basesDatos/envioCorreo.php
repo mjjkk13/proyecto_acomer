@@ -2,6 +2,7 @@
 require '../../vendor/autoload.php'; // Asegúrate de tener PHPMailer instalado
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -10,20 +11,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $contrasena = $_POST['contrasena'];
     $correo = $_POST['correo'];
 
-    // Aquí podrías guardar el usuario en una base de datos
-    // ...
 
     // Configurar y enviar el correo
     $mail = new PHPMailer(true);
     try {
         // Configuración del servidor SMTP
+        $mail->SMTPDebug = 2; 
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'marianajimenezv2006@gmail.com';
-        $mail->Password = 'Mariana2018_';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+        $mail->Password = 'alaxdvrcnthfernn';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
 
         // Remitente y destinatario
         $mail->setFrom('no-reply@acomer.com', 'A Comer');
@@ -40,7 +40,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } catch (Exception $e) {
         echo "El correo no pudo ser enviado. Error: {$mail->ErrorInfo}";
     }
-} else {
-    echo "Método de solicitud no válido.";
 }
+
 ?>
