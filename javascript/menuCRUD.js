@@ -110,6 +110,28 @@ async function createNewMenu() {
     }
 }
 
+// Función para eliminar un ítem del menú
+async function deleteItem(id) {
+    const result = await Swal.fire({
+        title: 'Confirmar Eliminación',
+        text: "¿Estás seguro de que quieres eliminar este ítem del menú?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+        const payload = { idmenu: id, action: 'delete' };
+        if (await sendData(payload)) {
+            // Actualizar la vista con los datos actualizados
+            const mealType = document.querySelector('tr td:first-child').textContent;
+            const data = await fetchData(mealType);
+            showData(`Menú de ${mealType}`, data);
+        }
+    }
+}
+
 // Función para editar un ítem del menú
 async function editItem(id) {
     const { value: currentData } = await Swal.fire({
