@@ -136,9 +136,6 @@
           </div>
         </div>
         <button type="submit" class="btn btn-primary w-100" name="submit" id="submit">Enviar</button>
-        <?php
-        include('../../php_basesDatos/envioCorreo.php');
-        ?>
       </form>
     </div>
   </div>
