@@ -54,7 +54,7 @@
   <div class="container">
     <div class="card mt-5 mx-auto">
       <h2 class="text-center mb-4">Registrar Usuario</h2>
-      <form method="post" action="../../php_basesDatos/registrarUsuario.php" id="registroForm">
+      <form method="POST" action="../../php_basesDatos/registrarUsuario.php" id="registroForm">
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">

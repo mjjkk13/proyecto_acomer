@@ -1,57 +1,45 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Función para cargar los cursos desde el servidor
     function cargarCursos() {
-        fetch('../../php_basesDatos/obtenerCursos.php')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+        fetch('../../php_basesDatos/obtenerCursos.php?action=getCourses')
+            .then(response => response.json())
             .then(data => {
-                console.log(data); // Verifica la estructura del JSON
+                console.log('Respuesta del servidor:', data);
 
                 const tbody = document.querySelector('table tbody');
                 tbody.innerHTML = ''; // Limpiar contenido anterior
 
-                // Verificar si data es un array antes de procesarlo
-                if (!Array.isArray(data)) {
-                    throw new Error('Data is not an array');
+                if (!Array.isArray(data) || data.error) {
+                    throw new Error(data.error || 'No se pudieron cargar los cursos.');
                 }
 
-                // Crear un fragmento para mejorar el rendimiento
                 const fragment = document.createDocumentFragment();
 
                 data.forEach(curso => {
                     const row = document.createElement('tr');
+                    row.dataset.idcursos = curso.idcursos;
 
-                    // Crear y llenar las celdas con la información del curso
                     const cursoCell = document.createElement('td');
                     cursoCell.textContent = curso.nombrecurso;
 
-                    const directorCell = document.createElement('td');
-                    directorCell.textContent = curso.nombredocente + ' ' + curso.apellidodocente;
+                    const docenteCell = document.createElement('td');
+                    docenteCell.textContent = curso.nombredocente + ' ' + curso.apellidodocente;
 
-                    // Crear la celda de acciones con los botones
                     const actionsCell = document.createElement('td');
                     actionsCell.innerHTML = `
                         <button class="btn btn-warning btn-sm btnEditar">Editar</button>
                         <button class="btn btn-danger btn-sm btnBorrar">Borrar</button>
                     `;
 
-                    // Agregar las celdas a la fila
                     row.appendChild(cursoCell);
-                    row.appendChild(directorCell);
+                    row.appendChild(docenteCell);
                     row.appendChild(actionsCell);
 
-                    // Agregar la fila al fragmento
                     fragment.appendChild(row);
                 });
 
-                // Añadir todas las filas al tbody de una vez
                 tbody.appendChild(fragment);
 
-                // Añadir eventos a los botones de edición y eliminación
                 document.querySelectorAll('.btnEditar').forEach(btn => {
                     btn.addEventListener('click', editarCurso);
                 });
@@ -62,35 +50,164 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error al cargar los cursos:', error);
                 const tbody = document.querySelector('table tbody');
-                tbody.innerHTML = '<tr><td colspan="3">No se pudieron cargar los cursos. Intenta de nuevo más tarde.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3">No se pudieron cargar los cursos.</td></tr>';
             });
     }
 
     function editarCurso(event) {
-        // Obtener el curso correspondiente y abrir un formulario de edición
         const cursoRow = event.target.closest('tr');
-        const cursoNombre = cursoRow.querySelector('td').textContent;
-        alert('Editar curso: ' + cursoNombre);
-        // Aquí puedes abrir un modal con un formulario para editar el curso
+        const idcursos = cursoRow.dataset.idcursos;
+        const nombreCurso = cursoRow.querySelector('td').textContent;
+        const docenteCurso = cursoRow.querySelector('td:nth-child(2)').textContent;
+
+        // Obtén la lista de docentes desde el servidor
+        fetch('../../php_basesDatos/obtenerCursos.php?action=getDocentes')
+            .then(response => response.json())
+            .then(docentes => {
+                const docenteOptions = docentes.map(docente => 
+                    `<option value="${docente.idusuarios}" ${docente.idusuarios == docenteCurso ? 'selected' : ''}>
+                        ${docente.nombre} ${docente.apellido}
+                    </option>`
+                ).join('');
+
+                Swal.fire({
+                    title: 'Editar Curso',
+                    html: `
+                        <input id="nombreCurso" class="swal2-input" value="${nombreCurso}">
+                        <select id="idDocente" class="swal2-select">
+                            ${docenteOptions}
+                        </select>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Guardar cambios',
+                    preConfirm: () => {
+                        const nombreCurso = Swal.getPopup().querySelector('#nombreCurso').value;
+                        const idDocente = Swal.getPopup().querySelector('#idDocente').value;
+
+                        if (!nombreCurso || !idDocente) {
+                            Swal.showValidationMessage('Todos los campos son obligatorios');
+                            return false;
+                        }
+
+                        return { idcursos, nombreCurso, idDocente };
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch('../../php_basesDatos/obtenerCursos.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: new URLSearchParams({
+                                action: 'editCourse',
+                                idcursos: result.value.idcursos,
+                                nombreCurso: result.value.nombreCurso,
+                                idDocente: result.value.idDocente
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('¡Curso actualizado!', '', 'success');
+                                cargarCursos();
+                            } else {
+                                Swal.fire('Error', data.error, 'error');
+                            }
+                        });
+                    }
+                });
+            })
+            .catch(error => console.error('Error al obtener docentes:', error));
     }
 
     function borrarCurso(event) {
-        // Obtener el curso correspondiente y realizar una solicitud para borrarlo
         const cursoRow = event.target.closest('tr');
-        const cursoNombre = cursoRow.querySelector('td').textContent;
-        if (confirm(`¿Estás seguro de que deseas eliminar el curso ${cursoNombre}?`)) {
-            alert('Curso eliminado: ' + cursoNombre);
-            // Aquí puedes realizar una solicitud DELETE al servidor para eliminar el curso
-            cursoRow.remove(); // Eliminar la fila de la tabla después de la eliminación
-        }
+        const idcursos = cursoRow.dataset.idcursos;
+
+        Swal.fire({
+            title: '¿Eliminar este curso?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+        }).then(result => {
+            if (result.isConfirmed) {
+                fetch('../../php_basesDatos/obtenerCursos.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        action: 'deleteCourse',
+                        idcursos
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('¡Curso eliminado!', '', 'success');
+                        cargarCursos();
+                    } else {
+                        Swal.fire('Error', data.error, 'error');
+                    }
+                });
+            }
+        });
     }
 
-    // Evento para agregar un nuevo curso
-    document.getElementById('btnAgregarCurso').addEventListener('click', function() {
-        alert('Agregar nuevo curso');
-        // Aquí puedes abrir un modal o redirigir a una página de formulario de creación de cursos
+    document.getElementById('btnAgregarCurso').addEventListener('click', function(event) {
+        // Obtén la lista de docentes desde el servidor
+        fetch('../../php_basesDatos/obtenerCursos.php?action=getDocentes')
+            .then(response => response.json())
+            .then(docentes => {
+                const docenteOptions = docentes.map(docente => 
+                    `<option value="${docente.idusuarios}">${docente.nombre} ${docente.apellido}</option>`
+                ).join('');
+
+                Swal.fire({
+                    title: 'Agregar Curso',
+                    html: `
+                        <input id="nombreCurso" class="swal2-input" placeholder="Nombre del Curso">
+                        <select id="idDocente" class="swal2-select">
+                            <option value="" selected disabled>Seleccione un docente</option>
+                            ${docenteOptions}
+                        </select>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Agregar',
+                    preConfirm: () => {
+                        const nombreCurso = Swal.getPopup().querySelector('#nombreCurso').value;
+                        const idDocente = Swal.getPopup().querySelector('#idDocente').value;
+
+                        if (!nombreCurso || !idDocente) {
+                            Swal.showValidationMessage('Todos los campos son obligatorios');
+                            return false;
+                        }
+
+                        return { nombreCurso, idDocente };
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch('../../php_basesDatos/obtenerCursos.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: new URLSearchParams({
+                                action: 'addCourse',
+                                nombreCurso: result.value.nombreCurso,
+                                idDocente: result.value.idDocente
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('¡Curso agregado!', '', 'success');
+                                cargarCursos();
+                            } else {
+                                Swal.fire('Error', data.error, 'error');
+                            }
+                        });
+                    }
+                });
+            })
+            .catch(error => console.error('Error al obtener docentes:', error));
     });
 
-    // Cargar los cursos cuando la página se haya cargado
+    // Cargar los cursos al iniciar la página
     cargarCursos();
 });
+    
