@@ -2,27 +2,32 @@ const tablaCodigos = document.getElementById('tablaCodigos');
 
 // Función para cargar los códigos QR registrados
 function cargarCodigosQR() {
-    fetch('../../php_basesDatos/CargarCodigosqr.php')
+    fetch('../../php_basesDatos/CodigosqrCRUD.php')
         .then(response => response.json())
         .then(data => {
             console.log('Códigos QR:', data);
             tablaCodigos.innerHTML = ''; // Limpiamos la tabla antes de actualizar
 
-            data.forEach((codigo, index) => {
+            data.forEach((codigo) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${codigo.fecha_hora}</td>
-                    <td><img src="../${codigo.imagen}" alt="Código QR" class="img-qr"></td>
-                    <td><button class="btn btn-danger" onclick="eliminarCodigo('${codigo.imagen}')"><i class="fas fa-trash-alt"></i></button></td>
+                    <td>${codigo.fechageneracion}</td>
+                    <td><img src="../${codigo.codigoqr}" alt="Código QR" class="img-qr"></td>
+                    <td>
+                        <button class="btn btn-danger" onclick="eliminarCodigo('${codigo.id_asistencia}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
                 `;
                 tablaCodigos.appendChild(row);
             });
+            
         })
         .catch(error => console.error('Error:', error));
 }
 
 // Función para eliminar un código QR
-function eliminarCodigo(imagen) {
+function eliminarCodigo(idAsistencia, idQrGenerados) {
     Swal.fire({
         title: '¿Estás seguro?',
         text: "No podrás revertir esto.",
@@ -32,12 +37,16 @@ function eliminarCodigo(imagen) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch('../../php_basesDatos/EliminarCodigoqr.php', {
+            fetch('../../php_basesDatos/CodigosqrCRUD.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: JSON.stringify({ imagen: imagen })
+                body: new URLSearchParams({
+                    'eliminar': 'true',
+                    'id_asistencia': idAsistencia,
+                    'id_qrgenerados': idQrGenerados
+                })
             })
             .then(response => response.json())
             .then(data => {
@@ -52,6 +61,9 @@ function eliminarCodigo(imagen) {
         }
     });
 }
+
+
+
 
 // Cargar los códigos QR al cargar la página
 cargarCodigosQR();
