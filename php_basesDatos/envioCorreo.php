@@ -1,6 +1,6 @@
 <?php
-require '../../vendor/autoload.php'; // Asegúrate de tener PHPMailer instalado
-
+require 'C:/xampp/htdocs/Proyecto/vendor/autoload.php';
+include 'registrarUsuario.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -11,7 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $contrasena = $_POST['contrasena'];
     $correo = $_POST['correo'];
 
-
     // Configurar y enviar el correo
     $mail = new PHPMailer(true);
     try {
@@ -21,8 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'marianajimenezv2006@gmail.com';
-        $mail->Password = 'alaxdvrcnthfernn';
-        $mail->SMTPSecure = 'ssl';
+        $mail->Password = 'alaxdvrcnthfernn'; // Considera usar una contraseña de aplicación
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Utiliza la encriptación correcta
         $mail->Port = 465;
 
         // Remitente y destinatario
@@ -32,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Contenido del correo
         $mail->isHTML(true);
         $mail->Subject = 'Detalles de tu Registro';
-        $mail->Body    = "Hola $nombre,<br><br>Te has registrado exitosamente.<br><br>Tu nombre de usuario es: <b>$user</b><br>Tu contraseña es: <b>$contrasena</b><br><br>Gracias por registrarte.";
-        $mail->AltBody = "Hola $nombre,\n\nTe has registrado exitosamente.\n\nTu nombre de usuario es: $user\nTu contraseña es: $password\n\nGracias por registrarte.";
+        $mail->Body    = "Hola $user,<br><br>Te has registrado exitosamente.<br><br>Tu nombre de usuario es: <b>$user</b><br>Tu contraseña es: <b>$contrasena</b><br><br>Gracias por registrarte.";
+        $mail->AltBody = "Hola $user,\n\nTe has registrado exitosamente.\n\nTu nombre de usuario es: $user\nTu contraseña es: $contrasena\n\nGracias por registrarte.";
 
         $mail->send();
         echo "El registro fue exitoso y se envió un correo a $correo.";
@@ -41,5 +40,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "El correo no pudo ser enviado. Error: {$mail->ErrorInfo}";
     }
 }
-
 ?>
