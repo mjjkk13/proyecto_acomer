@@ -1,5 +1,9 @@
 <?php
+<<<<<<< HEAD
 require 'C:/xampp/htdocs/Proyecto/vendor/autoload.php';
+=======
+require '../../vendor/autoload.php'; // Asegúrate de tener PHPMailer instalado
+>>>>>>> 77f05a038fe0abcd3a8996f1f15b99b7d46d236b
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
