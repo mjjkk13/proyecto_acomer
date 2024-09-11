@@ -30,7 +30,7 @@ function showData(title, data) {
                 ${data.map(item => `
                     <tr>
                         <td>${item.tipomenu || 'No especificado'}</td>
-                        <td>${formatDate(item.fecha)}</td>
+                        <td>${item.fecha}</td>
                         <td>${item.descripcion}</td>
                         <td>
                             <button class="btn btn-primary" onclick="editItem(${item.idmenu})">
@@ -46,31 +46,6 @@ function showData(title, data) {
         </table>
     `;
     Swal.fire({ title, html: table, width: '600px', showConfirmButton: false });
-}
-
-// Función para formatear la fecha y mostrar el día de la semana
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'long' };
-    return date.toLocaleDateString('es-ES', options).replace(',', '');
-}
-
-// Función para obtener la fecha del próximo día especificado
-function getNextDate(dayName) {
-    const daysOfWeek = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-    const today = new Date();
-    const todayDayIndex = today.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
-    const targetDayIndex = daysOfWeek.indexOf(dayName.toLowerCase());
-
-    if (targetDayIndex === -1) return null; // Día no válido
-
-    // Calcular la diferencia de días
-    let daysUntilTarget = (targetDayIndex - todayDayIndex + 7) % 7;
-    if (daysUntilTarget === 0) daysUntilTarget += 7; // Asegurarse de que la fecha sea del próximo día
-
-    const targetDate = new Date(today);
-    targetDate.setDate(today.getDate() + daysUntilTarget);
-    return targetDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
 }
 
 // Función para crear un nuevo menú
@@ -91,15 +66,14 @@ async function createNewMenu() {
             showCancelButton: true,
             inputValidator: value => !value && 'La descripción es requerida!'
         });
-        const { value: dateInput } = await Swal.fire({
+        const { value: date } = await Swal.fire({
             title: 'Fecha del Menú',
-            input: 'text',
-            inputLabel: 'Fecha (YYYY-MM-DD) o Nombre del Día',
+            input: 'date',
+            inputLabel: 'Fecha',
             showCancelButton: true,
-            inputValidator: value => !value && 'La fecha o el nombre del día son requeridos!'
+            inputValidator: value => !value && 'La fecha es requerida!'
         });
 
-        const date = /^\d{4}-\d{2}-\d{2}$/.test(dateInput) ? dateInput : getNextDate(dateInput);
         if (description && date) {
             const payload = { mealType, descripcion: description, fecha: date, action: 'create' };
             if (await sendData(payload)) {
@@ -124,9 +98,8 @@ async function deleteItem(id) {
     if (result.isConfirmed) {
         const payload = { idmenu: id, action: 'delete' };
         if (await sendData(payload)) {
-            // Actualizar la vista con los datos actualizados
-            const mealType = document.querySelector('tr td:first-child').textContent;
-            const data = await fetchData(mealType);
+            const mealType = document.querySelector('.feature-box.active').querySelector('.comida').textContent;
+            const data = await fetchData(mealType.toLowerCase());
             showData(`Menú de ${mealType}`, data);
         }
     }
@@ -138,7 +111,7 @@ async function editItem(id) {
         title: 'Editar Menú',
         html: `
             <input id="swal-input-description" class="swal2-input" placeholder="Nueva Descripción">
-            <input id="swal-input-date" class="swal2-input" placeholder="Nueva Fecha (YYYY-MM-DD)">
+            <input id="swal-input-date" class="swal2-input" type="date" placeholder="Nueva Fecha">
         `,
         focusConfirm: false,
         preConfirm: () => {
@@ -157,73 +130,14 @@ async function editItem(id) {
         if (description && date) {
             const payload = { idmenu: id, descripcion: description, fecha: date, action: 'update' };
             if (await sendData(payload)) {
-                const mealType = document.querySelector('tr td:first-child').textContent;
-                const data = await fetchData(mealType);
+                const mealType = document.querySelector('.feature-box.active').querySelector('.comida').textContent;
+                const data = await fetchData(mealType.toLowerCase());
                 showData('Menú actualizado', data);
             }
         } else {
             Swal.fire({ title: 'Error', text: 'La descripción y la fecha son requeridos.', icon: 'error' });
         }
     }
-}
-
-// Función para editar un ítem del menú
-async function editItem(id) {
-    const { value: currentData } = await Swal.fire({
-        title: 'Editar Menú',
-        html: `
-            <input id="swal-input-description" class="swal2-input" placeholder="Nueva Descripción">
-            <input id="swal-input-date" class="swal2-input" placeholder="Nueva Fecha (YYYY-MM-DD o Nombre del Día)">
-        `,
-        focusConfirm: false,
-        preConfirm: () => {
-            return {
-                description: document.getElementById('swal-input-description').value,
-                date: document.getElementById('swal-input-date').value
-            }
-        },
-        showCancelButton: true,
-        confirmButtonText: 'Actualizar',
-        cancelButtonText: 'Cancelar'
-    });
-
-    if (currentData) {
-        const { description, date } = currentData;
-        if (description && date) {
-            // Convertir el nombre del día en una fecha válida
-            const validDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? adjustDate(date) : getNextDate(date);
-            if (validDate) {
-                const payload = { idmenu: id, descripcion: description, fecha: validDate, action: 'update' };
-                if (await sendData(payload)) {
-                    const mealType = document.querySelector('tr td:first-child').textContent;
-                    const data = await fetchData(mealType);
-                    showData('Menú actualizado', data);
-                }
-            } else {
-                Swal.fire({ title: 'Error', text: 'La fecha o el nombre del día son inválidos.', icon: 'error' });
-            }
-        } else {
-            Swal.fire({ title: 'Error', text: 'La descripción y la fecha son requeridos.', icon: 'error' });
-        }
-    }
-}
-
-// Función para obtener la fecha del próximo día especificado
-function getNextDate(dayName) {
-    const daysOfWeek = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-    const today = new Date();
-    const todayDayIndex = today.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
-    const targetDayIndex = daysOfWeek.indexOf(dayName.toLowerCase());
-
-    if (targetDayIndex === -1) return null; // Día no válido
-
-    // Calcular la diferencia de días
-    let daysUntilTarget = (targetDayIndex - todayDayIndex + 7) % 7;
-    if (daysUntilTarget === 0) daysUntilTarget += 7; // Asegurarse de que la fecha sea del próximo día
-
-    const targetDate = new Date(today);
-    targetDate.setDate(today.getDate() + daysUntilTarget);
-    return targetDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
 }
 
 // Función para enviar datos al servidor
@@ -247,7 +161,13 @@ async function sendData(payload) {
 // Listener para el botón "Agregar Menú"
 document.getElementById('addMenuBtn').addEventListener('click', createNewMenu);
 
-// Agregar eventos a los botones
-document.getElementById('desayunoBox').addEventListener('click', async () => showData('Menú de Desayuno', await fetchData('desayuno')));
-document.getElementById('almuerzoBox').addEventListener('click', async () => showData('Menú de Almuerzo', await fetchData('almuerzo')));
-document.getElementById('refrigerioBox').addEventListener('click', async () => showData('Menú de Refrigerio', await fetchData('refrigerio')));
+// Listener para las cajas principales
+document.getElementById('desayunoBox').addEventListener('click', () => handleBoxClick('desayuno'));
+document.getElementById('almuerzoBox').addEventListener('click', () => handleBoxClick('almuerzo'));
+document.getElementById('refrigerioBox').addEventListener('click', () => handleBoxClick('refrigerio'));
+
+// Función para manejar el clic en las cajas principales
+async function handleBoxClick(mealType) {
+    const data = await fetchData(mealType);
+    showData(`Menú de ${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`, data);
+}
