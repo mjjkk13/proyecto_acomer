@@ -16,7 +16,7 @@ try {
         UPDATE asistencia a
         INNER JOIN alumnos al ON al.idalumnos = a.alumnos_idalumnos
         SET a.estado = :estado, a.fecha = :fechaHora
-        WHERE al.idalumnos = :idalumnos  // Cambiado a 'idalumnos'
+        WHERE al.idalumnos = :idalumnos'
     ";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':estado', $estado);

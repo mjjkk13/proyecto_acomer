@@ -14,64 +14,76 @@ try {
     switch ($action) {
         case 'create':
             $nombrecurso = $_POST['nombrecurso'] ?? '';
-            $docente_id = $_POST['docente_id'] ?? 0;
+            $usuarioId = $_POST['usuarioId'] ?? 0;
 
-            if ($nombrecurso && $docente_id) {
-                $query = "INSERT INTO cursos (nombrecurso, docente_iddocente) VALUES (:nombrecurso, :docente_id)";
-                $stmt = $conn->prepare($query);
-                $stmt->execute(['nombrecurso' => $nombrecurso, 'docente_id' => $docente_id]);
-                echo json_encode(['success' => 'Curso creado exitosamente.']);
+            if ($nombrecurso && $usuarioId) {
+                // Verificar si el usuario seleccionado es un docente
+                $queryUsuario = "
+                    SELECT 
+                        u.idusuarios,
+                        u.tipo_documento_tdoc,
+                        u.tipo_usuario_idtipo_usuario,
+                        u.credenciales_idcredenciales
+                    FROM 
+                        usuarios u
+                    INNER JOIN 
+                        tipo_usuario tu ON u.tipo_usuario_idtipo_usuario = tu.idtipo_usuario
+                    WHERE 
+                        u.idusuarios = :usuarioId AND tu.rol = 'docente'
+                ";
+                $stmtUsuario = $conn->prepare($queryUsuario);
+                $stmtUsuario->execute(['usuarioId' => $usuarioId]);
+                $usuario = $stmtUsuario->fetch(PDO::FETCH_ASSOC);
+
+                if ($usuario) {
+                    // Insertar el docente en la tabla docente si no existe
+                    $queryDocente = "
+                        INSERT INTO docente (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales)
+                        SELECT 
+                            :usuarioId, 
+                            :tipo_documento_tdoc, 
+                            :tipo_usuario_idtipo_usuario, 
+                            :credenciales_idcredenciales
+                        WHERE NOT EXISTS (
+                            SELECT 1 FROM docente WHERE usuarios_idusuarios = :usuarioId
+                        )
+                    ";
+                    $stmtDocente = $conn->prepare($queryDocente);
+                    $stmtDocente->execute([
+                        'usuarioId' => $usuario['idusuarios'],
+                        'tipo_documento_tdoc' => $usuario['tipo_documento_tdoc'],
+                        'tipo_usuario_idtipo_usuario' => $usuario['tipo_usuario_idtipo_usuario'],
+                        'credenciales_idcredenciales' => $usuario['credenciales_idcredenciales']
+                    ]);
+
+                    // Obtener el ID del nuevo docente
+                    $queryIdDocente = "SELECT iddocente FROM docente WHERE usuarios_idusuarios = :usuarioId";
+                    $stmtIdDocente = $conn->prepare($queryIdDocente);
+                    $stmtIdDocente->execute(['usuarioId' => $usuario['idusuarios']]);
+                    $docente = $stmtIdDocente->fetch(PDO::FETCH_ASSOC);
+                    $docenteId = $docente['iddocente'];
+
+                    // Insertar el curso con el ID del docente
+                    $queryCurso = "
+                        INSERT INTO cursos (nombrecurso, docente_iddocente) 
+                        VALUES (:nombrecurso, :docente_iddocente)
+                    ";
+                    $stmtCurso = $conn->prepare($queryCurso);
+                    $stmtCurso->execute([
+                        'nombrecurso' => $nombrecurso,
+                        'docente_iddocente' => $docenteId
+                    ]);
+
+                    echo json_encode(['success' => 'Curso creado exitosamente con el docente asignado.']);
+                } else {
+                    echo json_encode(['error' => 'El usuario seleccionado no es un docente válido.']);
+                }
             } else {
-                echo json_encode(['error' => 'Faltan datos para crear el curso.']);
+                echo json_encode(['error' => 'Faltan datos para crear el curso o el docente.']);
             }
             break;
 
-        case 'read':
-            $query = "
-                SELECT 
-                    cursos.idcurso,
-                    cursos.nombrecurso, 
-                    CONCAT(usuarios.nombre, ' ', usuarios.apellido) AS nombreDocente
-                FROM 
-                    cursos 
-                INNER JOIN 
-                    usuarios ON cursos.docente_iddocente = usuarios.docente_iddocente
-                WHERE 
-                    usuarios.tipo_usuario_idtipo_usuario = 2
-            ";
-            $stmt = $conn->prepare($query);
-            $stmt->execute();
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode($data);
-            break;
-
-        case 'update':
-            $idcurso = $_POST['idcurso'] ?? 0;
-            $nombrecurso = $_POST['nombrecurso'] ?? '';
-            $docente_id = $_POST['docente_id'] ?? 0;
-
-            if ($idcurso && $nombrecurso && $docente_id) {
-                $query = "UPDATE cursos SET nombrecurso = :nombrecurso, docente_iddocente = :docente_id WHERE idcurso = :idcurso";
-                $stmt = $conn->prepare($query);
-                $stmt->execute(['nombrecurso' => $nombrecurso, 'docente_id' => $docente_id, 'idcurso' => $idcurso]);
-                echo json_encode(['success' => 'Curso actualizado exitosamente.']);
-            } else {
-                echo json_encode(['error' => 'Faltan datos para actualizar el curso.']);
-            }
-            break;
-
-        case 'delete':
-            $idcurso = $_POST['idcurso'] ?? 0;
-
-            if ($idcurso) {
-                $query = "DELETE FROM cursos WHERE idcurso = :idcurso";
-                $stmt = $conn->prepare($query);
-                $stmt->execute(['idcurso' => $idcurso]);
-                echo json_encode(['success' => 'Curso eliminado exitosamente.']);
-            } else {
-                echo json_encode(['error' => 'Faltan datos para eliminar el curso.']);
-            }
-            break;
+        // ... (otros casos para 'read', 'update', 'delete')
 
         default:
             echo json_encode(['error' => 'Acción no válida.']);

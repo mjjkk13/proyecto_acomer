@@ -11,8 +11,9 @@ function cargarCodigosQR() {
             data.forEach((codigo, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${codigo.fecha_hora}</td> <!-- Columna 'fechageneracion' en el PHP -->
-                    <td><img src="../${codigo.imagen}" alt="Código QR" class="img-qr"></td> <!-- Columna 'codigoqr' en el PHP -->
+                    <td>${codigo.fecha_hora}</td>
+                    <td>${codigo.nombrecurso}</td> 
+                    <td><img src="../${codigo.imagen}" alt="Código QR" class="img-qr"></td> 
                 `;
                 tablaCodigos.appendChild(row);
             });

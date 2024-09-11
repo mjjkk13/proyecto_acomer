@@ -5,7 +5,10 @@ error_reporting(E_ALL);
 
 include 'conexion.php'; // Asegúrate de que este archivo contiene la conexión PDO correctamente configurada
 
-$sql = "SELECT codigoqr, fechageneracion FROM qrgenerados";
+$sql =  "SELECT q.codigoqr, q.fechageneracion, q.idqrgenerados, c.nombrecurso
+FROM qrgenerados q
+JOIN cursos c ON q.idqrgenerados = c.qrgenerados_idqrgenerados
+ORDER BY q.fechageneracion DESC";
 
 try {
     $stmt = $pdo->query($sql);
@@ -14,7 +17,8 @@ try {
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $codigos[] = array(
             'fecha_hora' => $row['fechageneracion'],
-            'imagen' => $row['codigoqr']
+            'imagen' => $row['codigoqr'],
+            'nombrecurso' => $row['nombrecurso'] 
         );
     }
 

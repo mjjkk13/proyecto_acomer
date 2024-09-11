@@ -13,8 +13,19 @@ if (empty($estudiantesSeleccionados)) {
 }
 
 $datosQR = "";
+$cursosNombres = [];
+$docentes = [];
+
+// Recopilar datos para generar el QR
 foreach ($estudiantesSeleccionados as $estudiante) {
     $datosQR .= "ID: " . $estudiante['idalumnos'] . " - Nombre: " . $estudiante['nombreAlumnos'] . " - Apellidos: " . $estudiante['apellidosAlumnos'] . "\n";
+    $datosQR .= "Curso: " . $estudiante['nombreCurso'] . "\n";
+    if (!in_array($estudiante['nombreCurso'], $cursosNombres)) {
+        $cursosNombres[] = $estudiante['nombreCurso'];
+    }
+    if (!in_array($estudiante['nombreDocente'], $docentes)) {
+        $docentes[] = $estudiante['nombreDocente'];
+    }
 }
 $datosQR .= "Total de estudiantes: " . count($estudiantesSeleccionados);
 
@@ -43,6 +54,36 @@ try {
     $stmtQR->bindValue(':fechageneracion', $fechageneracion, PDO::PARAM_STR);
     $stmtQR->execute();
 
+    // Obtener el ID del código QR recién insertado
+    $idQrGenerados = $pdo->lastInsertId();
+
+    // Actualizar la tabla de asistencia con el ID del QR generado basado en el nombre del docente usando JOIN
+    $sqlUpdateAsistencia = "
+        UPDATE asistencia a
+        JOIN usuarios u ON a.docente_iddocente = u.idusuarios
+        JOIN tipo_usuario t ON u.tipo_usuario_idtipo_usuario = t.idtipo_usuario
+        SET a.qrgenerados_idqrgenerados = :idqrgenerados
+        WHERE t.rol = 'Docente'
+        AND u.nombre = :nombreDocente";
+    $stmtAsistencia = $pdo->prepare($sqlUpdateAsistencia);
+    
+    // Ejecutar la actualización para cada docente
+    foreach ($docentes as $nombreDocente) {
+        $stmtAsistencia->bindValue(':idqrgenerados', $idQrGenerados, PDO::PARAM_INT);
+        $stmtAsistencia->bindValue(':nombreDocente', $nombreDocente, PDO::PARAM_STR);
+        $stmtAsistencia->execute();
+    }
+    // Actualizar la tabla de cursos con el ID del QR generado basado en el nombre del curso
+    $sqlUpdateCursos = "UPDATE cursos SET qrgenerados_idqrgenerados = :idqrgenerados WHERE nombrecurso = :nombrecurso";
+    $stmtCursos = $pdo->prepare($sqlUpdateCursos);
+
+    // Ejecutar la actualización para cada curso
+    foreach ($cursosNombres as $cursoNombre) {
+        $stmtCursos->bindValue(':idqrgenerados', $idQrGenerados, PDO::PARAM_INT);
+        $stmtCursos->bindValue(':nombrecurso', $cursoNombre, PDO::PARAM_STR);
+        $stmtCursos->execute();
+    }
+
     // Guarda el total de estudiantes que asistieron en la tabla `estadisticasqr`
     $sqlInsertEstadisticas = "INSERT INTO estadisticasqr (fecha, estudiantesqasistieron) VALUES (:fecha, :estudiantesqasistieron)";
     $stmtEstadisticas = $pdo->prepare($sqlInsertEstadisticas);
@@ -55,5 +96,5 @@ try {
     echo json_encode(array("status" => "error", "message" => "Error al generar el código QR: " . $e->getMessage()));
 }
 
-$conn = null;
+$pdo = null;
 ?>

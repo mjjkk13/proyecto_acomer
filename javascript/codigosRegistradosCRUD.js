@@ -12,22 +12,22 @@ function cargarCodigosQR() {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${codigo.fechageneracion}</td>
+                    <td>${codigo.nombrecurso}</td>
                     <td><img src="../${codigo.codigoqr}" alt="Código QR" class="img-qr"></td>
                     <td>
-                        <button class="btn btn-danger" onclick="eliminarCodigo('${codigo.id_asistencia}')">
+                        <button class="btn btn-danger" onclick="eliminarCodigo(${codigo.idqrgenerados})">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
                 `;
                 tablaCodigos.appendChild(row);
             });
-            
         })
         .catch(error => console.error('Error:', error));
 }
 
 // Función para eliminar un código QR
-function eliminarCodigo(idAsistencia, idQrGenerados) {
+function eliminarCodigo(idQrGenerados) {
     Swal.fire({
         title: '¿Estás seguro?',
         text: "No podrás revertir esto.",
@@ -44,8 +44,7 @@ function eliminarCodigo(idAsistencia, idQrGenerados) {
                 },
                 body: new URLSearchParams({
                     'eliminar': 'true',
-                    'id_asistencia': idAsistencia,
-                    'id_qrgenerados': idQrGenerados
+                    'idqrgenerados': idQrGenerados
                 })
             })
             .then(response => response.json())
@@ -61,9 +60,6 @@ function eliminarCodigo(idAsistencia, idQrGenerados) {
         }
     });
 }
-
-
-
 
 // Cargar los códigos QR al cargar la página
 cargarCodigosQR();
