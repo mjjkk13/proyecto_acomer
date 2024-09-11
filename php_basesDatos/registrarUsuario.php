@@ -81,6 +81,41 @@ try {
 
     // Ejecutar la consulta
     $stmt_usr->execute();
+    $usuarios_id = $pdo->lastInsertId();
+
+    // Insertar en la tabla de conexión según el rol
+    if ($rol_desc === 'docente') {
+        $sql_docente = "INSERT INTO docente (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales) 
+                        VALUES (:usuarios_idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
+        
+        $stmt_docente = $pdo->prepare($sql_docente);
+        $stmt_docente->bindParam(':usuarios_idusuarios', $usuarios_id);
+        $stmt_docente->bindParam(':tipo_documento_tdoc', $tipo_documento);
+        $stmt_docente->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
+        $stmt_docente->bindParam(':credenciales_idcredenciales', $credenciales_id);
+        $stmt_docente->execute();
+    } elseif ($rol_desc === 'admin') {
+        $sql_admin = "INSERT INTO admin (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales, estadisticasqr_idestadisticasqr) 
+                      VALUES (:usuarios_idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales, :estadisticasqr_idestadisticasqr)";
+        
+        $stmt_admin = $pdo->prepare($sql_admin);
+        $stmt_admin->bindParam(':usuarios_idusuarios', $usuarios_id);
+        $stmt_admin->bindParam(':tipo_documento_tdoc', $tipo_documento);
+        $stmt_admin->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
+        $stmt_admin->bindParam(':credenciales_idcredenciales', $credenciales_id);
+        $stmt_admin->bindParam(':estadisticasqr_idestadisticasqr', $estadisticasqr_idestadisticasqr); // Asegúrate de que este campo tenga un valor o defínelo según sea necesario
+        $stmt_admin->execute();
+    } elseif ($rol_desc === 'estudiante_ss') {
+        $sql_estudiante_ss = "INSERT INTO estudiante_ss (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales) 
+                              VALUES (:usuarios_idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
+        
+        $stmt_estudiante_ss = $pdo->prepare($sql_estudiante_ss);
+        $stmt_estudiante_ss->bindParam(':usuarios_idusuarios', $usuarios_id);
+        $stmt_estudiante_ss->bindParam(':tipo_documento_tdoc', $tipo_documento);
+        $stmt_estudiante_ss->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
+        $stmt_estudiante_ss->bindParam(':credenciales_idcredenciales', $credenciales_id);
+        $stmt_estudiante_ss->execute();
+    }
 
     // Confirmar la transacción
     $pdo->commit();
@@ -99,4 +134,3 @@ try {
 
 echo json_encode($response);
 ?>
-    

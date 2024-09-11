@@ -59,15 +59,15 @@
           <div class="col-md-6">
             <div class="mb-3">
               <label for="nombre" class="form-label">Nombres:</label>
-              <input type="text" class="form-control" name="nombre" placeholder="Ingrese sus nombres">
+              <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese sus nombres">
             </div>
             <div class="mb-3">
               <label for="apellido" class="form-label">Apellidos:</label>
-              <input type="text" class="form-control" name="apellido" placeholder="Ingrese sus apellidos">
+              <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Ingrese sus apellidos">
             </div>
             <div class="mb-3">
               <label for="correo" class="form-label">Correo:</label>
-              <input type="email" class="form-control" name="correo" placeholder="Ingrese su correo electrónico">
+              <input type="email" class="form-control" name="correo" id="correo" placeholder="Ingrese su correo electrónico">
             </div>
             <div class="mb-3">
               <label for="contrasena" class="form-label">Contraseña:</label>
@@ -76,26 +76,26 @@
             </div>
             <div class="mb-3">
               <label for="celular" class="form-label">Celular:</label>
-              <input type="number" class="form-control" name="celular" placeholder="Ingrese su número de celular">
+              <input type="number" class="form-control" name="celular" id="celular" placeholder="Ingrese su número de celular">
             </div>
             <div class="mb-3">
               <label for="user" class="form-label">Usuario:</label>
-              <input type="text" class="form-control" name="user" placeholder="Ingrese su usuario">
+              <input type="text" class="form-control" name="user" id="user" placeholder="Ingrese su usuario">
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
               <label for="direccion" class="form-label">Dirección:</label>
-              <input type="text" class="form-control" name="direccion" placeholder="Ingrese su dirección">
+              <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingrese su dirección">
             </div>
             <div class="mb-3">
               <label for="documento" class="form-label">Documento de Identidad:</label>
-              <input type="number" class="form-control" name="documento" placeholder="Ingrese su número de documento">
+              <input type="number" class="form-control" name="documento" id="documento" placeholder="Ingrese su número de documento">
             </div>
             <div class="mb-3">
               <label for="tipoDocumento" class="form-label">Tipo de Documento:</label>
-              <select class="form-select" name="tipoDocumento">
-              <option value="" disabled selected>Seleccionar</option>
+              <select class="form-select" name="tipoDocumento" id="tipoDocumento">
+                <option value="" disabled selected>Seleccionar</option>
                 <option value="TI">Tarjeta de Identidad</option>
                 <option value="PA">Pasaporte</option>
                 <option value="PR">Permiso Especial de Permanencia</option>
