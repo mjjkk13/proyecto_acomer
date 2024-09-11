@@ -55,7 +55,7 @@ try {
     }
 
     // Insertar en la tabla de credenciales
-    $sql_cred = "INSERT INTO credenciales (user, contrasena, fecharegistro) VALUES (:user, :contrasena, NOW())";
+    $sql_cred = "INSERT INTO credenciales (user, contrasena, fecharegistro, estado) VALUES (:user, :contrasena, NOW(), 1)";
     $stmt_cred = $pdo->prepare($sql_cred);
     $stmt_cred->bindParam(':user', $user);
     $stmt_cred->bindParam(':contrasena', $hashed_password);

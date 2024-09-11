@@ -51,19 +51,24 @@
       </div>
     </div>
   </nav>
-  <table class="table">
+ <div class="table-container">
+  <table  class="table">
     <thead>
       <tr>
-        <th>User</th>
+        <th>Usuario</th>
         <th>Rol</th>
+        <th>Estado</th>
         <th>Último Acceso</th>
         <th>Acciones</th>
+        <th><button class="btn btn-success" id="addUserBtn">
+          <i class="fas fa-user-plus"></i>
+        </button></th>
       </tr>
     </thead>
-    <tbody id="credencialesTableBody">
-    </tbody>
+    <tbody id="credencialesTableBody"></tbody>
   </table>
-  
+</div>
+
   
   <footer class="footer">
     <div class="container">

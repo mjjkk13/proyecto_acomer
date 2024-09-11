@@ -10,7 +10,7 @@ try {
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'fetchAll') {
         $stmt = $pdo->query('SELECT 
-            idcredenciales,
+            idcredenciales, estado,
             c.user AS nombre_usuario_credenciales,
             c.contrasena,
             tu.rol AS tipo_usuario_rol,
@@ -26,37 +26,34 @@ try {
         $data = json_decode(file_get_contents("php://input"), true);
         $id = $data['id'];
         $user = $data['user'];
-        $password = $data['password'];
-
-        $encryptedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        $sql = "UPDATE credenciales SET user = :user, contrasena = :password WHERE idcredenciales = :id";
+        $password = $data['password'] ?? null; // Check if password is provided
+        $estado = $data['status'];
+    
+        $sql = "UPDATE credenciales SET user = :user, estado = :estado WHERE idcredenciales = :id";
+    
+        if ($password) {
+            $encryptedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $sql = "UPDATE credenciales SET user = :user, contrasena = :password, estado = :estado WHERE idcredenciales = :id";
+        }
+    
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['user' => $user, 'password' => $encryptedPassword, 'id' => $id]);
-
+        $params = ['user' => $user, 'estado' => $estado, 'id' => $id];
+    
+        if ($password) {
+            $params['password'] = $encryptedPassword;
+        }
+    
+        $stmt->execute($params);
+    
         echo json_encode(['success' => true]);
-
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $action === 'delete') {
+    }
+    elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $action === 'delete') {
         $data = json_decode(file_get_contents("php://input"), true);
         $id = $data['id'];
 
         $sql = "DELETE FROM credenciales WHERE idcredenciales = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['id' => $id]);
-
-        echo json_encode(['success' => true]);
-
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'insert') {
-        $data = json_decode(file_get_contents("php://input"), true);
-        $user = $data['user'];
-        $password = $data['password'];
-        $rol = $data['rol'];
-
-        $encryptedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        $sql = "INSERT INTO credenciales (user, contrasena, rol) VALUES (:user, :password, :rol)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['user' => $user, 'password' => $encryptedPassword, 'rol' => $rol]);
 
         echo json_encode(['success' => true]);
 

@@ -11,28 +11,44 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Populate the table with data
-  function populateTable(data) {
-    const tableBody = document.getElementById('credencialesTableBody');
-    tableBody.innerHTML = ''; // Clear existing rows
+function populateTable(data) {
+  const tableBody = document.getElementById('credencialesTableBody');
+  tableBody.innerHTML = ''; // Clear existing rows
 
-    data.forEach(row => {
-      const tr = document.createElement('tr');
+  data.forEach(row => {
+    const tr = document.createElement('tr');
 
-      tr.innerHTML = `
-        <td>${row.nombre_usuario_credenciales}</td>
-        <td>${row.tipo_usuario_rol}</td>
-        <td>${row.ultimoacceso}</td>
-        <td>
-          <button class="btn btn-info edit-btn" data-id="${row.idcredenciales}">Editar</button>
-          <button class="btn btn-danger delete-btn" data-id="${row.idcredenciales}">Eliminar</button>
-        </td>
-      `;
+    // Conditional logic for the 'estado' column with colored text
+    const estadoDisplay = row.estado == 1 
+      ? '<span style="color: green; font-weight: bold;">ACTIVO</span>' 
+      : '<span style="color: red; font-weight: bold;">INACTIVO</span>';
 
-      tableBody.appendChild(tr);
-    });
+    tr.innerHTML = `
+      <td>${row.nombre_usuario_credenciales}</td>
+      <td>${row.tipo_usuario_rol}</td>
+      <td>${estadoDisplay}</td>
+      <td>${row.ultimoacceso}</td>
+       <td>
+    <button class="btn btn-info edit-btn" data-id="${row.idcredenciales}">
+      <i class="fas fa-pencil-alt"></i>
+    </button>
+    <button class="btn btn-danger delete-btn" data-id="${row.idcredenciales}">
+      <i class="fas fa-trash-alt"></i>
+    </button>
 
-    addCrudEventListeners();
-  }
+  </td>
+    `;
+
+    tableBody.appendChild(tr);
+  });
+
+  addCrudEventListeners(); // Add event listeners for edit and delete buttons
+}
+//redireccion a registrar usuario
+document.getElementById('addUserBtn').addEventListener('click', function() {
+  window.location.href = 'registrarUsuario.php';
+});
+
 
   // Add event listeners to buttons
   function addCrudEventListeners() {
@@ -51,38 +67,49 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Handle editing user
   function handleEdit(id) {
     const selectedRow = document.querySelector(`[data-id="${id}"]`).parentNode.parentNode;
     const currentUser = selectedRow.children[0].textContent;
-
+    const currentStatus = selectedRow.children[2].textContent.trim().toUpperCase() === 'ACTIVO' ? '1' : '0';
+  
     Swal.fire({
       title: 'Editar Credencial',
-      html: `<input type="text" id="editUser" class="swal2-input" placeholder="User" value="${currentUser}">
-             <input type="password" id="editPassword" class="swal2-input" placeholder="Nuevo Password (dejar en blanco si no desea cambiar)">`,
+      html: `
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <input type="text" id="editUser" class="swal2-input" placeholder="User" value="${currentUser}">
+          <input type="password" id="editPassword" class="swal2-input" placeholder="Nuevo Password (dejar en blanco si no desea cambiar)">
+          <select id="editStatus" class="swal2-select">
+            <option value="disable">Seleccione</option>
+            <option value="1" ${currentStatus === '1' ? 'selected' : ''}>Activo</option>
+            <option value="0" ${currentStatus === '0' ? 'selected' : ''}>Inactivo</option>
+          </select>
+        </div>`,
       confirmButtonText: 'Guardar',
       focusConfirm: false,
       preConfirm: () => {
         const user = document.getElementById('editUser').value;
         const password = document.getElementById('editPassword').value;
-
+        const status = document.getElementById('editStatus').value;
+  
         if (!user) {
           Swal.showValidationMessage('Por favor completa el campo del nombre de usuario');
+          return false;
         }
-
-        return { user: user, password: password };
+  
+        return { user, password, status };
       }
     }).then(result => {
       if (result.isConfirmed) {
         const updateData = {
           id: id,
-          user: result.value.user
+          user: result.value.user,
+          status: result.value.status // Include status for update
         };
-
+  
         if (result.value.password) {
           updateData.password = result.value.password;
         }
-
+  
         fetch('../../php_basesDatos/Usuarios.php?action=update', {
           method: 'POST',
           headers: {
@@ -103,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-
+  
   // Handle deleting user
   function handleDelete(id) {
     Swal.fire({
