@@ -1,24 +1,25 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 include 'conexion.php';
 
-$sql = "
-SELECT 
-    alumnos.idalumnos, 
-    alumnos.nombre, 
-    alumnos.apellido, 
-    cursos.nombrecurso, 
-    usuarios.nombre AS nombreDocente
-FROM 
-    alumnos
-INNER JOIN 
-    cursos ON alumnos.cursos_idcursos = cursos.idcursos
-INNER JOIN 
-    docentealumnos ON alumnos.docentealumnos_iddocentealumnos = docentealumnos.iddocentealumnos
-INNER JOIN 
-    usuarios ON docentealumnos.docente_iddocente = usuarios.idusuarios;
-";
+header('Content-Type: application/json');
 
 try {
+    // Consulta solo con alumnos y cursos
+    $sql = "
+    SELECT 
+        alumnos.idalumnos, 
+        alumnos.nombre, 
+        alumnos.apellido, 
+        cursos.nombrecurso
+    FROM 
+        alumnos
+    INNER JOIN 
+        cursos ON alumnos.cursos_idcursos = cursos.idcursos
+    ";
+
     $stmt = $pdo->query($sql);
     $estudiantes = array();
 
@@ -27,10 +28,12 @@ try {
         $estudiantes[] = $row;
     }
 
+    // Devuelve los datos en formato JSON
     echo json_encode($estudiantes);
+
 } catch (PDOException $e) {
-    // Manejo de errores
-    echo "Error: " . $e->getMessage();
+    // Si ocurre un error, devuelve el mensaje de error
+    echo json_encode(array("status" => "error", "message" => "Error: " . $e->getMessage()));
 }
 
 $pdo = null;

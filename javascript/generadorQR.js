@@ -103,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${estudiante.nombre}</td>
                     <td>${estudiante.apellido}</td>
                     <td>${estudiante.nombrecurso}</td>
-                    <td>${estudiante.nombreDocente}</td>
                     <td>
                         <input type="checkbox" class="asistencia-checkbox" data-id="${estudiante.idalumnos}">  
                     </td>
