@@ -28,31 +28,59 @@ try {
         $user = $data['user'];
         $password = $data['password'] ?? null; // Check if password is provided
         $estado = $data['status'];
-    
-        $sql = "UPDATE credenciales SET user = :user, estado = :estado WHERE idcredenciales = :id";
-    
-        if ($password) {
-            $encryptedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "UPDATE credenciales SET user = :user, contrasena = :password, estado = :estado WHERE idcredenciales = :id";
+        $rol = $data['rol']; // Get the rol
+
+        // Map rol name to rol id
+        $rolId = '';
+        switch ($rol) {
+            case 'Estudiante SS':
+                $rolId = 1;
+                break;
+            case 'Docente':
+                $rolId = 2;
+                break;
+            case 'Administrador':
+                $rolId = 3;
+                break;
+            default:
+                $rolId = ''; // Or handle unexpected values
+                break;
         }
-    
-        $stmt = $pdo->prepare($sql);
-        $params = ['user' => $user, 'estado' => $estado, 'id' => $id];
-    
-        if ($password) {
-            $params['password'] = $encryptedPassword;
+
+        $pdo->beginTransaction(); // Start transaction
+
+        try {
+            // Update the credentials
+            $sql = "UPDATE credenciales SET user = :user, estado = :estado" . ($password ? ", contrasena = :password" : "") . " WHERE idcredenciales = :id";
+            $stmt = $pdo->prepare($sql);
+            $params = ['user' => $user, 'estado' => $estado, 'id' => $id];
+
+            if ($password) {
+                $encryptedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $params['password'] = $encryptedPassword;
+            }
+
+            $stmt->execute($params);
+
+            // Update the rol
+            $sqlrol = "UPDATE usuarios SET tipo_usuario_idtipo_usuario = :rol WHERE credenciales_idcredenciales = :id";
+            $stmtrol = $pdo->prepare($sqlrol);
+            $stmtrol->execute(['rol' => $rolId, 'id' => $id]);
+
+            $pdo->commit(); // Commit transaction
+
+            echo json_encode(['success' => true]);
+
+        } catch (Exception $e) {
+            $pdo->rollBack(); // Rollback transaction on error
+            echo json_encode(['error' => $e->getMessage()]);
         }
-    
-        $stmt->execute($params);
-    
-        echo json_encode(['success' => true]);
-    }
-    elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $action === 'delete') {
+
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $action === 'delete') {
         $data = json_decode(file_get_contents("php://input"), true);
         $id = $data['id'];
 
-        $sql = "DELETE FROM credenciales WHERE idcredenciales = :id";
-        $stmt = $pdo->prepare($sql);
+        $stmt = $pdo->prepare("DELETE FROM credenciales WHERE idcredenciales = :id");
         $stmt->execute(['id' => $id]);
 
         echo json_encode(['success' => true]);
@@ -63,5 +91,4 @@ try {
 } catch (Exception $e) {
     echo json_encode(['error' => $e->getMessage()]);
 }
-
 ?>

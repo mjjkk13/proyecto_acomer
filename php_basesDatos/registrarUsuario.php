@@ -84,7 +84,7 @@ try {
     $usuarios_id = $pdo->lastInsertId();
 
     // Insertar en la tabla de conexión según el rol
-    if ($rol_desc === 'docente') {
+    if ($rol_desc === 'Docente') {
         $sql_docente = "INSERT INTO docente (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales) 
                         VALUES (:usuarios_idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
         
@@ -94,7 +94,7 @@ try {
         $stmt_docente->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
         $stmt_docente->bindParam(':credenciales_idcredenciales', $credenciales_id);
         $stmt_docente->execute();
-    } elseif ($rol_desc === 'admin') {
+    } elseif ($rol_desc === 'Administrador') {
         $sql_admin = "INSERT INTO admin (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales, estadisticasqr_idestadisticasqr) 
                       VALUES (:usuarios_idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales, :estadisticasqr_idestadisticasqr)";
         
@@ -105,7 +105,7 @@ try {
         $stmt_admin->bindParam(':credenciales_idcredenciales', $credenciales_id);
         $stmt_admin->bindParam(':estadisticasqr_idestadisticasqr', $estadisticasqr_idestadisticasqr); // Asegúrate de que este campo tenga un valor o defínelo según sea necesario
         $stmt_admin->execute();
-    } elseif ($rol_desc === 'estudiante_ss') {
+    } elseif ($rol_desc === 'Estudiante SS') {
         $sql_estudiante_ss = "INSERT INTO estudiante_ss (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales) 
                               VALUES (:usuarios_idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
         
