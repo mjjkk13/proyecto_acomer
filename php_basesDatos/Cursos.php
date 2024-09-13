@@ -14,13 +14,58 @@ try {
     switch ($action) {
         case 'create':
             $nombrecurso = $_POST['nombrecurso'] ?? '';
-            $docente_id = $_POST['docente_id'] ?? 0;
+            $docente_id = $_POST['docente_id'] ?? 0;  // ID del docente seleccionado
 
             if ($nombrecurso && $docente_id) {
-                $query = "INSERT INTO cursos (nombrecurso, docente_iddocente) VALUES (:nombrecurso, :docente_id)";
+                // Obtener los datos del docente desde la tabla docente
+                $query = "
+                    SELECT 
+                        iddocente, 
+                        usuarios_idusuarios, 
+                        usuarios_tipo_documento_tdoc, 
+                        usuarios_tipo_usuario_idtipo_usuario, 
+                        usuarios_credenciales_idcredenciales
+                    FROM docente
+                    WHERE iddocente = :docente_id";
+                
                 $stmt = $conn->prepare($query);
-                $stmt->execute(['nombrecurso' => $nombrecurso, 'docente_id' => $docente_id]);
-                echo json_encode(['success' => 'Curso creado exitosamente.']);
+                $stmt->execute(['docente_id' => $docente_id]);
+                $docente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($docente) {
+                    // Insertar el curso con los datos del docente
+                    $query = "
+                        INSERT INTO cursos (
+                            nombrecurso, 
+                            docente_iddocente, 
+                            docente_usuarios_idusuarios, 
+                            docente_usuarios_tipo_documento_tdoc, 
+                            docente_usuarios_tipo_usuario_idtipo_usuario, 
+                            docente_usuarios_credenciales_idcredenciales
+                        ) 
+                        VALUES (
+                            :nombrecurso, 
+                            :docente_iddocente, 
+                            :usuarios_idusuarios, 
+                            :tipo_documento_tdoc, 
+                            :tipo_usuario_idtipo_usuario, 
+                            :credenciales_idcredenciales
+                        )";
+                    
+                    $stmt = $conn->prepare($query);
+                    $stmt->execute([
+                        'nombrecurso' => $nombrecurso,
+                        'docente_iddocente' => $docente['iddocente'],
+                        'usuarios_idusuarios' => $docente['usuarios_idusuarios'],
+                        'tipo_documento_tdoc' => $docente['usuarios_tipo_documento_tdoc'],
+                        'tipo_usuario_idtipo_usuario' => $docente['usuarios_tipo_usuario_idtipo_usuario'],
+                        'credenciales_idcredenciales' => $docente['usuarios_credenciales_idcredenciales']
+                    ]);
+
+                    echo json_encode(['success' => 'Curso creado exitosamente.']);
+                } else {
+                    echo json_encode(['error' => 'No se encontró el docente.']);
+                }
             } else {
                 echo json_encode(['error' => 'Faltan datos para crear el curso.']);
             }
@@ -35,7 +80,7 @@ try {
                 FROM 
                     cursos 
                 INNER JOIN 
-                    usuarios ON cursos.docente_iddocente = usuarios.docente_iddocente
+                    usuarios ON cursos.docente_usuarios_idusuarios = usuarios.idusuarios
                 WHERE 
                     usuarios.tipo_usuario_idtipo_usuario = 2
             ";
@@ -51,10 +96,49 @@ try {
             $docente_id = $_POST['docente_id'] ?? 0;
 
             if ($idcurso && $nombrecurso && $docente_id) {
-                $query = "UPDATE cursos SET nombrecurso = :nombrecurso, docente_iddocente = :docente_id WHERE idcurso = :idcurso";
+                // Obtener los datos del docente
+                $query = "
+                    SELECT 
+                        iddocente, 
+                        usuarios_idusuarios, 
+                        usuarios_tipo_documento_tdoc, 
+                        usuarios_tipo_usuario_idtipo_usuario, 
+                        usuarios_credenciales_idcredenciales
+                    FROM docente
+                    WHERE iddocente = :docente_id";
+                
                 $stmt = $conn->prepare($query);
-                $stmt->execute(['nombrecurso' => $nombrecurso, 'docente_id' => $docente_id, 'idcurso' => $idcurso]);
-                echo json_encode(['success' => 'Curso actualizado exitosamente.']);
+                $stmt->execute(['docente_id' => $docente_id]);
+                $docente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($docente) {
+                    // Actualizar el curso con los datos del docente
+                    $query = "
+                        UPDATE cursos 
+                        SET 
+                            nombrecurso = :nombrecurso, 
+                            docente_iddocente = :docente_iddocente, 
+                            docente_usuarios_idusuarios = :usuarios_idusuarios, 
+                            docente_usuarios_tipo_documento_tdoc = :tipo_documento_tdoc, 
+                            docente_usuarios_tipo_usuario_idtipo_usuario = :tipo_usuario_idtipo_usuario, 
+                            docente_usuarios_credenciales_idcredenciales = :credenciales_idcredenciales
+                        WHERE idcurso = :idcurso";
+                    
+                    $stmt = $conn->prepare($query);
+                    $stmt->execute([
+                        'nombrecurso' => $nombrecurso,
+                        'docente_iddocente' => $docente['iddocente'],
+                        'usuarios_idusuarios' => $docente['usuarios_idusuarios'],
+                        'tipo_documento_tdoc' => $docente['usuarios_tipo_documento_tdoc'],
+                        'tipo_usuario_idtipo_usuario' => $docente['usuarios_tipo_usuario_idtipo_usuario'],
+                        'credenciales_idcredenciales' => $docente['usuarios_credenciales_idcredenciales'],
+                        'idcurso' => $idcurso
+                    ]);
+
+                    echo json_encode(['success' => 'Curso actualizado exitosamente.']);
+                } else {
+                    echo json_encode(['error' => 'No se encontró el docente.']);
+                }
             } else {
                 echo json_encode(['error' => 'Faltan datos para actualizar el curso.']);
             }
@@ -71,6 +155,46 @@ try {
             } else {
                 echo json_encode(['error' => 'Faltan datos para eliminar el curso.']);
             }
+            break;
+
+        case 'register_docentes':
+            // Registrar docentes desde usuarios con rol docente (idtipo_usuario = 2)
+            $query = "
+                SELECT 
+                    idusuarios, 
+                    tipo_documento_tdoc, 
+                    tipo_usuario_idtipo_usuario, 
+                    credenciales_idcredenciales
+                FROM usuarios
+                WHERE tipo_usuario_idtipo_usuario = 2";
+            
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+            $docentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($docentes as $docente) {
+                $query = "
+                    INSERT INTO docente (
+                        usuarios_idusuarios, 
+                        usuarios_tipo_documento_tdoc, 
+                        usuarios_tipo_usuario_idtipo_usuario, 
+                        usuarios_credenciales_idcredenciales
+                    ) 
+                    SELECT :idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales
+                    WHERE NOT EXISTS (
+                        SELECT 1 FROM docente WHERE usuarios_idusuarios = :idusuarios
+                    )";
+                
+                $stmt = $conn->prepare($query);
+                $stmt->execute([
+                    'idusuarios' => $docente['idusuarios'],
+                    'tipo_documento_tdoc' => $docente['tipo_documento_tdoc'],
+                    'tipo_usuario_idtipo_usuario' => $docente['tipo_usuario_idtipo_usuario'],
+                    'credenciales_idcredenciales' => $docente['credenciales_idcredenciales']
+                ]);
+            }
+            
+            echo json_encode(['success' => 'Docentes registrados correctamente.']);
             break;
 
         default:
