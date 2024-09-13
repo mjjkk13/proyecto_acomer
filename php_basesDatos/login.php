@@ -11,8 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Consulta SQL para obtener los datos de la tabla credenciales y el rol
-            $sql = "SELECT c.user, c.contrasena, tu.rol 
+            // Consulta SQL para obtener los datos, incluido el id_usuario
+            $sql = "SELECT u.idusuarios, c.user, c.contrasena, tu.rol 
                     FROM credenciales c
                     JOIN usuarios u ON c.idcredenciales = u.credenciales_idcredenciales
                     JOIN tipo_usuario tu ON u.tipo_usuario_idtipo_usuario = tu.idtipo_usuario
@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     echo "Contraseña verificada exitosamente.";
                     // Inicio de sesión exitoso
                     session_start();
+                    // Guardar el id_usuario en la sesión
+                    $_SESSION['idusuarios'] = $result['idusuarios'];
                     $_SESSION['user'] = $usuario;
 
                     // Actualizar la fecha y hora del último acceso

@@ -1,5 +1,5 @@
 <?php
-require 'C:/xampp/htdocs/Proyecto/vendor/autoload.php';
+require '../vendor/autoload.php';
 include 'registrarUsuario.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'marianajimenezv2006@gmail.com';
-        $mail->Password = 'alaxdvrcnthfernn'; // Considera usar una contraseña de aplicación
+        $mail->Password = 'irbmipajfuswuoyl'; // Considera usar una contraseña de aplicación
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Utiliza la encriptación correcta
         $mail->Port = 465;
 

@@ -1,10 +1,10 @@
-// Handle form submission
+// Manejar envío de formulario
 document.getElementById('loginForm').addEventListener('submit', function(event) {
     var emailInput = document.getElementById('usuario');
     var passwordInput = document.getElementById('inputPassword');
     var isValid = true;
 
-    // Validate email input
+    // Validar entrada de usuario
     if (!emailInput.checkValidity()) {
         emailInput.classList.add('is-invalid');
         emailInput.nextElementSibling.style.display = 'block';
@@ -14,7 +14,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         emailInput.nextElementSibling.style.display = 'none';
     }
 
-    // Validate password input
+    // Validar entrada de contraseña
     if (!passwordInput.checkValidity()) {
         passwordInput.classList.add('is-invalid');
         passwordInput.nextElementSibling.style.display = 'block';
@@ -24,35 +24,24 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         passwordInput.nextElementSibling.style.display = 'none';
     }
 
-    // Prevent form submission if any field is invalid
+    // Prevenir el envío del formulario si hay campos inválidos
     if (!isValid) {
         event.preventDefault();
     }
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Verifica que el archivo JS se carga
-    console.log('JavaScript file loaded');
+// Manejar mostrar/ocultar contraseña
+const inputPassword = document.getElementById("inputPassword");
+const icon = document.getElementById("togglePassword");
 
-    // Handle show password button
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('inputPassword');
-    
-    if (togglePassword) {
-        togglePassword.addEventListener('click', function() {
-            console.log('Toggle password icon clicked'); // Verifica que el evento de clic se está disparando
-
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                togglePassword.classList.remove('fa-eye');
-                togglePassword.classList.add('fa-eye-slash');
-            } else {
-                passwordField.type = 'password';
-                togglePassword.classList.remove('fa-eye-slash');
-                togglePassword.classList.add('fa-eye');
-            }
-        });
+icon.addEventListener("click", () => {
+    if (inputPassword.type === "password") {
+        inputPassword.type = "text";
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
     } else {
-        console.log('Toggle password icon not found');
+        inputPassword.type = "password";
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
     }
 });
