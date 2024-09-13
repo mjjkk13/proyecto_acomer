@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
 body {
-  background-color: #f8f9fa;
+  background-color:#DDE6ED; 
   display: flex;
   text-align: center;
   flex-direction: column;
@@ -10,7 +10,7 @@ body {
   padding-bottom: 90px;
 }
 .so{
-  color:white !important;
+  color:#DDE6ED !important;
 }
 
 nav.navbar {
@@ -86,10 +86,10 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
 }
 
 .card {
-    background-color: #ffffff; 
+    background-color: #DDE6ED; 
   }
   .card-header {
-    background-color: #27374D; 
+    background-color: #DDE6ED; 
   }
   .btn-success {
     background-color: #27374D;

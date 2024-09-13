@@ -10,34 +10,43 @@
   <script src="../../assets/plugins/qrCode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
+<body style="background-color: #DDE6ED;">
   <nav class="navbar navbar-expand-lg">
     <div class="container">
-      <a class="navbar-brand" href="../index.html">
-        <img src="../../css/img/logo.png" alt="Logo" width="40 !important" height="40 !important"> A Comer
-      </a>
+      <div class="so">
+        <a class="navbar-brand" href="index.html">
+          <img id="logo" src="../../css/img/logo.png" alt="Logo" width="40" height="40"> A Comer
+        </a>
+      </div>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="index.html"><i class="fas fa-qrcode"></i> Escanear QR</a>
+            <a class="nav-link" href="index.html">Consultar Estadísticas</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="codigosRegistrados.html">Codigos Registrados</a>
+            <a class="nav-link" href="codigosRegistrados.html">Códigos Registrados</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="consultarMenu.html">Consultar Menú</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="AgregarEstudiante.html">Agregar Estudiante</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="datosPersonales.html">Datos Personales</a>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Administrador
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+              <li><a class="dropdown-item" href="../Admin/consultarCursos.html">Cursos Disponibles</a></li>
+              <li><a class="dropdown-item" href="../Admin/registrarUsuario.php">Registrar Nuevo Usuario</a></li>
+              <li><a class="dropdown-item" href="../Admin/usuarios.html">Usuarios</a></li>
+            </ul>
+          </li>
           <li class="nav-item">
-            <a class="nav-link" href="../iniciarSesion.html">Cerrar Sesión</a> 
+            <a class="nav-link" href="../../php_basesDatos/loggout.php">Cerrar Sesión</a>
           </li>
         </ul>
       </div>
@@ -46,7 +55,7 @@
 
   <div class="container">
     <div class="card mt-5">
-      <h2 class="text-center mb-4">Datos Personales</h2>
+      <h2 class="text-center text-white p-2" style="background-color: #27374D;">Datos Personales</h2>
       <div class="table-responsive">
         <table class="table table-bordered">
           <thead>
