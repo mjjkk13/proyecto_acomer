@@ -96,6 +96,8 @@ nav.navbar a.nav-link.dropdown-toggle:hover {
     border-color: #27374D;
   }
 
+  
+
 /* Media queries para hacer el contenido responsive */
 
 @media (max-width: 576px) {
