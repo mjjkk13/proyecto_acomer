@@ -1,5 +1,11 @@
 <?php
-include("conexion.php");
+include("../../core/database.php");
+include("../../config/config.php");
+$host = 'localhost';
+$db ='acomer';
+$user = 'root';
+$pass = 'toor';
+$charset = 'utf8mb4';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['usuario']) && isset($_POST['inputPassword'])) {
@@ -46,13 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     // Redirigir según el rol del usuario
                     switch ($result['rol']) {
                         case 'Administrador':
-                            header("Location: ../Php/Admin/index.html");
+                            header("Location: ../views/Admin/index.html");
                             break;
                         case 'Estudiante SS':
-                            header("Location: ../Php/Estudiante/index.html");
+                            header("Location: ../views/Estudiante/index.html");
                             break;
                         case 'Docente':
-                            header("Location: ../Php/Docente/index.html");
+                            header("Location: ../views/Docente/index.html");
                             break;
                         default:
                             echo "Rol no reconocido.";

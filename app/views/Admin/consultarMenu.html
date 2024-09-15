@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <title>A Comer - Estadísticas</title>
+  <title>A Comer - Menú</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../../css/Cursos.css">
+  <link rel="stylesheet" href="../css/consultarMenu_Admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -15,7 +14,7 @@
     <div class="container">
       <div class="so">
         <a class="navbar-brand" href="index.html">
-          <img id="logo" src="../../css/img/logo.png" alt="Logo" width="40" height="40"> A Comer
+          <img id="logo" src="../css/img/logo.png" alt="Logo" width="40" height="40"> A Comer
         </a>
       </div>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,31 +52,44 @@
     </div>
   </nav>
 
-  <div class="row mt-4">
-    <div class="col-12">
-      <h3>Cursos Disponibles</h3>
-      <button id="btnAgregarCurso" class="btn btn-primary">Agregar Curso</button>
-      <table class="table table-bordered" id="cursosTable">
-        <thead>
-          <tr>
-            <th>Curso</th>
-            <th>Director de Curso</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Los datos se insertarán aquí mediante JavaScript -->
-        </tbody>
-      </table>
+  <div class="container mt-4">
+    <h3 class="display-4 text-center">Menú</h3>
+
+    <section class="features py-4">
+      <div class="row text-center">
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+          <div class="feature-box" id="desayunoBox">
+            <img src="../css/img/gato.jpg" class="img-fluid" alt="Desayuno">
+            <p class="comida">Desayuno</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+          <div class="feature-box" id="almuerzoBox">
+            <img src="../css/img/gato.jpg" class="img-fluid" alt="Almuerzo">
+            <p class="comida">Almuerzo</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+          <div class="feature-box" id="refrigerioBox">
+            <img src="../css/img/gato.jpg" class="img-fluid" alt="Refrigerio">
+            <p class="comida">Refrigerio</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-success" id="addMenuBtn">Agregar Menú</button>
     </div>
   </div>
 
-  <footer class="footer py-3">
+  <script src="../javascript/menuCRUD.js"></script>
+
+  <footer class="footer">
     <div class="container text-center">
       <p>&copy; 2024 Plataforma Educativa. Todos los derechos reservados.</p>
     </div>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../../javascript/Cursos.js"></script>
 </body>
 </html>

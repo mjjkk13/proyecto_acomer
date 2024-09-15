@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../../css/registrarUsuario.css">
+  <link rel="stylesheet" href="../css/registrarUsuario.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -14,7 +14,7 @@
     <div class="container">
       <div class="so">
         <a class="navbar-brand" href="index.html">
-          <img id="logo" src="../../css/img/logo.png" alt="Logo" width="40" height="40"> A Comer
+          <img id="logo" src="../css/img/logo.png" alt="Logo" width="40" height="40"> A Comer
         </a>
       </div>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,6 +146,6 @@
     </div>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../../javascript/registroUsuarios.js"></script>
+  <script src="../javascript/registroUsuarios.js"></script>
 </body>
 </html>

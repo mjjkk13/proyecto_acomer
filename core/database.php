@@ -5,13 +5,14 @@ class Database {
     private $pass = DB_PASS;
     private $dbname = DB_NAME;
     private $charset = DB_CHARSET;
+    private $url = BASE_URL;
     private $pdo;
     private $error;
     private $stmt;
 
     public function __construct() {
         // Configurar la conexión
-        $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->dbname . ";charset=" . $this->charset;
+        $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->dbname . ";charset=" . $this->charset . $this->url;
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
