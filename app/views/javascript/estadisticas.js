@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   });
 
-  fetch('../../php_basesDatos/estadisticas.php')
+  fetch('../../controllers/EstadisticasController.php')
       .then(response => response.json())
       .then(data => {
           // Crear gráfico de barras para el ingreso diario

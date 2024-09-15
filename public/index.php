@@ -1,15 +1,37 @@
 <?php
+// Activar el manejo de errores para desarrollo
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Cargar todos los archivos necesarios (Modelos, Controladores, etc.)
+// Usar un autoloader en lugar de incluir archivos manualmente es una buena práctica
+
 require_once '../core/model.php';
-require_once '../core/database.php';
 require_once '../config/config.php';
-require_once 'core/database.php';
-require_once 'controllers/UserController.php';
+require_once '../app/controllers/LogInController.php';
+require_once '../app/models/EstadisticasModel.php';
+require_once '../app/controllers/EstadisticasController.php';
+require_once '../config/Routes.php';
 
 // Cargar configuración de rutas
-require_once '../config/routes.php';
+require_once '../core/Router.php';
+
+// Inicializar la conexión a la base de datos
+require_once '../core/database.php';
+
+// Iniciar el enrutador
+$router = new Router();
+$router->route();
+
+// Creamos las instancias del modelo y el controlador
+$estadisticasModel = new EstadisticasModel($pdo);
+$estadisticasController = new EstadisticasController($estadisticasModel);
+
+// Llamamos al método que gestiona la lógica
+$estadisticasController->getEstadisticas();
 
 // Obtener la URL y manejar el enrutamiento
-$url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'views/index';
+$url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'public/index';
 $url = explode('/', $url);
 
 // Verificar que la ruta existe en la configuración
