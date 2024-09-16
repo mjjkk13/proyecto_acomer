@@ -8,7 +8,7 @@ ini_set('display_errors', 1);
 
 require_once '../core/model.php';
 require_once '../config/config.php';
-require_once '../app/controllers/LogInController.php';
+require_once '../app/controllers/AuthController.php';
 require_once '../app/models/EstadisticasModel.php';
 require_once '../app/controllers/EstadisticasController.php';
 require_once '../config/Routes.php';
@@ -22,13 +22,6 @@ require_once '../core/database.php';
 // Iniciar el enrutador
 $router = new Router();
 $router->route();
-
-// Creamos las instancias del modelo y el controlador
-$estadisticasModel = new EstadisticasModel($pdo);
-$estadisticasController = new EstadisticasController($estadisticasModel);
-
-// Llamamos al método que gestiona la lógica
-$estadisticasController->getEstadisticas();
 
 // Obtener la URL y manejar el enrutamiento
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'public/index';

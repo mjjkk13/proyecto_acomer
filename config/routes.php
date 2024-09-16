@@ -2,8 +2,8 @@
 // Definición de rutas
 // Incluye el archivo del controlador
 require_once '../app/controllers/ViewsController.php';
-require_once '../app/controllers/LogInController.php';
-require_once '../app/controllers/UserController.php';
+require_once '../app/controllers/AuthController.php';
+require_once '../app/controllers/SessionController.php';
 
 // Obtén la ruta de la solicitud
 $requestUri = $_SERVER['REQUEST_URI'];

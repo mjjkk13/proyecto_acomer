@@ -7,8 +7,8 @@ class Router {
         $url = explode('/', $url);
 
         // Definir controlador y método por defecto
-        $controllerName = !empty($url[0]) ? ucfirst($url[0]) . 'Controller' : 'EstadisticasController';
-        $methodName = isset($url[1]) ? $url[1] : 'getEstadisticas';
+        $controllerName = !empty($url[0]) ? ucfirst($url[0]) . 'Controller' : 'ViewsController';
+        $methodName = isset($url[1]) ? $url[1] : 'index';
 
         // Verificar si el controlador existe
         if (file_exists("../app/controllers/$controllerName.php")) {

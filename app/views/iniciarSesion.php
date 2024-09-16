@@ -11,7 +11,7 @@
 <body>
   <nav class="navbar navbar-expand-lg">
     <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="/Proyecto/public/index.php">
           <img src="../views/css/img/logo.png" alt="Logo" width="40" height="40">
           <span class="navbar-text">A Comer</span> 
         </a>
@@ -24,7 +24,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title text-center mb-4">Iniciar Sesión</h5>
-            <form id="loginForm" action="../controllers/LogInController.php" method="POST">
+            <form id="loginForm" action="../controllers/AuthController.php?action=login" method="POST">
               <div class="mb-3 form-floating">
                 <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario" required>
                 <label for="usuario">Usuario</label>

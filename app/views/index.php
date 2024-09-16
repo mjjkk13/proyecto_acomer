@@ -5,13 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="../app/views/css/index.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="">
-                <img src="css/img/logo.png" alt="Logo" width="40" height="40">
+            <a class="navbar-brand">
+                <img src="../app/views/css/img/logo.png" alt="Logo" width="40" height="40">
                 <span class="navbar-text">A Comer</span>
             </a>
         </div>
@@ -51,15 +51,15 @@
     
     <script>
         document.getElementById("estudianteBox").addEventListener("click", function() {
-            window.location.href = "../../app/views/iniciarSesion.html";
+            window.location.href = "<?php BASE_URL;?>../app/views/iniciarSesion.php";
         });
 
         document.getElementById("docenteBox").addEventListener("click", function() {
-            window.location.href = "../../app/views/iniciarSesion.html";
+            window.location.href = "<?php BASE_URL;?>../app/views/iniciarSesion.php";
         });
 
         document.getElementById("adminBox").addEventListener("click", function() {
-            window.location.href = "../../app/views/iniciarSesion.html";
+            window.location.href = "<?php BASE_URL;?>../app/views/iniciarSesion.php";
         });
     </script>
 
