@@ -3,13 +3,14 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include('conexion.php');
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php'; // Asegúrate de que la ruta es correcta
 
 $action = $_POST['action'] ?? '';
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Obtener la conexión a la base de datos
+    $database = new Database();
+    $pdo = $database->getConnection();
 
     switch ($action) {
         case 'create':
@@ -29,7 +30,8 @@ try {
                     WHERE iddocente = :docente_id";
                 
                 $stmt = $conn->prepare($query);
-                $stmt->execute(['docente_id' => $docente_id]);
+                $stmt->bindParam(':docente_id', $docente_id, PDO::PARAM_INT);
+                $stmt->execute();
                 $docente = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($docente) {
@@ -205,5 +207,4 @@ try {
     echo json_encode(['error' => 'Error de conexión: ' . $e->getMessage()]);
 }
 
-$conn = null;
 ?>

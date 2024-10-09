@@ -1,12 +1,14 @@
 <?php
-include("conexion.php");
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php';
 
 header('Content-Type: application/json');
 
 $response = array('success' => false, 'message' => '');
 
 try {
-    $pdo->beginTransaction();
+    // Conexión a la base de datos
+    $database = new Database();
+    $pdo = $database->getConnection();
 
     // Recibir y limpiar datos del formulario
     $nombre = trim($_POST['nombre']);
@@ -123,7 +125,11 @@ try {
     $response['message'] = "Nuevo usuario registrado exitosamente";
 } catch (Exception $e) {
     // En caso de error, revertir la transacción
-    $pdo->rollBack();
+    if (isset($pdo)) {
+        if (isset($pdo)) {
+            $pdo->rollBack();
+        }
+    }
     $response['message'] = "Error: " . $e->getMessage();
 } catch (PDOException $e) {
     // Manejar excepciones PDO

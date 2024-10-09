@@ -1,16 +1,20 @@
+
+<?php
+require_once "C:/xampp/htdocs/Proyecto/app/helpers/auth.php";
+checkUserRole('Administrador');
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <title>A Comer</title>
+  <title>A Comer - Estadísticas</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../css/estudianteAg.css"> 
+  <link rel="stylesheet" href="../css/estadisticas.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <script src="../../assets/plugins/qrCode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body style="background-color: #DDE6ED;">
+<body>
   <nav class="navbar navbar-expand-lg">
     <div class="container">
       <div class="so">
@@ -36,7 +40,7 @@
             <a class="nav-link" href="datosPersonales.html">Datos Personales</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Administrador
             </a>
             <ul class="dropdown-menu" aria-labelledby="adminDropdown">
@@ -46,41 +50,44 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../models/loggout.php">Cerrar Sesión</a>
+            <a class="nav-link" href="/Proyecto/app/models/loggout.php">Cerrar Sesión</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <div class="container">
-    <div class="card mt-5">
-      <h2 class="text-center text-white p-2" style="background-color: #27374D;">Datos Personales</h2>
-      <div class="table-responsive">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Campo</th>
-              <th>Información</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Aquí se llenarán los datos con el script JS -->
-          </tbody>
-        </table>
-        <button id="btnActualizar" class="btn btn-primary mt-3">
-          <i class="fas fa-edit"></i> Actualizar Datos
-      </button>  
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-12 text-center">
+        <button id="toggleView" class="btn">Mostrar Ingreso Semanal</button>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-12">
+        <div id="dailyView">
+          <h3>Ingreso Diario</h3>
+          <div class="chart-container">
+            <canvas id="dailyChart"></canvas> <!-- Gráfico de barras diario -->
+          </div>
+        </div>
+        <div id="weeklyView" style="display:none;">
+          <h3>Ingreso Semanal</h3>
+          <div class="chart-container">
+            <canvas id="weeklyChart"></canvas> <!-- Gráfico lineal semanal -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <footer class="footer">
-    <div class="container">
+  <footer class="footer py-3">
+    <div class="container text-center">
       <p>&copy; 2024 Plataforma Educativa. Todos los derechos reservados.</p>
     </div>
   </footer>
-  <script src="../javascript/mostrarDatos.js"></script> <!-- Aquí se incluye el JS que mostrará los datos -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="C:\xampp\htdocs\Proyecto\app\views\javascript\estadisticas.js"></script>
 </body>
 </html>

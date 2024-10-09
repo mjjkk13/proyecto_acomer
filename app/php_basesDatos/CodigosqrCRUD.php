@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include 'conexion.php'; 
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php'; // Asegúrate de que la ruta es correcta
 
 header('Content-Type: application/json');
 
@@ -15,6 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   ORDER BY q.fechageneracion DESC";
 
     try {
+        // Obtener la conexión a la base de datos
+        $database = new Database();
+        $pdo = $database->getConnection();
+
         $stmt = $pdo->query($sqlSelect);
         $codigos = array();
 
@@ -37,6 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
     $idQrGenerados = $_POST['idqrgenerados'];
 
     try {
+        // Obtener la conexión a la base de datos
+        $database = new Database();
+        $pdo = $database->getConnection();
+
         // Eliminar el registro en `qrgenerados`
         $sqlDeleteQrGenerados = "DELETE FROM qrgenerados WHERE idqrgenerados = :idqrgenerados";
         $stmt = $pdo->prepare($sqlDeleteQrGenerados);
@@ -48,6 +56,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
         echo json_encode(['success' => false, 'message' => 'Error en DELETE: ' . $e->getMessage()]);
     }
 }
-
-$pdo = null;
 ?>

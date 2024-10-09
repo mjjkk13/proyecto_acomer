@@ -13,7 +13,7 @@
   <nav class="navbar navbar-expand-lg">
     <div class="container">
       <div class="so">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="index.php">
           <img id="logo" src="../css/img/logo.png" alt="Logo" width="40" height="40"> A Comer
         </a>
       </div>
@@ -23,7 +23,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">Consultar Estadísticas</a>
+            <a class="nav-link" href="index.php">Consultar Estadísticas</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="codigosRegistrados.html">Códigos Registrados</a>
@@ -45,7 +45,7 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../php_basesDatos/loggout.php">Cerrar Sesión</a>
+            <a class="nav-link" href="../../models/loggout.php">Cerrar Sesión</a>
           </li>
         </ul>
       </div>
@@ -118,7 +118,7 @@
               <select class="form-select" id="cursos" name="cursos">
                 <?php
                 // Include database connection
-                include("../../php_basesDatos/conexion.php");
+                include("../../../core/database.php");
 
                 // Query to get courses
                 $sql = "SELECT idcursos, nombrecurso FROM cursos";
@@ -146,6 +146,6 @@
     </div>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../javascript/registroUsuarios.js"></script>
+  <script src="C:\xampp\htdocs\Proyecto\app\views\javascript\registroUsuarios.js"></script>
 </body>
 </html>

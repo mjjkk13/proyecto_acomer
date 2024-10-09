@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Incluir el archivo de conexión a la base de datos
-include 'conexion.php';
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php';
 
 // Asegúrate de que siempre se envíe una respuesta JSON
 header('Content-Type: application/json');
@@ -13,8 +13,8 @@ $response = [];
 
 try {
     // Conexión a la base de datos
-    $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $database = new Database();
+    $pdo = $database->getConnection();
 
     // Obtener la acción (getCourses, addCourse, editCourse, deleteCourse, getDocentes)
     $action = $_POST['action'] ?? $_GET['action'] ?? null;

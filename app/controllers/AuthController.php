@@ -1,6 +1,7 @@
 <?php
-require_once "../models/UserModel.php";
-require_once "../../core/Database.php";
+
+require "C:/xampp/htdocs/Proyecto/app/models/UserModel.php";
+require_once "C:/xampp/htdocs/Proyecto/core/database.php";
 
 class AuthController {
     private $db;
@@ -17,7 +18,7 @@ class AuthController {
                 $contrasena = $_POST['inputPassword'];
 
                 // Inicializar el modelo de usuario pasando la conexión de la base de datos
-                $userModel = new UserModel($this->db);
+                $userModel = new UserModel($this->db->getConnection());
                 $result = $userModel->getUserByUsername($usuario);
 
                 if ($result) {
@@ -27,6 +28,7 @@ class AuthController {
                         session_start();
                         $_SESSION['idusuarios'] = $result['idusuarios'];
                         $_SESSION['user'] = $usuario;
+                        $_SESSION['rol'] = $result['rol']; // Store user role in session
 
                         // Actualizar el último acceso
                         $userModel->updateLastAccess($usuario);
@@ -64,3 +66,4 @@ class AuthController {
 // Crear una instancia del controlador y ejecutar el método de login
 $authController = new AuthController();
 $authController->login();
+?>

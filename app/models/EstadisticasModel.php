@@ -1,10 +1,13 @@
 <?php
+// models/EstadisticasModel.php
+
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php';
 
 class EstadisticasModel {
     private $pdo;
 
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
+    public function __construct() {
+        $this->pdo = new Database();
     }
 
     public function getDailyData() {
@@ -14,7 +17,6 @@ class EstadisticasModel {
                      FROM estadisticasqr 
                      GROUP BY fecha 
                      ORDER BY fecha ASC';
-
         $stmtDaily = $this->pdo->prepare($sqlDaily);
         $stmtDaily->execute();
         return $stmtDaily->fetchAll(PDO::FETCH_ASSOC);
@@ -29,7 +31,6 @@ class EstadisticasModel {
                       GROUP BY semana 
                       HAVING COUNT(fecha) = 5
                       ORDER BY MIN(fecha) ASC';
-
         $stmtWeekly = $this->pdo->prepare($sqlWeekly);
         $stmtWeekly->execute();
         return $stmtWeekly->fetchAll(PDO::FETCH_ASSOC);

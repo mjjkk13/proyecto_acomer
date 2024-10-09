@@ -3,13 +3,14 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include('conexion.php');
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php';
 
 $mealType = $_GET['mealType'] ?? '';
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    $database = new Database();
+    $pdo = $database->getConnection();
 
     // Preparar la consulta SQL para evitar inyecciones SQL
     $sql = "SELECT tipomenu, fecha, descripcion FROM menu WHERE tipomenu = :mealType";

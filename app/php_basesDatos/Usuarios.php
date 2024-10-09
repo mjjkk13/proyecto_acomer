@@ -1,5 +1,10 @@
 <?php
-include("conexion.php");
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php';
+
+ // Conexión a la base de datos
+ $database = new Database();
+ $pdo = $database->getConnection();
+
 header('Content-Type: application/json');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);

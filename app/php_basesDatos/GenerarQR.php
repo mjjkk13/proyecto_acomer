@@ -1,5 +1,5 @@
 <?php
-include 'conexion.php';  // Incluye la conexión a la base de datosax
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php';  // Incluye la conexión a la base de datosax
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
@@ -49,6 +49,10 @@ if (!file_exists($directory)) {
 QRcode::png($datosQR, $filename, 'L', 4, 2);
 
 try {
+
+    $database = new Database();
+    $pdo = $database->getConnection();
+
     // Guarda la información en la tabla `qrgenerados`
     $sqlInsertQR = "INSERT INTO qrgenerados (codigoqr, fechageneracion) VALUES (:filename, :fechageneracion)";
     $stmtQR = $pdo->prepare($sqlInsertQR);
@@ -99,5 +103,4 @@ try {
     echo json_encode(array("status" => "error", "message" => "Error al generar el código QR: " . $e->getMessage()));
 }
 
-$pdo = null;
 ?>

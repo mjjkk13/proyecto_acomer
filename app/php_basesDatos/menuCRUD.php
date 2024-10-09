@@ -3,14 +3,14 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include('conexion.php');
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php';
 
 $action = $_POST['action'] ?? '';
 $mealType = $_POST['mealType'] ?? ''; // Obtener el tipo de menú desde POST
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $database = new Database();
+    $pdo = $database->getConnection();
 
     switch ($action) {
         case 'create':

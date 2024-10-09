@@ -2,11 +2,16 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
-include 'conexion.php';
+
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php'; // Asegúrate de que la ruta es correcta
 
 header('Content-Type: application/json');
 
 try {
+    // Obtener la conexión a la base de datos
+    $database = new Database();
+    $pdo = $database->getConnection();
+
     // Consulta solo con alumnos y cursos
     $sql = "
     SELECT 
@@ -30,11 +35,10 @@ try {
 
     // Devuelve los datos en formato JSON
     echo json_encode($estudiantes);
-
 } catch (PDOException $e) {
-    // Si ocurre un error, devuelve el mensaje de error
-    echo json_encode(array("status" => "error", "message" => "Error: " . $e->getMessage()));
+    echo "Error en la base de datos: " . $e->getMessage();
+    exit();
 }
 
-$pdo = null;
+// Cerrar la conexión (PDO se cierra automáticamente al finalizar el script)
 ?>

@@ -28,5 +28,9 @@ if (file_exists('../controllers/' . $controller . '.php')) {
 } else {
     // Controlador no encontrado
     header('HTTP/1.0 404 Not Found');
+}if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    require_once 'controllers/SessionController.php';
+    $controller = new SessionController();
+    $controller->logout();
 }
 ?>

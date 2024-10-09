@@ -1,6 +1,6 @@
 <?php
 // Incluir el archivo de conexión
-include 'Conexion.php';
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php';
 
 // Verificar si el formulario fue enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -12,6 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = array('status' => 'error', 'message' => '');
 
     try {
+        // Obtener la conexión a la base de datos
+        $database = new Database();
+        $pdo = $database->getConnection();
+
         // Primero, obtener el idalumnos
         $stmt1 = $pdo->prepare("SELECT idalumnos FROM alumnos WHERE nombre = :nombre AND apellido = :apellido");
         $stmt1->bindParam(':nombre', $nombre);
@@ -33,14 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response['status'] = 'success';
                 $response['message'] = 'Asistencia actualizada correctamente.';
             } else {
-                $response['message'] = 'No se encontró el registro de asistencia para el estudiante.';
+                $response['message'] = 'No se encontró el registro de asistencia para actualizar.';
             }
         } else {
-            $response['message'] = 'No se encontró el registro del estudiante.';
+            $response['message'] = 'No se encontró el estudiante.';
         }
     } catch (PDOException $e) {
-        // Mostrar el mensaje de error
-        $response['message'] = 'Error al procesar la solicitud: ' . $e->getMessage();
+        $response['message'] = 'Error en la base de datos: ' . $e->getMessage();
     }
 
     // Devolver la respuesta en formato JSON

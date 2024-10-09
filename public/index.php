@@ -9,8 +9,7 @@ ini_set('display_errors', 1);
 require_once '../core/model.php';
 require_once '../config/config.php';
 require_once '../app/controllers/AuthController.php';
-require_once '../app/models/EstadisticasModel.php';
-require_once '../app/controllers/EstadisticasController.php';
+require_once '../app/controllers/ViewsController.php';
 require_once '../config/Routes.php';
 
 // Cargar configuración de rutas
@@ -29,7 +28,7 @@ $url = explode('/', $url);
 
 // Verificar que la ruta existe en la configuración
 $controllerName = ucfirst($url[0]) . 'Controller';
-$method = isset($url[1]) ? $url[1] : 'index';
+$method = isset($url[1]) ? $url[1] : 'Views';
 
 // Verificar si el controlador existe
 $controllerPath = '../app/controllers/' . $controllerName . '.php';

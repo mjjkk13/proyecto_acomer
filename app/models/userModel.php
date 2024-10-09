@@ -3,7 +3,7 @@ class UserModel {
     private $db;
 
     // Constructor para inicializar la conexión de la base de datos
-    public function __construct($db) {
+    public function __construct(PDO $db) {
         $this->db = $db;
     }
 

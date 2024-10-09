@@ -1,5 +1,5 @@
 <?php
-include 'conexion.php';
+require_once 'C:/xampp/htdocs/Proyecto/core/database.php';  // Incluye la conexión a la base de datos
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 header('Content-Type: application/json');
 
@@ -8,8 +8,8 @@ $estado = $_POST['estado'];  // Mantiene el nombre 'estado'
 $fechaHora = date('Y-m-d H:i:s');  // Obtiene la fecha y hora actual
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $database = new Database();
+    $pdo = $database->getConnection();
 
     // Actualizar el estado y la fecha/hora en la tabla asistencia
     $sql = "
@@ -33,5 +33,4 @@ try {
     echo json_encode(array("status" => "error", "message" => "Error al actualizar asistencia: " . $e->getMessage()));
 }
 
-$conn = null;
 ?>

@@ -6,7 +6,7 @@ class SessionController {
         session_start();
         session_unset();
         session_destroy();
-        header("Location: ../views/iniciarSesion.html"); // Redirige a la página de inicio de sesión
+        header("Location: /Proyecto/app/views/iniciarSesion.php"); // Redirige a la página de inicio de sesión
         exit();
     }
 }

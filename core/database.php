@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ ."/../config/config.php");
+
 class Database {
     private $host = DB_HOST;
     private $user = DB_USER;
@@ -12,7 +14,7 @@ class Database {
 
     public function __construct() {
         // Configurar la conexión
-        $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->dbname . ";charset=" . $this->charset . $this->url;
+        $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->dbname . ";";
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -26,6 +28,10 @@ class Database {
             $this->error = $e->getMessage();
             echo "Error de conexión: " . $this->error;
         }
+    }
+
+    public function getConnection(): PDO {
+        return $this->pdo;
     }
 
     // Método para preparar una consulta
@@ -68,6 +74,11 @@ class Database {
     public function resultSet() {
         $this->execute();
         return $this->stmt->fetchAll();
+    }
+    public function prepare($sql) {
+
+        return $this->pdo->prepare($sql);
+
     }
 }
 ?>
