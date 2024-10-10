@@ -2,7 +2,7 @@ const tablaCodigos = document.getElementById('tablaCodigos');
 
 // Función para cargar los códigos QR registrados
 function cargarCodigosQR() {
-    fetch('../../php_basesDatos/CodigosqrCRUD.php')
+    fetch('../../controllers/CodigosQrCrudController.php')
         .then(response => response.json())
         .then(data => {
             console.log('Códigos QR:', data);
@@ -12,8 +12,8 @@ function cargarCodigosQR() {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${codigo.fechageneracion}</td>
-                    <td>${codigo.nombrecurso}</td>
-                    <td><img src="../${codigo.codigoqr}" alt="Código QR" class="img-qr"></td>
+
+                    <td><img src="../../../qr_codes/${codigo.codigoqr}" alt="Código QR" class="img-qr"></td>
                     <td>
                         <button class="btn btn-danger" onclick="eliminarCodigo(${codigo.idqrgenerados})">
                             <i class="fas fa-trash-alt"></i>
@@ -37,7 +37,7 @@ function eliminarCodigo(idQrGenerados) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch('../../php_basesDatos/CodigosqrCRUD.php', {
+            fetch('../../controllers/CodigosQrCrudController.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'

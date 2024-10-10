@@ -4,6 +4,7 @@
 require_once '../app/controllers/ViewsController.php';
 require_once '../app/controllers/AuthController.php';
 require_once '../app/controllers/SessionController.php';
+require '../app/controllers/CodigoQrCrudController.php';
 
 // Obtén la ruta de la solicitud
 $requestUri = $_SERVER['REQUEST_URI'];

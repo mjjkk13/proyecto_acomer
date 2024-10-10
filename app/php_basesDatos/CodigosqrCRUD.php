@@ -3,22 +3,17 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'C:/xampp/htdocs/Proyecto/core/database.php'; // Asegúrate de que la ruta es correcta
+include 'conexion.php'; 
 
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Asegúrate de ajustar el JOIN y SELECT según tus necesidades
-    $sqlSelect = "SELECT q.codigoqr, q.fechageneracion, q.idqrgenerados, c.nombrecurso
+    
+    $sqlSelect = "SELECT q.codigoqr, q.fechageneracion, q.idqrgenerados
                   FROM qrgenerados q
-                  JOIN cursos c ON q.idqrgenerados = c.qrgenerados_idqrgenerados
                   ORDER BY q.fechageneracion DESC";
 
     try {
-        // Obtener la conexión a la base de datos
-        $database = new Database();
-        $pdo = $database->getConnection();
-
         $stmt = $pdo->query($sqlSelect);
         $codigos = array();
 
@@ -27,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'fechageneracion' => $row['fechageneracion'],
                 'codigoqr' => $row['codigoqr'],
                 'idqrgenerados' => $row['idqrgenerados'],
-                'nombrecurso' => $row['nombrecurso'] // Incluye el nombre del curso en el resultado
             );
         }
 
@@ -41,10 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
     $idQrGenerados = $_POST['idqrgenerados'];
 
     try {
-        // Obtener la conexión a la base de datos
-        $database = new Database();
-        $pdo = $database->getConnection();
-
         // Eliminar el registro en `qrgenerados`
         $sqlDeleteQrGenerados = "DELETE FROM qrgenerados WHERE idqrgenerados = :idqrgenerados";
         $stmt = $pdo->prepare($sqlDeleteQrGenerados);
@@ -56,4 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
         echo json_encode(['success' => false, 'message' => 'Error en DELETE: ' . $e->getMessage()]);
     }
 }
+
+$pdo = null;
 ?>
