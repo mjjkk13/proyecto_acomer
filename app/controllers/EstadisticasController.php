@@ -1,7 +1,7 @@
 <?php
 // controllers/EstadisticasController.php
 
-require_once 'C:/xampp/htdocs/Proyecto/models/EstadisticasModel.php';
+require_once '../models/EstadisticasModel.php';
 
 class EstadisticasController {
     private $model;
@@ -22,4 +22,12 @@ class EstadisticasController {
         return $data;
     }
 }
+
+// Crear una instancia del controlador y obtener estadísticas
+$controller = new EstadisticasController();
+$estadisticas = $controller->getEstadisticas();
+
+// Establecer encabezado para JSON
+header('Content-Type: application/json');
+echo json_encode($estadisticas);
 ?>

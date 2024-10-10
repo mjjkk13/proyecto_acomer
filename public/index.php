@@ -30,23 +30,23 @@ $url = explode('/', $url);
 $controllerName = ucfirst($url[0]) . 'Controller';
 $method = isset($url[1]) ? $url[1] : 'Views';
 
-// Verificar si el controlador existe
-$controllerPath = '../app/controllers/' . $controllerName . '.php';
-if (file_exists($controllerPath)) {
-    require_once $controllerPath;
-    $controller = new $controllerName($pdo);
+// // Verificar si el controlador existe
+// $controllerPath = '../app/controllers/' . $controllerName . '.php';
+// if (file_exists($controllerPath)) {
+//     require_once $controllerPath;
+//     $controller = new $controllerName($pdo);
 
-    // Verificar si el método existe en el controlador
-    if (method_exists($controller, $method)) {
-        $controller->{$method}();
-        $controller->login();
-    } else {
-        // Define handleError function
-        function handleError($message) {
-            echo $message;
-        }
-        handleError("Método '$method' no encontrado en el controlador '$controllerName'.");
-    }
-} else {
-    handleError("Controlador '$controllerName' no encontrado.");
-}
+//     // Verificar si el método existe en el controlador
+//     if (method_exists($controller, $method)) {
+//         $controller->{$method}();
+//         $controller->login();
+//     } else {
+//         // Define handleError function
+//         function handleError($message) {
+//             echo $message;
+//         }
+//         handleError("Método '$method' no encontrado en el controlador '$controllerName'.");
+//     }
+// } else {
+//     handleError("Controlador '$controllerName' no encontrado.");
+// }

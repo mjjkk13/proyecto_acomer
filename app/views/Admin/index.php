@@ -88,6 +88,6 @@ checkUserRole('Administrador');
     </div>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="C:\xampp\htdocs\Proyecto\app\views\javascript\estadisticas.js"></script>
+  <script src="../javascript/estadisticas.js"></script>
 </body>
 </html>
