@@ -1,21 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom';
-import {  useState } from 'react';
+import logo from '../../../img/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListAlt, faQrcode, faUtensils, faUserPlus, faUser, faSignOutAlt, faBars } from '@fortawesome/free-solid-svg-icons';
-import logo from '../../../img/logo.png';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 
-const menuItems = [
-  { to: '/estudiante', icon: faQrcode, label: 'Escanear QR' },
-  { to: '/estudiante/codigos-registrados', icon: faListAlt, label: 'Códigos Registrados' },
-  { to: '/estudiante/consultar-menu', icon: faUtensils, label: 'Consultar Menú' },
-  { to: '/estudiante/AddStudent', icon: faUserPlus, label: 'Agregar Estudiante' },
-  { to: '/estudiante/datos-personales', icon: faUser, label: 'Datos Personales' },
-];
-
-const NavbarEstudiante = () => {
-  const navigate = useNavigate();
+const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    window.location.reload();
+  };
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -55,7 +52,7 @@ const NavbarEstudiante = () => {
     <nav className="bg-[#27374D] text-white shadow-lg">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         {/* Logo */}
-        <a className="flex items-center cursor-pointer">
+        <a onClick={handleLogoClick} className="flex items-center cursor-pointer">
           <img src={logo} alt="Logo" className="w-10 h-10" />
           <span className="ml-2 text-xl font-bold">A Comer</span>
         </a>
@@ -115,4 +112,13 @@ const NavbarEstudiante = () => {
   );
 };
 
-export default NavbarEstudiante;
+// Menú dinámico
+const menuItems = [
+  { to: '/estudiante', icon: faQrcode, label: 'Escanear QR' },
+  { to: '/estudiante/codigos-registrados', icon: faListAlt, label: 'Códigos Registrados' },
+  { to: '/estudiante/consultar-menu', icon: faUtensils, label: 'Consultar Menú' },
+  { to: '/estudiante/AddStudent', icon: faUserPlus, label: 'Agregar Estudiante' },
+  { to: '/estudiante/datos-personales', icon: faUser, label: 'Datos Personales' },
+];
+
+export default Navbar;

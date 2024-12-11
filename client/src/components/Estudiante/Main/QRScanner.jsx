@@ -3,6 +3,7 @@ import { BrowserQRCodeReader } from '@zxing/library'; // Importar el lector QR
 import foto from '../../../img/qr.png';
 import foto2 from '../../../img/qr2.png';
 import { useState, useRef, useEffect, useCallback } from 'react';
+import sonido from '../../../assets/sonido.mp3'
 
 const QRScanner = () => {
   const videoRef = useRef(null); // Referencia al elemento <video>
@@ -44,6 +45,8 @@ const QRScanner = () => {
       codeReader.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
         if (result) {
           console.log('Código QR detectado:', result.text);
+          const audio = new Audio(sonido); // Crear una nueva instancia de Audio
+          audio.play(); // Reproducir el sonido
           codeReader.reset(); // Detener el lector de QR
           Swal.fire({
             title: 'Código QR detectado',

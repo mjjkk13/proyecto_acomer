@@ -1,6 +1,12 @@
 <?php
+// Asegurar que la respuesta sea siempre JSON
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: http://localhost:5173'); 
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS'); 
+header('Access-Control-Allow-Headers: Content-Type, Authorization'); 
+header('Access-Control-Allow-Credentials: true'); 
 // Incluir el archivo de conexión
-require_once 'C:/xampp/htdocs/Proyecto/core/database.php';
+include 'conexion.php';
 
 // Verificar si el formulario fue enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

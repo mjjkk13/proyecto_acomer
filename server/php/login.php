@@ -1,20 +1,10 @@
 <?php
-// Habilitar reporte de errores para debug
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 // Asegurar que la respuesta sea siempre JSON
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: http://localhost:5173'); 
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS'); 
 header('Access-Control-Allow-Headers: Content-Type, Authorization'); 
 header('Access-Control-Allow-Credentials: true'); 
-
-// Verificar si el archivo de conexión existe
-if (!file_exists('conexion.php')) {
-    echo json_encode(['success' => false, 'message' => 'Error: Archivo de conexión no encontrado']);
-    exit;
-}
 
 require 'conexion.php';
 

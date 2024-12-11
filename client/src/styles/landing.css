@@ -2,6 +2,7 @@
 
 body {
   background-color: #DDE6ED; /* Fondo general */
+  min-height: 100vh; /* Asegura que el fondo cubra toda la pantalla */
   margin: 0; 
   background-attachment: fixed; /* Fondo fijo */
   padding-top: 0px;

@@ -1,21 +1,22 @@
 import { Link, useNavigate } from 'react-router-dom';
-import {  useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListAlt, faQrcode, faUtensils, faUserPlus, faUser, faSignOutAlt, faBars } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../../img/logo.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faListAlt,
+  faQrcode,
+  faUtensils,
+  faUserPlus,
+  faUser,
+  faSignOutAlt,
+  faBars,
+  faChartBar,
+} from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 
-const menuItems = [
-  { to: '/estudiante', icon: faQrcode, label: 'Escanear QR' },
-  { to: '/estudiante/codigos-registrados', icon: faListAlt, label: 'Códigos Registrados' },
-  { to: '/estudiante/consultar-menu', icon: faUtensils, label: 'Consultar Menú' },
-  { to: '/estudiante/AddStudent', icon: faUserPlus, label: 'Agregar Estudiante' },
-  { to: '/estudiante/datos-personales', icon: faUser, label: 'Datos Personales' },
-];
-
-const NavbarEstudiante = () => {
-  const navigate = useNavigate();
+const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -50,6 +51,15 @@ const NavbarEstudiante = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
+
+  const menuItems = [
+    { to: '/admin', icon: faQrcode, label: 'Gestión de QR' },
+    { to: '/admin/codigos-registrados', icon: faListAlt, label: 'QR Registrados' },
+    { to: '/admin/gestionar-menu', icon: faUtensils, label: 'Gestionar Menú' },
+    { to: '/admin/gestionar-usuarios', icon: faUserPlus, label: 'Gestionar Usuarios' },
+    { to: '/admin/estadisticas', icon: faChartBar, label: 'Consultar Estadísticas' },
+    { to: '/admin/perfil', icon: faUser, label: 'Mi Perfil' },
+  ];
 
   return (
     <nav className="bg-[#27374D] text-white shadow-lg">
@@ -115,4 +125,4 @@ const NavbarEstudiante = () => {
   );
 };
 
-export default NavbarEstudiante;
+export default Navbar;
