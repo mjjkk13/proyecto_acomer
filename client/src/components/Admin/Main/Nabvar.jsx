@@ -3,7 +3,6 @@ import logo from '../../../img/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faListAlt,
-  faQrcode,
   faUtensils,
   faUserPlus,
   faUser,
@@ -53,11 +52,10 @@ const Navbar = () => {
   };
 
   const menuItems = [
-    { to: '/admin', icon: faQrcode, label: 'Gestión de QR' },
+    { to: '/admin', icon: faChartBar, label: 'Consultar Estadísticas' },
     { to: '/admin/codigos-registrados', icon: faListAlt, label: 'QR Registrados' },
     { to: '/admin/gestionar-menu', icon: faUtensils, label: 'Gestionar Menú' },
     { to: '/admin/gestionar-usuarios', icon: faUserPlus, label: 'Gestionar Usuarios' },
-    { to: '/admin/estadisticas', icon: faChartBar, label: 'Consultar Estadísticas' },
     { to: '/admin/perfil', icon: faUser, label: 'Mi Perfil' },
   ];
 

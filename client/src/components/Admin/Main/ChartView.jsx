@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { motion } from "framer-motion";
+import { fetchStatistics } from "../../services/statisticsService"; // Importar el servicio
 
 // Registrar componentes de Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -19,28 +20,28 @@ const ChartView = () => {
   const [monthlyData, setMonthlyData] = useState([]);
   const [showMonthlyStatistics, setShowMonthlyStatistics] = useState(false);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Obtener datos del backend
+  // Obtener datos del backend usando el servicio
   useEffect(() => {
-    fetch("http://localhost/proyecto_acomer/server/php/estadisticas.php")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
+    const getData = async () => {
+      try {
+        const data = await fetchStatistics();
         setWeeklyData(data.weekly);
         setMonthlyData(data.monthly);
-      })
-      .catch((error) => {
-        if (error.message === "permission error") {
-          setError("No tienes permiso para acceder a estos datos.");
-        } else {
-          setError("Error al cargar los datos.");
-        }
+      } catch (error) {
         console.error("Error al cargar los datos:", error);
-      });
+        setError(
+          error.message === "permission error"
+            ? "No tienes permiso para acceder a estos datos."
+            : "Error al cargar los datos. Por favor, intenta más tarde."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getData();
   }, []);
 
   // Configuración de datos para el gráfico semanal
@@ -71,36 +72,52 @@ const ChartView = () => {
     ],
   };
 
+  // Manejar el cambio entre estadísticas semanales y mensuales
+  const toggleStatistics = () => {
+    setShowMonthlyStatistics((prev) => !prev);
+  };
+
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-200">
       <div className="p-10 bg-white rounded shadow-lg w-full max-w-4xl border-2 border-gray-300">
         <h1 className="text-xl font-bold mb-4 text-center">Estadísticas</h1>
 
+        {/* Mostrar mensaje de error si existe */}
         {error && <p className="text-red-500 text-center">{error}</p>}
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          key={showMonthlyStatistics ? "monthly" : "weekly"}
-        >
-          <h2 className="text-lg font-semibold mb-2 text-center">
-            {showMonthlyStatistics ? "Asistencias Mensuales" : "Asistencias Semanales"}
-          </h2>
-          <div className="h-64 w-full rounded p-4">
-            <Bar
-              data={showMonthlyStatistics ? monthlyChartData : weeklyChartData}
-              options={{ responsive: true }}
-            />
-          </div>
-        </motion.div>
+        {/* Mostrar carga mientras se obtienen los datos */}
+        {isLoading ? (
+          <p className="text-center">Cargando datos...</p>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            key={showMonthlyStatistics ? "monthly" : "weekly"}
+          >
+            <h2 className="text-lg font-semibold mb-2 text-center">
+              {showMonthlyStatistics
+                ? "Asistencias Mensuales"
+                : "Asistencias Semanales"}
+            </h2>
+            <div className="h-64 w-full rounded p-4">
+              <Bar
+                data={showMonthlyStatistics ? monthlyChartData : weeklyChartData}
+                options={{ responsive: true }}
+              />
+            </div>
+          </motion.div>
+        )}
 
+        {/* Botón para alternar entre estadísticas semanales y mensuales */}
         <div className="flex justify-center">
           <button
-            onClick={() => setShowMonthlyStatistics(!showMonthlyStatistics)}
-            className="mt-4 mb-4 px-6 py-3 btn-primary text-white bg-cyan-700 border-2 border-cyan-700 rounded"
+            onClick={toggleStatistics}
+            className="mt-4 mb-4 px-6 py-3 btn-primary text-white bg-cyan-700 border-2 border-cyan-700 rounded hover:bg-cyan-800 transition-colors"
           >
-            {showMonthlyStatistics ? "Mostrar Estadísticas Semanales" : "Mostrar Estadísticas Mensuales"}
+            {showMonthlyStatistics
+              ? "Mostrar Estadísticas Semanales"
+              : "Mostrar Estadísticas Mensuales"}
           </button>
         </div>
       </div>

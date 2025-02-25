@@ -7,6 +7,8 @@ import Main from './components/Estudiante/Main/Main';
 import AddStudent from './components/Estudiante/AddStudent/AddStudent'
 import MainDocente from './components/Docente/Main/Main'
 import MainAdmin from './components/Admin/Main/Main'
+import Menu from './components/Admin/Menu/Menu'
+
 function App() {
   return (
     <AuthProvider>
@@ -44,6 +46,7 @@ function App() {
               <ProtectedRoute allowedRoles={['Administrador']}>
                 <Routes>
                   <Route path='/' element={<MainAdmin/>}/>
+                  <Route path='gestionar-menu' element={<Menu/>}/>
                 </Routes>
               </ProtectedRoute>
             }
