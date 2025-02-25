@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
+.card {
+  background-color: #27374D;
+  box-shadow: none;
+  color: #fff; 
+  border: 2px solid rgba(255, 255, 255, 0.5); 
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+.is-invalid {
+  border-color: red;
+}
+
+.invalid-feedback {
+  display: none;
+  color: red;
+}
+
+.is-invalid + .invalid-feedback {
+  display: block;
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.form-check-input:checked {
+  background-color: #27374D;
+}
+
+.form-check-input:checked:hover {
+  background-color: #27374D;
+}
+
+
