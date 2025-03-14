@@ -1,4 +1,3 @@
-// services/statisticsService.js
 export const fetchStatistics = async () => {
     try {
       const response = await fetch(

@@ -68,10 +68,10 @@ const fetchData = async (payload) => {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Si usas autenticación
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // autenticación
         },
         body: new URLSearchParams(payload),
-        credentials: 'include' // Si usas cookies
+        credentials: 'include' // cookies
       }
     );
 
@@ -82,7 +82,7 @@ const fetchData = async (payload) => {
 
     const result = await response.json();
     
-    // Para acciones de lectura, devolver los datos directamente
+    
     if (payload.action === 'read') return result;
     
     // Para otras acciones validar la respuesta del servidor
