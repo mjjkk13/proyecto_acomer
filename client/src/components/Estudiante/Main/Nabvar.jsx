@@ -10,7 +10,7 @@ const menuItems = [
   { to: '/estudiante/codigos-registrados', icon: faListAlt, label: 'Códigos Registrados' },
   { to: '/estudiante/consultar-menu', icon: faUtensils, label: 'Consultar Menú' },
   { to: '/estudiante/AddStudent', icon: faUserPlus, label: 'Agregar Estudiante' },
-  { to: '/estudiante/datos-personales', icon: faUser, label: 'Datos Personales' },
+  { to: '/estudiante/perfil', icon: faUser, label: 'Datos Personales' },
 ];
 
 const NavbarEstudiante = () => {

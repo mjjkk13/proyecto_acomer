@@ -10,6 +10,10 @@ import MainAdmin from './components/Admin/Main/Main'
 import Menu from './components/Admin/Menu/Menu'
 import UserGestor from './components/Admin/UserGestor/UserGestor'
 import AdminPorfile from './components/Admin/Porfile/AdminPorfile'
+import StudentPorfile from './components/Estudiante/Porfile/StudentPorfile'
+import TeacherPorfile from './components/Docente/Porfile/TeacherPorfile'
+import MenuStudent from './components/Estudiante/Menu/Menu'
+import MenuTeacher from './components/Docente/Menu/Menu'
 
 function App() {
   return (
@@ -27,6 +31,8 @@ function App() {
                 <Routes>
                   <Route path='/' element={<Main/>}/>
                   <Route path='AddStudent' element={<AddStudent/>}/>
+                  <Route path='perfil' element={<StudentPorfile/>}/>
+                  <Route path='consultar-menu' element={<MenuStudent/>}/>
                 </Routes>
               </ProtectedRoute>
             }
@@ -38,6 +44,8 @@ function App() {
               <ProtectedRoute allowedRoles={['Docente']}>
                 <Routes>
                   <Route path='/' element={<MainDocente/>}/>
+                  <Route path='consultar-menu' element={<MenuTeacher/>}/>
+                  <Route path='perfil' element={<TeacherPorfile/>}/>
                 </Routes>
               </ProtectedRoute>
             }
