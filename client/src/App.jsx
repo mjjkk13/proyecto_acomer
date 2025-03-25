@@ -1,14 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import LoginPage from './components/Login/Login';
-import LandingPage from './components/Landing/Landing';
-import Main from './components/Estudiante/Main/Main';
+import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import LoginPage from './components/Login/Login'
+import LandingPage from './components/Landing/Landing'
+import Main from './components/Estudiante/Main/Main'
 import AddStudent from './components/Estudiante/AddStudent/AddStudent'
 import MainDocente from './components/Docente/Main/Main'
 import MainAdmin from './components/Admin/Main/Main'
 import Menu from './components/Admin/Menu/Menu'
 import UserGestor from './components/Admin/UserGestor/UserGestor'
+import AdminPorfile from './components/Admin/Porfile/AdminPorfile'
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
                   <Route path='/' element={<MainAdmin/>}/>
                   <Route path='gestionar-menu' element={<Menu/>}/>
                   <Route path='gestionar-usuarios' element={<UserGestor/>}/>
+                  <Route path='perfil' element={<AdminPorfile/>}/>
                 </Routes>
               </ProtectedRoute>
             }
