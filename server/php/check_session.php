@@ -1,8 +1,12 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: http://localhost:5173'); 
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS'); 
+header('Access-Control-Allow-Headers: Content-Type, Authorization'); 
+header('Access-Control-Allow-Credentials: true'); 
+
 session_start();
-header('Content-Type: application/json');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Origin: http://localhost:5173'); // Ajusta según tu dominio
+
 
 if (isset($_SESSION['usuario']) && isset($_SESSION['rol'])) {
     echo json_encode([

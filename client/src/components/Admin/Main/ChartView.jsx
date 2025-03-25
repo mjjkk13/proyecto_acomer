@@ -80,7 +80,7 @@ const ChartView = () => {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-200">
       <div className="p-10 bg-white rounded shadow-lg w-full max-w-4xl border-2 border-gray-300">
-        <h1 className="text-xl font-bold mb-4 text-center">Estadísticas</h1>
+        <h1 className="text-xl font-bold mb-4 text-center text-gray-800">Estadísticas</h1>
 
         {/* Mostrar mensaje de error si existe */}
         {error && <p className="text-red-500 text-center">{error}</p>}
@@ -95,7 +95,7 @@ const ChartView = () => {
             transition={{ duration: 0.5 }}
             key={showMonthlyStatistics ? "monthly" : "weekly"}
           >
-            <h2 className="text-lg font-semibold mb-2 text-center">
+            <h2 className="text-lg font-semibold mb-2 text-center text-gray-900">
               {showMonthlyStatistics
                 ? "Asistencias Mensuales"
                 : "Asistencias Semanales"}

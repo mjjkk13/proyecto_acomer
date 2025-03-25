@@ -7,12 +7,6 @@ header('Access-Control-Allow-Credentials: true');
 
 require 'conexion.php';  // Asegúrate de que este archivo contiene la conexión PDO correcta
 
-// Verificar la conexión a la base de datos
-if (!$pdo) {
-    echo json_encode(['error' => 'Error de conexión a la base de datos.']);
-    exit;
-}
-
 // Obtener acción y parámetros de la solicitud
 $action      = $_POST['action'] ?? '';
 $tipomenu = $_POST['tipomenu'] ?? ''; // Se espera: 'desayuno', 'almuerzo' o 'refrigerio'

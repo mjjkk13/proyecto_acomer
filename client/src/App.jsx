@@ -8,6 +8,7 @@ import AddStudent from './components/Estudiante/AddStudent/AddStudent'
 import MainDocente from './components/Docente/Main/Main'
 import MainAdmin from './components/Admin/Main/Main'
 import Menu from './components/Admin/Menu/Menu'
+import UserGestor from './components/Admin/UserGestor/UserGestor'
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
                 <Routes>
                   <Route path='/' element={<MainAdmin/>}/>
                   <Route path='gestionar-menu' element={<Menu/>}/>
+                  <Route path='gestionar-usuarios' element={<UserGestor/>}/>
                 </Routes>
               </ProtectedRoute>
             }

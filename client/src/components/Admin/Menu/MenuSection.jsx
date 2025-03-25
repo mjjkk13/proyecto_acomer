@@ -78,7 +78,6 @@ const MenuSection = () => {
       setGroupedMenus(grouped);
     } catch (error) {
       console.error('Error loading menus:', error);
-      Swal.fire('Error', 'No se pudieron cargar los menús.', 'error');
     }
   };
 
@@ -214,7 +213,7 @@ const MenuSection = () => {
               style={{ maxHeight: '120px', objectFit: 'contain' }}
               loading="lazy"
             />
-            <p className="text-xl text-center mt-2">{capitalize(mealType)}</p>
+            <p className="text-xl text-center mt-2 text-gray-800">{capitalize(mealType)}</p>
           </div>
         ))}
       </section>
