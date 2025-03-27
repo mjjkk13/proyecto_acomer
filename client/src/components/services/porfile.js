@@ -1,5 +1,3 @@
-// datosPersonalesService.js
-
 const API_URL = "http://localhost/proyecto_acomer/server/php/cargarDatosPersonales.php";
 
 /**

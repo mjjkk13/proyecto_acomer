@@ -14,6 +14,7 @@ import StudentPorfile from './components/Estudiante/Porfile/StudentPorfile'
 import TeacherPorfile from './components/Docente/Porfile/TeacherPorfile'
 import MenuStudent from './components/Estudiante/Menu/Menu'
 import MenuTeacher from './components/Docente/Menu/Menu'
+import Registro from './components/Admin/Registro/Registro'
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
                   <Route path='/' element={<MainAdmin/>}/>
                   <Route path='gestionar-menu' element={<Menu/>}/>
                   <Route path='gestionar-usuarios' element={<UserGestor/>}/>
+                  <Route path='registro-usuarios' element={<Registro/>}/>
                   <Route path='perfil' element={<AdminPorfile/>}/>
                 </Routes>
               </ProtectedRoute>

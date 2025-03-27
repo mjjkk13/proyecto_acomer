@@ -1,138 +1,168 @@
 <?php
-require_once 'C:/xampp/htdocs/Proyecto/core/database.php';
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: http://localhost:5173');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Credentials: true');
 
-header('Content-Type: application/json');
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
-$response = array('success' => false, 'message' => '');
+require_once 'conexion.php';
+
+$response = ['success' => false, 'message' => ''];
+$transactionStarted = false;
 
 try {
-
-
-    // Recibir y limpiar datos del formulario
-    $nombre = trim($_POST['nombre']);
-    $apellido = trim($_POST['apellido']);
-    $email = filter_var(trim($_POST['correo']), FILTER_VALIDATE_EMAIL);
-    $contrasena = trim($_POST['contrasena']); 
-    $telefono = trim($_POST['celular']);
-    $direccion = trim($_POST['direccion']);
-    $numerodocumento = trim($_POST['documento']);
-    $tipo_documento_desc = trim($_POST['tipoDocumento']);
-    $rol_desc = isset($_POST['rol']) ? trim($_POST['rol']) : null;
-    $user = trim($_POST['user']);
-    $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
-
-    // Obtener el ID del tipo de documento
-    $sql_doc = "SELECT tdoc FROM tipo_documento WHERE tdoc = :descripcion";
-    $stmt_doc = $pdo->prepare($sql_doc);
-    $stmt_doc->bindParam(':descripcion', $tipo_documento_desc);
-    $stmt_doc->execute();
-    $tipo_documento = $stmt_doc->fetchColumn();
-
-    // Verifica el ID del tipo de documento
-    if ($tipo_documento === false) {
-        throw new Exception("Tipo de documento no encontrado");
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        throw new Exception("Método no permitido");
     }
 
-    // Obtener el ID del tipo de usuario (rol)
-    $sql_rol = "SELECT idtipo_usuario FROM tipo_usuario WHERE rol = :rol";
-    $stmt_rol = $pdo->prepare($sql_rol);
-    $stmt_rol->bindParam(':rol', $rol_desc);
-    $stmt_rol->execute();
-    $tipo_usuario = $stmt_rol->fetchColumn();
+    $input = json_decode(file_get_contents('php://input'), true) ?? $_POST;
 
-    // Verifica el ID del tipo de usuario
-    if ($tipo_usuario === false) {
-        throw new Exception("Rol de usuario no encontrado");
-    }
+    $requiredFields = [
+        'nombre', 'apellido', 'correo', 'contrasena',
+        'celular', 'direccion', 'documento', 'tipoDocumento',
+        'rol', 'user'
+    ];
 
-    // Verifica si el usuario ya existe
-    $sql_usr_check = "SELECT idusuarios FROM usuarios WHERE email = :email";
-    $stmt_usr_check = $pdo->prepare($sql_usr_check);
-    $stmt_usr_check->bindParam(':email', $email);
-    $stmt_usr_check->execute();
-    if ($stmt_usr_check->fetchColumn()) {
-        throw new Exception("El usuario con el correo electrónico proporcionado ya existe.");
-    }
-
-    // Insertar en la tabla de credenciales
-    $sql_cred = "INSERT INTO credenciales (user, contrasena, fecharegistro, estado) VALUES (:user, :contrasena, NOW(), 1)";
-    $stmt_cred = $pdo->prepare($sql_cred);
-    $stmt_cred->bindParam(':user', $user);
-    $stmt_cred->bindParam(':contrasena', $hashed_password);
-    $stmt_cred->execute();
-    $credenciales_id = $pdo->lastInsertId();
-
-    // Insertar nuevo usuario
-    $sql_usr = "INSERT INTO usuarios (nombre, apellido, email, telefono, direccion, numerodocumento, tipo_documento_tdoc, tipo_usuario_idtipo_usuario, credenciales_idcredenciales) 
-                VALUES (:nombre, :apellido, :email, :telefono, :direccion, :numerodocumento, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
-    
-    $stmt_usr = $pdo->prepare($sql_usr);
-    
-    // Vincular parámetros
-    $stmt_usr->bindParam(':nombre', $nombre);
-    $stmt_usr->bindParam(':apellido', $apellido);
-    $stmt_usr->bindParam(':email', $email);
-    $stmt_usr->bindParam(':telefono', $telefono);
-    $stmt_usr->bindParam(':direccion', $direccion);
-    $stmt_usr->bindParam(':numerodocumento', $numerodocumento);
-    $stmt_usr->bindParam(':tipo_documento_tdoc', $tipo_documento);
-    $stmt_usr->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
-    $stmt_usr->bindParam(':credenciales_idcredenciales', $credenciales_id);
-
-    // Ejecutar la consulta
-    $stmt_usr->execute();
-    $usuarios_id = $pdo->lastInsertId();
-
-    // Insertar en la tabla de conexión según el rol
-    if ($rol_desc === 'Docente') {
-        $sql_docente = "INSERT INTO docente (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales) 
-                        VALUES (:usuarios_idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
-        
-        $stmt_docente = $pdo->prepare($sql_docente);
-        $stmt_docente->bindParam(':usuarios_idusuarios', $usuarios_id);
-        $stmt_docente->bindParam(':tipo_documento_tdoc', $tipo_documento);
-        $stmt_docente->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
-        $stmt_docente->bindParam(':credenciales_idcredenciales', $credenciales_id);
-        $stmt_docente->execute();
-    } elseif ($rol_desc === 'Administrador') {
-        $sql_admin = "INSERT INTO admin (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales) 
-                      VALUES (:usuarios_idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
-        
-        $stmt_admin = $pdo->prepare($sql_admin);
-        $stmt_admin->bindParam(':usuarios_idusuarios', $usuarios_id);
-        $stmt_admin->bindParam(':tipo_documento_tdoc', $tipo_documento);
-        $stmt_admin->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
-        $stmt_admin->bindParam(':credenciales_idcredenciales', $credenciales_id);
-        $stmt_admin->execute();
-    } elseif ($rol_desc === 'Estudiante SS') {
-        $sql_estudiante_ss = "INSERT INTO estudiante_ss (usuarios_idusuarios, usuarios_tipo_documento_tdoc, usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales) 
-                              VALUES (:usuarios_idusuarios, :tipo_documento_tdoc, :tipo_usuario_idtipo_usuario, :credenciales_idcredenciales)";
-        
-        $stmt_estudiante_ss = $pdo->prepare($sql_estudiante_ss);
-        $stmt_estudiante_ss->bindParam(':usuarios_idusuarios', $usuarios_id);
-        $stmt_estudiante_ss->bindParam(':tipo_documento_tdoc', $tipo_documento);
-        $stmt_estudiante_ss->bindParam(':tipo_usuario_idtipo_usuario', $tipo_usuario);
-        $stmt_estudiante_ss->bindParam(':credenciales_idcredenciales', $credenciales_id);
-        $stmt_estudiante_ss->execute();
-    }
-
-    // Confirmar la transacción
-    $pdo->commit();
-
-    $response['success'] = true;
-    $response['message'] = "Nuevo usuario registrado exitosamente";
-} catch (Exception $e) {
-    // En caso de error, revertir la transacción
-    if (isset($pdo)) {
-        if (isset($pdo)) {
-            $pdo->rollBack();
+    foreach ($requiredFields as $field) {
+        if (empty($input[$field])) {
+            http_response_code(400);
+            throw new Exception("Campo requerido: $field");
         }
     }
-    $response['message'] = "Error: " . $e->getMessage();
+
+    // Asignación básica de datos
+    $nombre = trim($input['nombre']);
+    $apellido = trim($input['apellido']);
+    $email = trim($input['correo']);
+    $contrasena = trim($input['contrasena']);
+    $telefono = trim($input['celular']);
+    $direccion = trim($input['direccion']);
+    $numerodocumento = trim($input['documento']);
+    $tipo_documento_desc = trim($input['tipoDocumento']);
+    $rol_desc = trim($input['rol']);
+    $user = trim($input['user']);
+
+    // Validación básica de email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new Exception("Formato de email inválido", 400);
+    }
+
+    $pdo->beginTransaction();
+    $transactionStarted = true;
+
+    // Obtener tipo documento
+    $stmt_doc = $pdo->prepare("SELECT tdoc FROM tipo_documento WHERE tdoc = :descripcion");
+    $stmt_doc->execute([':descripcion' => $tipo_documento_desc]);
+    
+    if (!$tipo_documento = $stmt_doc->fetchColumn()) {
+        throw new Exception("Tipo documento no válido", 400);
+    }
+
+    // Obtener tipo usuario
+    $stmt_rol = $pdo->prepare("SELECT idtipo_usuario FROM tipo_usuario WHERE rol = :rol");
+    $stmt_rol->execute([':rol' => $rol_desc]);
+    
+    if (!$tipo_usuario = $stmt_rol->fetchColumn()) {
+        throw new Exception("Rol no válido", 400);
+    }
+
+    // Verificar email único
+    $stmt_email = $pdo->prepare("SELECT idusuarios FROM usuarios WHERE email = :email");
+    $stmt_email->execute([':email' => $email]);
+    
+    if ($stmt_email->fetchColumn()) {
+        throw new Exception("El email ya está registrado", 409);
+    }
+
+    // Hash contraseña
+    $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
+
+    // Insertar credenciales
+    $stmt_cred = $pdo->prepare(
+        "INSERT INTO credenciales (user, contrasena, fecharegistro, estado)
+        VALUES (:user, :contrasena, NOW(), 1)"
+    );
+    $stmt_cred->execute([':user' => $user, ':contrasena' => $hashed_password]);
+    $credenciales_id = $pdo->lastInsertId();
+
+    // Insertar usuario principal
+    $stmt_usr = $pdo->prepare(
+        "INSERT INTO usuarios (
+            nombre, apellido, email, telefono, direccion,
+            numerodocumento, tipo_documento_tdoc,
+            tipo_usuario_idtipo_usuario, credenciales_idcredenciales
+        ) VALUES (
+            :nombre, :apellido, :email, :telefono, :direccion,
+            :numerodocumento, :tdoc, :tipo_usuario, :credenciales
+        )"
+    );
+    
+    $stmt_usr->execute([
+        ':nombre' => $nombre,
+        ':apellido' => $apellido,
+        ':email' => $email,
+        ':telefono' => $telefono,
+        ':direccion' => $direccion,
+        ':numerodocumento' => $numerodocumento,
+        ':tdoc' => $tipo_documento,
+        ':tipo_usuario' => $tipo_usuario,
+        ':credenciales' => $credenciales_id
+    ]);
+    
+    $usuarios_id = $pdo->lastInsertId();
+
+    // Insertar en tabla específica del rol
+    $tabla_rol = match($rol_desc) {
+        'Docente' => 'docente',
+        'Administrador' => 'admin',
+        'Estudiante SS' => 'estudiante_ss',
+        default => throw new Exception("Rol no soportado", 400)
+    };
+
+    $stmt_rol_insert = $pdo->prepare(
+        "INSERT INTO $tabla_rol (
+            usuarios_idusuarios, usuarios_tipo_documento_tdoc,
+            usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales
+        ) VALUES (
+            :usuario_id, :tdoc, :tipo_usuario, :credenciales
+        )"
+    );
+    
+    $stmt_rol_insert->execute([
+        ':usuario_id' => $usuarios_id,
+        ':tdoc' => $tipo_documento,
+        ':tipo_usuario' => $tipo_usuario,
+        ':credenciales' => $credenciales_id
+    ]);
+
+    $pdo->commit();
+    
+    $response = [
+        'success' => true,
+        'message' => 'Usuario registrado exitosamente',
+        'data' => [
+            'id' => $usuarios_id,
+            'email' => $email,
+            'rol' => $rol_desc
+        ]
+    ];
+    
+    http_response_code(201);
+
 } catch (PDOException $e) {
-    // Manejar excepciones PDO
-    $pdo->rollBack();
-    $response['message'] = "Error en la base de datos: " . $e->getMessage();
+    if ($transactionStarted) $pdo->rollBack();
+    $response['message'] = "Error en base de datos: " . $e->getMessage();
+    http_response_code(500);
+} catch (Exception $e) {
+    if ($transactionStarted) $pdo->rollBack();
+    $response['message'] = $e->getMessage();
+    http_response_code($e->getCode() ?: 400);
 }
 
 echo json_encode($response);

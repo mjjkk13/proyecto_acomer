@@ -7,7 +7,7 @@ import {
   faUser,
   faSignOutAlt,
   faBars,
-  faChartBar,
+  faListCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
@@ -55,7 +55,7 @@ const NavbarDocente = () => {
   };
 
   const menuItems = [
-    { to: '/docente', icon: faChartBar, label: 'Registro Asistencia' },
+    { to: '/docente', icon: faListCheck, label: 'Registro Asistencia' },
     { to: '/docente/codigos-registrados', icon: faListAlt, label: 'QR Registrados' },
     { to: '/docente/consultar-menu', icon: faUtensils, label: 'Consultar Menú' },
     { to: '/docente/perfil', icon: faUser, label: 'Mi Perfil' },
@@ -99,7 +99,7 @@ const NavbarDocente = () => {
             <FontAwesomeIcon icon={faBars} size="lg" />
           </button>
           {isDropdownOpen && (
-            <ul className="absolute right-0 mt-2 bg-[#27374D] rounded-lg shadow-lg text-sm w-48">
+            <ul className="absolute top-full right-0 mt-2 bg-[#27374D] rounded-lg shadow-lg text-sm w-48 z-50">
               {menuItems.map(({ to, icon, label }) => (
                 <li key={label}>
                   <Link to={to} className="block px-4 py-2 hover:bg-[#1c2a3a] flex items-center" onClick={closeDropdown}>
@@ -109,7 +109,10 @@ const NavbarDocente = () => {
                 </li>
               ))}
               <li>
-                <button onClick={() => { handleLogout(); closeDropdown(); }} className="block px-4 py-2 hover:bg-[#1c2a3a] flex items-center w-full text-left">
+                <button
+                  onClick={() => { handleLogout(); closeDropdown(); }}
+                  className="block px-4 py-2 hover:bg-[#1c2a3a] flex items-center w-full text-left"
+                >
                   <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
                   Cerrar Sesión
                 </button>

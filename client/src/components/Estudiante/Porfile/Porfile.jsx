@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 import { getDatosPersonales, updateDatosPersonales } from '../../services/porfile';
 
 const FIELDS = [
-  { field: 'idusuarios', label: 'ID Usuario' },
   { field: 'nombre', label: 'Nombre' },
   { field: 'apellido', label: 'Apellido' },
   { field: 'email', label: 'Email' },
@@ -75,45 +74,42 @@ const Porfile = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="card bg-base-100 shadow-xl">
-        <h2 className="text-2xl font-bold text-center text-white bg-primary p-4">
+    <div className="max-w-md mx-auto p-4">
+      <div className="card bg-base-100 shadow-md">
+        <h2 className="text-lg font-bold text-center text-white bg-primary p-3">
           Datos Personales
         </h2>
         
-        <div className="card-body">
+        <div className="card-body p-4">
           <div className="overflow-x-auto">
-            <table className="table w-full">
+            <table className="table table-sm w-full text-sm">
               <thead>
                 <tr>
-                  <th className="bg-base-200">Campo</th>
-                  <th className="bg-base-200">Información</th>
+                  <th className="bg-base-200 p-2">Campo</th>
+                  <th className="bg-base-200 p-2">Información</th>
                 </tr>
               </thead>
               <tbody>
                 {FIELDS.map(({ field, label }) => (
                   <tr key={field} className="hover">
-                    <td className="font-bold">{label}</td>
-                    <td>
+                    <td className="font-bold p-2">{label}</td>
+                    <td className="p-2">
                       {isEditing ? (
                         <input
                           type="text"
                           name={field}
                           value={formData[field] || ''}
                           onChange={manejarCambioInput}
-                          className="input input-bordered input-sm w-full"
-                          disabled={field === 'idusuarios'}
+                          className="input input-bordered input-xs w-full"
                         />
                       ) : (
                         <div className="flex items-center justify-between">
                           <span>{datosOriginales[field]}</span>
-                          {field !== 'idusuarios' && (
-                            <FontAwesomeIcon 
-                              icon={faPen} 
-                              className="text-gray-400 ml-2 cursor-pointer"
-                              onClick={() => setIsEditing(true)}
-                            />
-                          )}
+                          <FontAwesomeIcon 
+                            icon={faPen} 
+                            className="text-gray-400 ml-2 cursor-pointer"
+                            onClick={() => setIsEditing(true)}
+                          />
                         </div>
                       )}
                     </td>
@@ -125,13 +121,13 @@ const Porfile = () => {
           
           <button 
             onClick={toggleEdicion}
-            className={`btn mt-4 ${isEditing ? 'btn-success' : 'btn-primary'}`}
+            className={`btn btn-xs mt-4 ${isEditing ? 'btn-success' : 'btn-primary'}`}
           >
             <FontAwesomeIcon 
               icon={isEditing ? faSave : faEdit} 
               className="mr-2" 
             />
-            {isEditing ? 'Guardar Cambios' : 'Actualizar Datos'}
+            {isEditing ? 'Guardar' : 'Editar'}
           </button>
         </div>
       </div>
