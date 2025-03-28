@@ -2,14 +2,17 @@ import Navbar from "../Main/Nabvar";
 import AddStudentForm from "./AddStudentForm";
 import Footer from "../../Footer";
 
-const AddStudent = () =>{
-    return(
-    <div className="bg-gray-100 min-h-screen">
-      <Navbar />
-      <AddStudentForm />
-      <Footer />
-    </div>
-    )
-}
+const AddStudent = () => {
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-100">
+    <Navbar />
+    <main className="flex-1 items-center">
+      <AddStudentForm/>
+    </main>
+    <Footer />
+  </div>
+);
+};
+
 
 export default AddStudent;

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import {  useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListAlt, faQrcode, faUtensils, faUserPlus, faUser, faSignOutAlt, faBars } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../../img/logo.png';
@@ -90,7 +90,7 @@ const NavbarEstudiante = () => {
           </button>
           {isDropdownOpen && (
             <ul
-              className="absolute right-0 mt-2 bg-[#27374D] rounded-lg shadow-lg text-sm w-48"
+              className="absolute right-0 mt-2 bg-[#27374D] rounded-lg shadow-lg text-sm w-48 z-50"
               onMouseLeave={() => setIsDropdownOpen(false)}
             >
               {menuItems.map(({ to, icon, label }) => (
