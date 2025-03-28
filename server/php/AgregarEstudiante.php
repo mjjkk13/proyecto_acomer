@@ -5,20 +5,29 @@ header('Access-Control-Allow-Origin: http://localhost:5173');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS'); 
 header('Access-Control-Allow-Headers: Content-Type, Authorization'); 
 header('Access-Control-Allow-Credentials: true'); 
+
 // Incluir el archivo de conexión
 include 'conexion.php';
 
-// Verificar si el formulario fue enviado
+// Verificar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Recibir los datos del formulario
-    $nombre = $_POST['nombreEstudiante'];
-    $apellido = $_POST['apellidoEstudiante'];
-    $estado = $_POST['estado'] === 'si' ? 1 : 0;
+    // Leer el cuerpo de la solicitud en formato JSON
+    $data = json_decode(file_get_contents("php://input"), true);
 
-    $response = array('status' => 'error', 'message' => '');
+    // Verificar si los valores existen antes de usarlos
+    if (!isset($data['nombreEstudiante'], $data['apellidoEstudiante'], $data['estado'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Faltan datos en la solicitud']);
+        exit;
+    }
+
+    // Recibir los datos del formulario
+    $nombre = trim($data['nombreEstudiante']);
+    $apellido = trim($data['apellidoEstudiante']);
+    $estado = $data['estado'] === 'si' ? 1 : 0;
+
+    $response = ['status' => 'error', 'message' => ''];
 
     try {
-      
         // Primero, obtener el idalumnos
         $stmt1 = $pdo->prepare("SELECT idalumnos FROM alumnos WHERE nombre = :nombre AND apellido = :apellido");
         $stmt1->bindParam(':nombre', $nombre);
