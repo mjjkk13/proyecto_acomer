@@ -1,6 +1,6 @@
-import { Link, useNavigate } from 'react-router-dom';
-import logo from '../../../img/logo.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../../../img/logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faListAlt,
   faUtensils,
@@ -10,39 +10,41 @@ import {
   faBars,
   faChartBar,
   faUserEdit,
-} from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
-import Swal from 'sweetalert2';
+  faBook,
+} from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = (e) => {
     e.preventDefault();
-    fetch('http://localhost/proyecto_acomer/server/php/logout.php', {
-      method: 'POST',
-      credentials: 'include',
+    fetch("http://localhost/proyecto_acomer/server/php/logout.php", {
+      method: "POST",
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
           Swal.fire({
-            icon: 'success',
-            title: 'Sesión cerrada',
-            text: 'Hasta pronto',
-          }).then(() => navigate('/login'));
+            icon: "success",
+            title: "Sesión cerrada",
+            text: "Hasta pronto",
+          }).then(() => navigate("/login"));
         } else {
           Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudo cerrar sesión.',
+            icon: "error",
+            title: "Error",
+            text: "No se pudo cerrar sesión.",
           });
         }
       })
       .catch((error) => {
         Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
+          icon: "error",
+          title: "Oops...",
           text: `Error: ${error.message}`,
         });
       });
@@ -52,17 +54,18 @@ const Navbar = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  const closeDropdown = () => {
-    setIsDropdownOpen(false);
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
   };
 
   const menuItems = [
-    { to: '/admin', icon: faChartBar, label: 'Consultar Estadísticas' },
-    { to: '/admin/codigos-registrados', icon: faListAlt, label: 'QR Registrados' },
-    { to: '/admin/gestionar-menu', icon: faUtensils, label: 'Gestionar Menú' },
-    { to: '/admin/gestionar-usuarios', icon: faUserPlus, label: 'Gestionar Usuarios' },
-    { to: '/admin/registro-usuarios', icon: faUserEdit, label: 'Registrar Usuarios' }, // Nueva opción agregada
-    { to: '/admin/perfil', icon: faUser, label: 'Mi Perfil' },
+    { to: "/admin", icon: faChartBar, label: "Consultar Estadísticas" },
+    { to: "/admin/codigos-registrados", icon: faListAlt, label: "QR Registrados" },
+    { to: "/admin/gestionar-menu", icon: faUtensils, label: "Gestionar Menú" },
+    { to: "/admin/gestionar-usuarios", icon: faUserPlus, label: "Gestionar Usuarios" },
+    { to: "/admin/registro-usuarios", icon: faUserEdit, label: "Registrar Usuarios" },
+    { to: "/admin/cursos", icon: faBook, label: "Cursos" },
+    { to: "/admin/perfil", icon: faUser, label: "Mi Perfil" },
   ];
 
   return (
@@ -74,70 +77,89 @@ const Navbar = () => {
           <span className="ml-2 text-xl font-bold">A Comer</span>
         </Link>
 
-        {/* Desktop Menu */}
-        <ul className="hidden lg:flex space-x-2">
-          {menuItems.map(({ to, icon, label }) => (
-            <li key={label}>
-              <Link to={to} className="hover:underline flex items-center">
-                <FontAwesomeIcon icon={icon} className="mr-2" />
-                {label}
-              </Link>
-            </li>
-          ))}
-          <li>
-            <button onClick={handleLogout} className="hover:underline cursor-pointer flex items-center">
-              <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-              Cerrar Sesión
-            </button>
-          </li>
-        </ul>
+        {/* Botón de menú para móviles y escritorio */}
+        <button
+          onClick={toggleMenu}
+          className="text-white flex items-center focus:outline-none md:hidden"
+          aria-label="Abrir menú"
+          aria-expanded={isMenuOpen}
+        >
+          <FontAwesomeIcon icon={faBars} size="lg" />
+        </button>
 
-        {/* Mobile Menu */}
-        <div className="lg:hidden relative">
+        {/* Menú desplegable */}
+        <div className="relative hidden md:block">
           <button
             onClick={toggleDropdown}
-            className="text-white flex items-center focus:outline-none"
-            aria-label="Abrir menú"
-            aria-expanded={isDropdownOpen}
+            className="bg-[#1c2a3a] px-4 py-2 rounded-lg flex items-center"
           >
-            <FontAwesomeIcon icon={faBars} size="lg" />
+            <FontAwesomeIcon icon={faBars} className="ml-2" />
           </button>
-
           {isDropdownOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end">
-              <ul className="bg-[#27374D] w-64 h-full shadow-lg text-sm pt-4">
-                <button onClick={closeDropdown} className="absolute top-4 right-4 text-white text-xl">
-                  ✖
-                </button>
-                {menuItems.map(({ to, icon, label }) => (
-                  <li key={label}>
-                    <Link
-                      to={to}
-                      className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center"
-                      onClick={closeDropdown}
-                    >
-                      <FontAwesomeIcon icon={icon} className="mr-2" />
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-                <li>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      closeDropdown();
-                    }}
-                    className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
+            <ul className="absolute right-0 mt-2 w-64 bg-[#27374D] shadow-lg text-sm rounded-lg">
+              {menuItems.map(({ to, icon, label }) => (
+                <li key={label}>
+                  <Link
+                    to={to}
+                    className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center"
+                    onClick={() => setIsDropdownOpen(false)}
                   >
-                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-                    Cerrar Sesión
-                  </button>
+                    <FontAwesomeIcon icon={icon} className="mr-2" />
+                    {label}
+                  </Link>
                 </li>
-              </ul>
-            </div>
+              ))}
+              <li>
+                <button
+                  onClick={(e) => {
+                    handleLogout(e);
+                    setIsDropdownOpen(false);
+                  }}
+                  className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+                  Cerrar Sesión
+                </button>
+              </li>
+            </ul>
           )}
         </div>
       </div>
+
+      {/* Menú móvil */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end">
+          <ul className="bg-[#27374D] w-64 h-full shadow-lg text-sm pt-4">
+            <button onClick={() => setIsMenuOpen(false)} className="absolute top-4 right-4 text-white text-xl">
+              ✖
+            </button>
+            {menuItems.map(({ to, icon, label }) => (
+              <li key={label}>
+                <Link
+                  to={to}
+                  className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <FontAwesomeIcon icon={icon} className="mr-2" />
+                  {label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <button
+                onClick={(e) => {
+                  handleLogout(e);
+                  setIsMenuOpen(false);
+                }}
+                className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+                Cerrar Sesión
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
     </nav>
   );
 };
