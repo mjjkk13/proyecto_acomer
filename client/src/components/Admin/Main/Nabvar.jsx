@@ -11,6 +11,7 @@ import {
   faChartBar,
   faUserEdit,
   faBook,
+  faSchool
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Swal from "sweetalert2";
@@ -65,6 +66,7 @@ const Navbar = () => {
     { to: "/admin/gestionar-usuarios", icon: faUserPlus, label: "Gestionar Usuarios" },
     { to: "/admin/registro-usuarios", icon: faUserEdit, label: "Registrar Usuarios" },
     { to: "/admin/cursos", icon: faBook, label: "Cursos" },
+    { to: "/admin/agregar-alumnos", icon: faSchool, label: "Agregar Alumnos" },
     { to: "/admin/perfil", icon: faUser, label: "Mi Perfil" },
   ];
 

@@ -7,14 +7,14 @@ import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const AddCursos = () => {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     cargarCursos();
   }, []);
 
   const cargarCursos = async () => {
-    setLoading(true); // Set loading to true before fetching data
+    setLoading(true); 
     try {
       const data = await courseService.getCourses();
       if (!Array.isArray(data) || data.error) 
@@ -24,7 +24,7 @@ const AddCursos = () => {
       Swal.fire('Error', 'No se pudieron cargar los cursos.', 'error');
       setCourses([]);
     } finally {
-      setLoading(false); // Set loading to false after fetching data
+      setLoading(false); 
     }
   };
 
@@ -85,7 +85,7 @@ const AddCursos = () => {
       const data = await courseService.addCourse(formValues.nombreCurso, formValues.idDocente);
       if (data.success) {
         Swal.fire('¡Curso agregado!', '', 'success');
-        await cargarCursos(); // Aseguramos que los cursos se recarguen
+        await cargarCursos(); 
       } else {
         throw new Error(data.error);
       }
@@ -104,7 +104,7 @@ const AddCursos = () => {
       const data = await courseService.updateCourse(curso.idcurso, formValues.nombreCurso, formValues.idDocente);
       if (data.success) {
         Swal.fire('¡Curso actualizado!', '', 'success');
-        await cargarCursos(); // Aseguramos que los cursos se recarguen
+        await cargarCursos();
       } else {
         throw new Error(data.error);
       }
