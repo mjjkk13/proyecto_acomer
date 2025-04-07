@@ -28,20 +28,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ['status' => 'error', 'message' => ''];
 
     try {
-        // Primero, obtener el idalumnos
-        $stmt1 = $pdo->prepare("SELECT idalumnos FROM alumnos WHERE nombre = :nombre AND apellido = :apellido");
+        // Primero, obtener el id del alumno (ahora es "idalumno" en la tabla "alumnos")
+        $stmt1 = $pdo->prepare("SELECT idalumno FROM alumnos WHERE nombre = :nombre AND apellido = :apellido");
         $stmt1->bindParam(':nombre', $nombre);
         $stmt1->bindParam(':apellido', $apellido);
         $stmt1->execute();
 
-        // Obtener el resultado
-        $idalumnos = $stmt1->fetchColumn();
+        // Obtener el resultado (id del alumno)
+        $idalumno = $stmt1->fetchColumn();
 
-        if ($idalumnos) {
-            // Si se encuentra el idalumnos, proceder a actualizar la tabla asistencia
-            $stmt2 = $pdo->prepare("UPDATE asistencia SET fecha = NOW(), estado = :estado WHERE alumnos_idalumnos = :idalumnos");
+        if ($idalumno) {
+            // Si se encuentra el alumno, actualizar la tabla "asistencia"
+            // Ahora la columna se llama "alumno_id"
+            $stmt2 = $pdo->prepare("UPDATE asistencia SET fecha = NOW(), estado = :estado WHERE alumno_id = :idalumno");
             $stmt2->bindParam(':estado', $estado);
-            $stmt2->bindParam(':idalumnos', $idalumnos);
+            $stmt2->bindParam(':idalumno', $idalumno);
             $stmt2->execute();
 
             // Verificar si se actualizó algún registro

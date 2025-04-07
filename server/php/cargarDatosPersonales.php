@@ -16,20 +16,25 @@ if (!isset($pdo)) {
     exit();
 }
 
+// Verifica que el usuario esté autenticado (almacenado en la sesión)
 if (isset($_SESSION['idusuarios'])) {
     $id_usuario = $_SESSION['idusuarios'];
 
     try {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $sql = "SELECT idusuarios, nombre, apellido, email, telefono, direccion FROM usuarios WHERE idusuarios = :idusuarios";
+            // Consulta de datos de usuario
+            $sql = "SELECT idusuarios, nombre, apellido, email, telefono, direccion 
+                    FROM usuarios 
+                    WHERE idusuarios = :idusuarios";
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':idusuarios', $id_usuario, PDO::PARAM_INT);
             $stmt->execute();
 
-            $userData = $stmt->fetch();
+            $userData = $stmt->fetch(PDO::FETCH_ASSOC);
             echo json_encode($userData ? $userData : []);
             exit();
         } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Se reciben los datos actualizados en formato JSON
             $datosActualizados = json_decode(file_get_contents("php://input"), true);
 
             if (!$datosActualizados) {
@@ -37,6 +42,7 @@ if (isset($_SESSION['idusuarios'])) {
                 exit();
             }
 
+            // Actualización de los datos del usuario en la tabla "usuarios"
             $sql = "UPDATE usuarios 
                     SET nombre = :nombre, 
                         apellido = :apellido, 

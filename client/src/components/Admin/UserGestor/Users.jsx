@@ -36,16 +36,16 @@ const Users = () => {
       title: "Editar Credencial",
       html: `
         <div class="flex flex-col gap-2">
-          <input type="text" id="editUser" class="swal2-input" placeholder="Usuario" value="${selectedUser.nombre_usuario_credenciales}">
+          <input type="text" id="editUser" class="swal2-input" placeholder="Usuario" value="${selectedUser.nombre_usuario}">
           <input type="password" id="editPassword" class="swal2-input" placeholder="Nueva Contraseña">
           <select id="editStatus" class="swal2-select">
             <option value="1" ${selectedUser.estado == 1 ? "selected" : ""}>Activo</option>
             <option value="0" ${selectedUser.estado == 0 ? "selected" : ""}>Inactivo</option>
           </select>
           <select id="editRol" class="swal2-select">
-            <option value="Estudiante SS" ${selectedUser.tipo_usuario_rol === "Estudiante SS" ? "selected" : ""}>Estudiante SS</option>
-            <option value="Docente" ${selectedUser.tipo_usuario_rol === "Docente" ? "selected" : ""}>Docente</option>
-            <option value="Administrador" ${selectedUser.tipo_usuario_rol === "Administrador" ? "selected" : ""}>Administrador</option>
+            <option value="Estudiante SS" ${selectedUser.rol === "Estudiante SS" ? "selected" : ""}>Estudiante SS</option>
+            <option value="Docente" ${selectedUser.rol === "Docente" ? "selected" : ""}>Docente</option>
+            <option value="Administrador" ${selectedUser.rol === "Administrador" ? "selected" : ""}>Administrador</option>
           </select>
         </div>
       `,
@@ -130,8 +130,8 @@ const Users = () => {
             {usuarios.length > 0 ? (
               usuarios.map((usuario) => (
                 <tr key={usuario.idcredenciales}>
-                  <td>{usuario.nombre_usuario_credenciales}</td>
-                  <td>{usuario.tipo_usuario_rol}</td>
+                  <td>{usuario.nombre_usuario}</td>
+                  <td>{usuario.rol}</td>
                   <td>
                     <span className={`font-bold ${usuario.estado == 1 ? "text-green-500" : "text-red-500"}`}>
                       {usuario.estado == 1 ? "ACTIVO" : "INACTIVO"}

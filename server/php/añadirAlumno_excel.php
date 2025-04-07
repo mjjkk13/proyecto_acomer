@@ -6,7 +6,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Access-Control-Allow-Credentials: true'); 
 
 require 'vendor/autoload.php';
-require 'conexion.php'; // ✅ Usa `$pdo` en lugar de `$conn`
+require 'conexion.php'; // Usa la variable $pdo para la conexión
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -19,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
         $worksheet = $spreadsheet->getActiveSheet();
         $rows = $worksheet->toArray();
 
-        // ✅ Preparar consulta fuera del bucle para mejorar rendimiento
-        $stmt = $pdo->prepare("INSERT INTO alumnos (nombre, apellido, cursos_idcursos) VALUES (?, ?, ?)");
+        // Preparar consulta fuera del bucle para mejorar rendimiento
+        $stmt = $pdo->prepare("INSERT INTO alumnos (nombre, apellido, curso_id) VALUES (?, ?, ?)");
 
         foreach ($rows as $index => $row) {
             if ($index === 0) continue; // Saltar encabezados
@@ -28,13 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             $nombre = isset($row[0]) ? trim($row[0]) : null;
             $apellido = isset($row[1]) ? trim($row[1]) : null;
 
-            // ✅ Validación de datos
+            // Validación de datos
             if (empty($nombre) || empty($apellido)) {
                 error_log("Fila $index con datos vacíos: " . json_encode($row));
                 continue;
             }
 
-            // ✅ Ejecutar la consulta con valores correctos
+            // Ejecutar la consulta con valores correctos
             $stmt->execute([$nombre, $apellido, $courseId]);
         }
 
@@ -45,3 +45,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 } else {
     echo json_encode(["error" => "Faltan parámetros o archivo"]);
 }
+?>

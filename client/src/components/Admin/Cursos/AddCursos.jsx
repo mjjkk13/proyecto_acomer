@@ -154,7 +154,7 @@ const AddCursos = () => {
             <thead>
               <tr>
                 <th className="text-gray-500">Curso</th>
-                <th className="text-gray-500">Director de Curso</th>
+                <th className="text-gray-500">Docente</th>
                 <th className="text-gray-500">Acciones</th>
               </tr>
             </thead>

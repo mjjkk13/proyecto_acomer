@@ -62,6 +62,7 @@ const showData = (title, data, handleEdit, handleDelete) => {
 const MenuSection = () => {
   const [setGroupedMenus] = useState({});
 
+
   useEffect(() => {
     loadMenus();
   }, []);

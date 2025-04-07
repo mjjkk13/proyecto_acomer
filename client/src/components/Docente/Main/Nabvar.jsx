@@ -17,7 +17,7 @@ const NavbarDocente = () => {
   const navigate = useNavigate();
 
   const handleLogout = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     fetch('http://localhost/proyecto_acomer/server/php/logout.php', {
       method: 'POST',
       credentials: 'include',
@@ -56,7 +56,7 @@ const NavbarDocente = () => {
 
   const menuItems = [
     { to: '/docente', icon: faListCheck, label: 'Registro Asistencia' },
-    { to: '/docente/codigos-registrados', icon: faListAlt, label: 'QR Registrados' },
+    { to: '/docente/codigos-generados', icon: faListAlt, label: 'QR Generados' },
     { to: '/docente/consultar-menu', icon: faUtensils, label: 'Consultar Menú' },
     { to: '/docente/perfil', icon: faUser, label: 'Mi Perfil' },
   ];
@@ -110,7 +110,7 @@ const NavbarDocente = () => {
               ))}
               <li>
                 <button
-                  onClick={() => { handleLogout(); closeDropdown(); }}
+                  onClick={(e) => { handleLogout(e); closeDropdown(); }}
                   className="block px-4 py-2 hover:bg-[#1c2a3a] flex items-center w-full text-left"
                 >
                   <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />

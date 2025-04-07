@@ -3,53 +3,60 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'C:/xampp/htdocs/Proyecto/core/database.php'; // Asegúrate de que la ruta es correcta
+require_once 'conexion.php';
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: http://localhost:5173');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Credentials: true');
+header('Cache-Control: public, max-age=300');
 
-header('Content-Type: application/json');
+$method = $_SERVER['REQUEST_METHOD'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Asegúrate de ajustar el JOIN y SELECT según tus necesidades
-    $sqlSelect = "SELECT q.codigoqr, q.fechageneracion, q.idqrgenerados, c.nombrecurso
-                  FROM qrgenerados q
-                  JOIN cursos c ON q.idqrgenerados = c.qrgenerados_idqrgenerados
-                  ORDER BY q.fechageneracion DESC";
+switch ($method) {
+    case 'GET':
+        // Solo selecciona los campos de qrgenerados
+        $sqlSelect = "SELECT idqrgenerados, codigoqr, fechageneracion
+                      FROM qrgenerados
+                      ORDER BY fechageneracion DESC";
 
-    try {
+        try {
+            $stmt = $pdo->query($sqlSelect);
+            $qrs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode(['success' => true, 'data' => $qrs]);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Error al obtener los datos: ' . $e->getMessage()]);
+        }
+        break;
 
+    case 'POST':
+        $input = json_decode(file_get_contents('php://input'), true);
 
-        $stmt = $pdo->query($sqlSelect);
-        $codigos = array();
-
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $codigos[] = array(
-                'fechageneracion' => $row['fechageneracion'],
-                'codigoqr' => $row['codigoqr'],
-                'idqrgenerados' => $row['idqrgenerados'],
-                'nombrecurso' => $row['nombrecurso'] // Incluye el nombre del curso en el resultado
-            );
+        if (!isset($input['eliminar']) || !isset($input['idqrgenerados'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Faltan parámetros']);
+            exit;
         }
 
-        echo json_encode($codigos);
-    } catch (PDOException $e) {
-        echo json_encode(['error' => 'Error en SELECT: ' . $e->getMessage()]);
-    }
-}
+        $idQrGenerados = $input['idqrgenerados'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
-    $idQrGenerados = $_POST['idqrgenerados'];
+        try {
+            $sqlDelete = "DELETE FROM qrgenerados WHERE idqrgenerados = :idqrgenerados";
+            $stmt = $pdo->prepare($sqlDelete);
+            $stmt->bindParam(':idqrgenerados', $idQrGenerados, PDO::PARAM_INT);
+            $stmt->execute();
 
-    try {
-        
+            echo json_encode(['success' => true, 'message' => 'QR eliminado correctamente']);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Error al eliminar: ' . $e->getMessage()]);
+        }
+        break;
 
-        // Eliminar el registro en `qrgenerados`
-        $sqlDeleteQrGenerados = "DELETE FROM qrgenerados WHERE idqrgenerados = :idqrgenerados";
-        $stmt = $pdo->prepare($sqlDeleteQrGenerados);
-        $stmt->bindParam(':idqrgenerados', $idQrGenerados, PDO::PARAM_INT);
-        $stmt->execute();
-
-        echo json_encode(['success' => true, 'message' => 'Registro eliminado con éxito.']);
-    } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Error en DELETE: ' . $e->getMessage()]);
-    }
+    default:
+        http_response_code(405);
+        echo json_encode(['success' => false, 'message' => 'Método no permitido']);
+        break;
 }
 ?>

@@ -44,10 +44,11 @@ try {
         throw new Exception('Error de conexión a la base de datos');
     }
 
+    // Actualizada la consulta para usar las nuevas columnas de la DB
     $sql = "SELECT u.idusuarios, c.user, c.contrasena, tu.rol 
             FROM credenciales c
-            JOIN usuarios u ON c.idcredenciales = u.credenciales_idcredenciales
-            JOIN tipo_usuario tu ON u.tipo_usuario_idtipo_usuario = tu.idtipo_usuario
+            JOIN usuarios u ON c.idcredenciales = u.credenciales
+            JOIN tipo_usuario tu ON u.tipo_usuario = tu.idtipo_usuario
             WHERE c.user = :user";
     
     $stmt = $pdo->prepare($sql);
@@ -66,6 +67,11 @@ try {
     $_SESSION['idusuarios'] = $result['idusuarios'];
     $_SESSION['user'] = $usuario;
     $_SESSION['rol'] = $result['rol'];
+
+    // Si el rol es Docente, guardar el ID en una variable específica para docentes
+    if ($result['rol'] === 'Docente') {
+        $_SESSION['docente_id'] = $result['idusuarios'];
+    }
 
     // Actualizar último acceso
     $updateStmt = $pdo->prepare("UPDATE credenciales SET ultimoacceso = NOW() WHERE user = :user");
