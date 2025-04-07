@@ -17,6 +17,7 @@ import MenuTeacher from './components/Docente/Menu/Menu'
 import Registro from './components/Admin/Registro/Registro'
 import Cursos from './components/Admin/Cursos/Cursos';
 import AddStudents from './components/Admin/AddStudents/AddStudents';
+import QRregistrados from './components/Docente/QRgenerados/QRregistrados';
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
               <ProtectedRoute allowedRoles={['Docente']}>
                 <Routes>
                   <Route path='/' element={<MainDocente/>}/>
+                  <Route path='codigos-generados' element={<QRregistrados/>}/>
                   <Route path='consultar-menu' element={<MenuTeacher/>}/>
                   <Route path='perfil' element={<TeacherPorfile/>}/>
                 </Routes>
