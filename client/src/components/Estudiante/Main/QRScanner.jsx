@@ -3,11 +3,13 @@ import { BrowserQRCodeReader } from '@zxing/library'; // Importar el lector QR
 import foto from '../../../img/qr.png';
 import foto2 from '../../../img/qr2.png';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import sonido from '../../../assets/sonido.mp3'
+import sonido from '../../../assets/sonido.mp3';
+import saveqr from '../../services/saveqr'; // El servicio para interactuar con el backend
 
 const QRScanner = () => {
   const videoRef = useRef(null); // Referencia al elemento <video>
   const [isCameraActive, setIsCameraActive] = useState(false); // Estado para controlar la cámara
+  const [error] = useState(null); // Estado para manejar errores
 
   const handleScanClick = () => {
     Swal.fire({
@@ -42,7 +44,7 @@ const QRScanner = () => {
       videoRef.current.play(); // Iniciar la reproducción del video
 
       const codeReader = new BrowserQRCodeReader();
-      codeReader.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
+      codeReader.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
         if (result) {
           console.log('Código QR detectado:', result.text);
           const audio = new Audio(sonido); // Crear una nueva instancia de Audio
@@ -57,6 +59,15 @@ const QRScanner = () => {
             allowEscapeKey: false,
             allowEnterKey: false
           });
+
+          // Llamamos al servicio para guardar el QR
+          try {
+            await saveqr.saveQRCode(result.text);
+          } catch (error) {
+            console.error('Error al guardar el QR:', error);
+            Swal.fire('Error', 'No se pudo guardar el QR en la base de datos.', 'error');
+          }
+
           stopCamera(); // Detener la cámara después del escaneo
         }
         if (err && !(err.name === 'NotFoundException')) {
@@ -98,6 +109,10 @@ const QRScanner = () => {
     <div className="container mx-auto p-4 text-center">
       <h3 className="text-lg font-semibold mb-4 text-black">Escanear QR para acceder al comedor escolar</h3>
       <p className="mb-4 text-black">Por favor, escanea el código QR para acceder al comedor escolar.</p>
+      
+      {/* Mostrar mensaje de error si existe */}
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
       {/* Mostrar la imagen si la cámara no está activa */}
       {!isCameraActive && (
         <img
@@ -107,6 +122,7 @@ const QRScanner = () => {
           onClick={handleScanClick}
         />
       )}
+      
       {/* Contenedor de video para mostrar la cámara cuando esté activa */}
       {isCameraActive && (
         <div className="mt-4">
