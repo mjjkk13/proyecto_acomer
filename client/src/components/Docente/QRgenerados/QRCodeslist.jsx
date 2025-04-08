@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import qrService from '../../services/qrService';
+import { getQRCodes } from '../../services/qrService';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
@@ -12,13 +12,12 @@ const QRCodesList = () => {
     loadQRCodes();
   }, []);
 
-  const loadQRCodes = async () => {
+    const loadQRCodes = async () => {
     try {
-      const data = await qrService.getQRCodes();
-      // Concatenar la URL base a cada imagen
+      const data = await getQRCodes();
       const qrCodesWithFullImageUrl = data.map(codigo => ({
         ...codigo,
-        imagen: `${API_URL}/${codigo.imagen}`, // Concatenamos la URL base con el nombre del archivo
+        imagen: `${API_URL}/${codigo.imagen}`,
       }));
       setQrCodes(qrCodesWithFullImageUrl);
     } catch (error) {

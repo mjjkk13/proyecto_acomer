@@ -1,0 +1,41 @@
+<?php
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: http://localhost:5173');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Credentials: true');
+
+require_once 'conexion.php';
+
+try {
+    $sql = "SELECT fecha_escaneo, qr_code FROM qrescaneados ORDER BY fecha_escaneo DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
+    $resultados = [];
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $qr = $row['qr_code'];
+        $fecha = $row['fecha_escaneo'];
+
+        if (empty($qr)) continue;
+
+        // Extraer el nombre del curso
+        preg_match('/Curso:\s*(Curso\s*\d+)/i', $qr, $matchCurso);
+        // Extraer la cantidad de estudiantes presentes
+        preg_match('/Estudiantes presentes:\s*(\d+)/i', $qr, $matchCantidad);
+
+        $curso = isset($matchCurso[1]) ? trim($matchCurso[1]) : 'Curso desconocido';
+        $cantidad = isset($matchCantidad[1]) ? (int)$matchCantidad[1] : 0;
+
+        $resultados[] = [
+            'curso' => $curso,
+            'cantidad' => $cantidad,
+            'fecha' => $fecha
+        ];
+    }
+
+    echo json_encode($resultados);
+} catch (PDOException $e) {
+    echo json_encode(['error' => 'Error en la consulta: ' . $e->getMessage()]);
+}
