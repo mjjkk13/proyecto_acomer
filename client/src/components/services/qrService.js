@@ -23,3 +23,22 @@ export const fetchQRScans = async () => {
     return [];
   }
 };
+
+// Servicio para eliminar un código QR por ID
+export const deleteQRCode = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/EliminarCodigoQR.php?id=${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al eliminar el código QR');
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error al eliminar el QR:', error);
+    throw error;
+  }
+};

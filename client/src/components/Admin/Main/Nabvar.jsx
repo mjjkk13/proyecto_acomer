@@ -61,7 +61,7 @@ const Navbar = () => {
 
   const menuItems = [
     { to: "/admin", icon: faChartBar, label: "Consultar Estadísticas" },
-    { to: "/admin/codigos-registrados", icon: faListAlt, label: "QR Registrados" },
+    { to: "/admin/codigos-generados", icon: faListAlt, label: "QR Generados" },
     { to: "/admin/gestionar-menu", icon: faUtensils, label: "Gestionar Menú" },
     { to: "/admin/gestionar-usuarios", icon: faUserPlus, label: "Gestionar Usuarios" },
     { to: "/admin/registro-usuarios", icon: faUserEdit, label: "Registrar Usuarios" },

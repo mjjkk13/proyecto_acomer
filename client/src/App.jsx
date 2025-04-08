@@ -19,6 +19,7 @@ import Cursos from './components/Admin/Cursos/Cursos';
 import AddStudents from './components/Admin/AddStudents/AddStudents';
 import QRgenerados from './components/Docente/QRgenerados/QRgenerados';
 import QRregistrados from './components/Estudiante/QRregistro/QRregistrados';
+import QRcrud from './components/Admin/QRcrud/QRcrud';
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
               <ProtectedRoute allowedRoles={['Administrador']}>
                 <Routes>
                   <Route path='/' element={<MainAdmin/>}/>
+                  <Route path='codigos-generados' element={<QRcrud/>}/>
                   <Route path='gestionar-menu' element={<Menu/>}/>
                   <Route path='gestionar-usuarios' element={<UserGestor/>}/>
                   <Route path='registro-usuarios' element={<Registro/>}/>
