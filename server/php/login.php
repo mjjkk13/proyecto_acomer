@@ -39,24 +39,28 @@ try {
     $usuario = trim($_POST['usuario']);
     $contrasena = $_POST['inputPassword'];
 
-    // Verificar conexión a la base de datos
     if (!isset($pdo)) {
         throw new Exception('Error de conexión a la base de datos');
     }
 
-    // Actualizada la consulta para usar las nuevas columnas de la DB
-    $sql = "SELECT u.idusuarios, c.user, c.contrasena, tu.rol 
+    // Consulta incluyendo el estado
+    $sql = "SELECT u.idusuarios, c.user, c.contrasena, c.estado, tu.rol 
             FROM credenciales c
             JOIN usuarios u ON c.idcredenciales = u.credenciales
             JOIN tipo_usuario tu ON u.tipo_usuario = tu.idtipo_usuario
             WHERE c.user = :user";
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['user' => $usuario]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$result) {
         sendJsonResponse(false, 'Usuario no encontrado');
+    }
+
+    // Validar si el usuario está inactivo
+    if ((int)$result['estado'] === 0) {
+        sendJsonResponse(false, 'Este usuario está inactivo. Contacte al administrador.');
     }
 
     if (!password_verify($contrasena, $result['contrasena'])) {
@@ -68,7 +72,6 @@ try {
     $_SESSION['user'] = $usuario;
     $_SESSION['rol'] = $result['rol'];
 
-    // Si el rol es Docente, guardar el ID en una variable específica para docentes
     if ($result['rol'] === 'Docente') {
         $_SESSION['docente_id'] = $result['idusuarios'];
     }
@@ -77,7 +80,6 @@ try {
     $updateStmt = $pdo->prepare("UPDATE credenciales SET ultimoacceso = NOW() WHERE user = :user");
     $updateStmt->execute(['user' => $usuario]);
 
-    // Determinar URL de redirección
     $redirect_url = match($result['rol']) {
         'Administrador' => '/admin',
         'Estudiante SS' => '/estudiante',
