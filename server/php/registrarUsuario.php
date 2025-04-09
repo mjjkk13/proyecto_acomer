@@ -103,8 +103,7 @@ try {
     $stmt_usr = $pdo->prepare("
         INSERT INTO usuarios (
             nombre, apellido, email, telefono, direccion,
-            numerodocumento, tipo_documento_tdoc,
-            tipo_usuario_idtipo_usuario, credenciales_idcredenciales
+            numerodocumento, tipo_documento, tipo_usuario, credenciales
         ) VALUES (
             :nombre, :apellido, :email, :telefono, :direccion,
             :numerodocumento, :tdoc, :tipo_usuario, :credenciales
@@ -124,29 +123,26 @@ try {
     
     $usuarios_id = $pdo->lastInsertId();
 
-    // Determinar a qué tabla específica insertar según el rol del usuario
-    $tabla_rol = match($rol_desc) {
-        'Docente' => 'docente',
-        'Administrador' => 'admin',
-        'Estudiante SS' => 'estudiante_ss',
-        default => throw new Exception("Rol no soportado", 400)
-    };
+ // Determinar a qué tabla específica insertar según el rol del usuario
+$tabla_rol = match($rol_desc) {
+    'Docente' => 'docente',
+    'Administrador' => 'admin',
+    'Estudiante SS' => 'estudiante_ss',
+    default => throw new Exception("Rol no soportado", 400)
+};
 
-    // Insertar en tabla correspondiente al tipo de usuario
-    $stmt_rol_insert = $pdo->prepare("
-        INSERT INTO $tabla_rol (
-            usuarios_idusuarios, usuarios_tipo_documento_tdoc,
-            usuarios_tipo_usuario_idtipo_usuario, usuarios_credenciales_idcredenciales
-        ) VALUES (
-            :usuario_id, :tdoc, :tipo_usuario, :credenciales
-        )
-    ");
-    $stmt_rol_insert->execute([
-        ':usuario_id' => $usuarios_id,
-        ':tdoc' => $tipo_documento,
-        ':tipo_usuario' => $tipo_usuario,
-        ':credenciales' => $credenciales_id
-    ]);
+// Insertar en la tabla específica del rol usando solo la columna `usuario_id`
+$stmt_rol_insert = $pdo->prepare("
+    INSERT INTO $tabla_rol (usuario_id)
+    VALUES (:usuario_id)
+");
+$stmt_rol_insert->execute([
+    ':usuario_id' => $usuarios_id
+]);
+
+$stmt_rol_insert->execute([
+    ':usuario_id' => $usuarios_id
+]);
 
     // Confirmar la transacción
     $pdo->commit();
