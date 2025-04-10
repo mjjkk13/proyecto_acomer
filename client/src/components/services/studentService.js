@@ -21,9 +21,10 @@ const studentService = {
       const response = await fetch(API_BASE_URL, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',  // Cambiado a JSON
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(studentData),  // Cambiado a JSON.stringify
+        body: JSON.stringify(studentData),
+        credentials: 'include'  // 👈 Aquí se agregan las cookies (como PHPSESSID)
       });
       
       return await handleResponse(response);
