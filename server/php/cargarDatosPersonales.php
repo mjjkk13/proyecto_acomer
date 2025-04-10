@@ -59,6 +59,34 @@ if (isset($_SESSION['idusuarios'])) {
             $stmt->bindParam(':idusuarios', $id_usuario, PDO::PARAM_INT);
             $stmt->execute();
 
+            // Si se recibió una nueva contraseña, actualizarla en la tabla "credenciales"
+            if (!empty($datosActualizados['nuevaContraseña'])) {
+                $nuevaContraseña = password_hash($datosActualizados['nuevaContraseña'], PASSWORD_BCRYPT);
+
+                // Obtener el idcredenciales de la tabla "usuarios"
+                $sql = "SELECT credenciales FROM usuarios WHERE idusuarios = :idusuarios";
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':idusuarios', $id_usuario, PDO::PARAM_INT);
+                $stmt->execute();
+                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($usuario) {
+                    $idcredenciales = $usuario['credenciales'];
+
+                    // Actualizar la contraseña en la tabla "credenciales"
+                    $sql = "UPDATE credenciales 
+                            SET contrasena = :contrasena 
+                            WHERE idcredenciales = :idcredenciales";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':contrasena', $nuevaContraseña, PDO::PARAM_STR);
+                    $stmt->bindParam(':idcredenciales', $idcredenciales, PDO::PARAM_INT);
+                    $stmt->execute();
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Usuario no encontrado']);
+                    exit();
+                }
+            }
+
             echo json_encode(['status' => 'success']);
             exit();
         } else {
