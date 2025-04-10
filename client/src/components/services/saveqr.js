@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/proyecto_acomer/server/php';
+const API_URL = 'http://localhost/proyecto_acomer/server/php/save_qr.php';
 
 export const saveQRCode = async (qrCode) => {
   try {

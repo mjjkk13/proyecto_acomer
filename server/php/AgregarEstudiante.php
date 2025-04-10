@@ -49,11 +49,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt2->rowCount() > 0) {
                 $response['status'] = 'success';
                 $response['message'] = 'Asistencia actualizada correctamente.';
+
+                // 👇 NUEVA LÓGICA PARA ACTUALIZAR LA TABLA estadisticasqr
+                if ($estado === 1) {
+                    $fechaHoy = date("Y-m-d");
+
+                    // Verificar si ya existe un registro para esa fecha
+                    $check = $pdo->prepare("SELECT idestadisticasqr FROM estadisticasqr WHERE fecha = :fecha");
+                    $check->execute([':fecha' => $fechaHoy]);
+
+                    if ($check->rowCount() > 0) {
+                        // Si existe, actualizamos sumando 1
+                        $update = $pdo->prepare("UPDATE estadisticasqr SET estudiantes_q_asistieron = estudiantes_q_asistieron + 1 WHERE fecha = :fecha");
+                        $update->execute([':fecha' => $fechaHoy]);
+                    } else {
+                        // Si no existe, creamos un nuevo registro
+                        $insert = $pdo->prepare("INSERT INTO estadisticasqr (fecha, estudiantes_q_asistieron) VALUES (:fecha, 1)");
+                        $insert->execute([':fecha' => $fechaHoy]);
+                    }
+                }
             } else {
-                $response['message'] = 'No se encontró el registro de asistencia para actualizar.';
+                $response['message'] = 'El estado de asistencia ya ha sido registrado previamente para este estudiante.';
             }
         } else {
-            $response['message'] = 'No se encontró el estudiante.';
+            $response['message'] = 'El estudiante no está registrado en la base de datos.';
         }
     } catch (PDOException $e) {
         $response['message'] = 'Error en la base de datos: ' . $e->getMessage();
