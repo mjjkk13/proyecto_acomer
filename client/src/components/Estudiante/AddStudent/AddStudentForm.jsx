@@ -36,7 +36,8 @@ const AddStudentForm = () => {
     setIsSubmitting(true);
 
     try {
-      const result = await studentService.agregarEstudiante(formData);
+      // Cambio aquí: Usamos la función 'addStudent' en lugar de 'agregarEstudiante'
+      const result = await studentService.addStudent(formData);
 
       Swal.fire({
         icon: "success",

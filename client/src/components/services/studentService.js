@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost/proyecto_acomer/server/php';
+const API_BASE_URL = 'http://localhost/proyecto_acomer/server/php/AgregarEstudiante.php';
 
 const handleResponse = async (response) => {
   const contentType = response.headers.get('content-type');
@@ -18,12 +18,12 @@ const handleResponse = async (response) => {
 const studentService = {
   addStudent: async (studentData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/AgregarEstudiante.php`, {
+      const response = await fetch(API_BASE_URL, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',  // Cambiado a JSON
         },
-        body: new URLSearchParams(studentData),
+        body: JSON.stringify(studentData),  // Cambiado a JSON.stringify
       });
       
       return await handleResponse(response);
@@ -31,7 +31,6 @@ const studentService = {
       throw new Error(`Error de red: ${error.message}`);
     }
   },
-
 };
 
 export default studentService;

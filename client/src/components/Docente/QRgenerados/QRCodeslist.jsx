@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getQRCodes } from '../../services/qrService';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQrcode } from '@fortawesome/free-solid-svg-icons';
+import { faQrcode, faEye } from '@fortawesome/free-solid-svg-icons';
 
 const QRCodesList = () => {
   const [qrCodes, setQrCodes] = useState([]);
@@ -12,7 +12,7 @@ const QRCodesList = () => {
     loadQRCodes();
   }, []);
 
-    const loadQRCodes = async () => {
+  const loadQRCodes = async () => {
     try {
       const data = await getQRCodes();
       const qrCodesWithFullImageUrl = data.map(codigo => ({
@@ -28,6 +28,16 @@ const QRCodesList = () => {
         text: 'Error al cargar los códigos QR',
       });
     }
+  };
+
+  const showLargeImage = (imageUrl) => {
+    Swal.fire({
+      imageUrl: imageUrl,
+      imageAlt: 'Código QR ampliado',
+      showCloseButton: true,
+      showConfirmButton: false,
+      width: 'auto',
+    });
   };
 
   return (
@@ -54,11 +64,19 @@ const QRCodesList = () => {
                 <td className="px-4 py-2">{codigo.nombrecurso}</td>
                 <td className="px-4 py-2">
                   {codigo.imagen ? (
-                    <img
-                      src={codigo.imagen} // Usamos la URL completa con la imagen
-                      alt="Código QR"
-                      className="w-16 rounded-lg"
-                    />
+                    <div className="flex items-center">
+                      <img
+                        src={codigo.imagen} // Usamos la URL completa con la imagen
+                        alt="Código QR"
+                        className="w-16 rounded-lg cursor-pointer"
+                        onClick={() => showLargeImage(codigo.imagen)} // Abrir la imagen grande al hacer clic
+                      />
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        className="ml-2 text-xl cursor-pointer text-gray-600"
+                        onClick={() => showLargeImage(codigo.imagen)} // Abrir la imagen grande al hacer clic
+                      />
+                    </div>
                   ) : (
                     <FontAwesomeIcon icon={faQrcode} className="text-2xl text-gray-600" />
                   )}
