@@ -17,11 +17,19 @@ const AddCursos = () => {
     setLoading(true); 
     try {
       const data = await courseService.getCourses();
-      if (!Array.isArray(data) || data.error) 
-        throw new Error(data.error || 'Error al cargar los cursos.');
+
+      if (!Array.isArray(data)) {
+        throw new Error('Los datos recibidos no son un arreglo.');
+      }
+
+      if (data.length && !data[0].hasOwnProperty('nombrecurso')) {
+        throw new Error('La estructura de los datos del curso es incorrecta.');
+      }
+
       setCourses(data);
-    } catch {
-      Swal.fire('Error', 'No se pudieron cargar los cursos.', 'error');
+    } catch (error) {
+      console.error('Error al cargar los cursos:', error);
+      Swal.fire('Error', error.message || 'No se pudieron cargar los cursos.', 'error');
       setCourses([]);
     } finally {
       setLoading(false); 
@@ -31,9 +39,15 @@ const AddCursos = () => {
   const obtenerDocentes = async () => {
     try {
       const response = await courseService.getDocentes();
-      return Array.isArray(response) ? response : [];
-    } catch {
-      Swal.fire('Error', 'No se pudieron cargar los docentes.', 'error');
+
+      if (!Array.isArray(response)) {
+        throw new Error('Los datos recibidos de docentes no son un arreglo.');
+      }
+
+      return response;
+    } catch (error) {
+      console.error('Error al cargar los docentes:', error);
+      Swal.fire('Error', error.message || 'No se pudieron cargar los docentes.', 'error');
       return [];
     }
   };
@@ -42,10 +56,9 @@ const AddCursos = () => {
     const docentes = await obtenerDocentes();
     
     const docenteOptions = docentes.map((doc) => `
-      <option value="${doc.idusuarios}" ${doc.idusuarios === curso.docente_id ? 'selected' : ''}>
+      <option value="${doc.iddocente}" ${doc.iddocente === curso.docente_id ? 'selected' : ''}>
         ${doc.nombre} ${doc.apellido}
-      </option>`
-    ).join('');
+      </option>`).join('');
 
     const { value: formValues } = await Swal.fire({
       title: titulo,
@@ -55,7 +68,7 @@ const AddCursos = () => {
                placeholder="Nombre del Curso *"
                required>
         <select id="idDocente" class="swal2-select" required>
-          <option value="" disabled>Seleccione un docente *</option>
+          <option value="" disabled ${!curso.docente_id ? 'selected' : ''}>Seleccione un docente *</option>
           ${docenteOptions}
         </select>
       `,
@@ -64,12 +77,12 @@ const AddCursos = () => {
       preConfirm: () => {
         const nombreCurso = Swal.getPopup().querySelector('#nombreCurso').value.trim();
         const idDocente = Swal.getPopup().querySelector('#idDocente').value;
-        
+
         if (!nombreCurso || !idDocente) {
           Swal.showValidationMessage('Todos los campos son obligatorios');
           return false;
         }
-        
+
         return { nombreCurso, idDocente };
       }
     });
@@ -82,39 +95,51 @@ const AddCursos = () => {
     if (!formValues) return;
 
     try {
-      const data = await courseService.addCourse(formValues.nombreCurso, formValues.idDocente);
+      const data = await courseService.addCourse(formValues.nombreCurso, parseInt(formValues.idDocente));
+
       if (data.success) {
         Swal.fire('¡Curso agregado!', '', 'success');
         await cargarCursos(); 
       } else {
-        throw new Error(data.error);
+        throw new Error(data.error || 'Error desconocido al agregar el curso.');
       }
     } catch (error) {
       console.error('Error al agregar el curso:', error);
-      Swal.fire('Error', 'No se pudo agregar el curso.', 'error');
+      Swal.fire('Error', error.message || 'No se pudo agregar el curso.', 'error');
     }
   };
 
   const handleEditarCurso = async (curso) => {
+    if (!curso || !curso.idcurso) {
+      Swal.fire('Error', 'Curso no válido para editar.', 'error');
+      return;
+    }
+
     const cursoParaEditar = { ...curso, iddocente: curso.docente_id };
     const formValues = await mostrarFormularioCurso('Editar Curso', cursoParaEditar);
     if (!formValues) return;
 
     try {
       const data = await courseService.updateCourse(curso.idcurso, formValues.nombreCurso, formValues.idDocente);
+
       if (data.success) {
         Swal.fire('¡Curso actualizado!', '', 'success');
         await cargarCursos();
       } else {
-        throw new Error(data.error);
+        throw new Error(data.error || 'Error desconocido al actualizar el curso.');
       }
     } catch (error) {
       console.error('Error al actualizar el curso:', error);
-      Swal.fire('Error', 'No se pudo actualizar el curso.', 'error');
+      Swal.fire('Error', error.message || 'No se pudo actualizar el curso.', 'error');
     }
   };
 
   const handleBorrarCurso = async (idCurso) => {
+    if (!idCurso) {
+      Swal.fire('Error', 'ID de curso no válido.', 'error');
+      return;
+    }
+
     const result = await Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esto.',
@@ -128,15 +153,16 @@ const AddCursos = () => {
 
     try {
       const response = await courseService.deleteCourse(idCurso);
+
       if (response.success) {
         Swal.fire('¡Eliminado!', 'El curso ha sido eliminado.', 'success');
-        await cargarCursos(); // Aseguramos que los cursos se recarguen
+        await cargarCursos();
       } else {
-        throw new Error(response.error);
+        throw new Error(response.error || 'Error desconocido al eliminar el curso.');
       }
     } catch (error) {
       console.error('Error al borrar el curso:', error);
-      Swal.fire('Error', 'No se pudo borrar el curso.', 'error');
+      Swal.fire('Error', error.message || 'No se pudo borrar el curso.', 'error');
     }
   };
 
@@ -147,7 +173,7 @@ const AddCursos = () => {
         <FontAwesomeIcon icon={faPlus} className="mr-2" /> Agregar Curso
       </button>
       <div className="overflow-auto max-h-96 border border-gray-200 rounded-lg">
-        {loading ? ( // Show loading message or spinner
+        {loading ? (
           <div className="text-center text-gray-500 py-4">Cargando cursos...</div>
         ) : (
           <table className="table w-full">
@@ -163,7 +189,7 @@ const AddCursos = () => {
                 courses.map((curso) => (
                   <tr className="text-gray-400" key={curso.idcurso}>
                     <td>{curso.nombrecurso}</td>
-                    <td>{curso.nombreDocente}</td>
+                    <td>{curso.nombreDocente || 'Sin asignar'}</td>
                     <td>
                       <button onClick={() => handleEditarCurso(curso)} className="btn btn-warning btn-sm mr-2">
                         <FontAwesomeIcon icon={faEdit} /> Editar

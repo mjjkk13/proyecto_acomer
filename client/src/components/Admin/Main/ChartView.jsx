@@ -10,25 +10,25 @@ import {
   Legend,
 } from "chart.js";
 import { motion } from "framer-motion";
-import { fetchStatistics } from "../../services/statisticsService"; // Importar el servicio
+import { fetchStatistics } from "../../services/statisticsService";
 
-// Registrar componentes de Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ChartView = () => {
+  const [dailyData, setDailyData] = useState([]);
   const [weeklyData, setWeeklyData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
-  const [showMonthlyStatistics, setShowMonthlyStatistics] = useState(false);
+  const [selectedView, setSelectedView] = useState("daily");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Obtener datos del backend usando el servicio
   useEffect(() => {
     const getData = async () => {
       try {
         const data = await fetchStatistics();
-        setWeeklyData(data.weekly);
-        setMonthlyData(data.monthly);
+        setDailyData(data?.daily || []);
+        setWeeklyData(data?.weekly || []);
+        setMonthlyData(data?.monthly || []);
       } catch (error) {
         console.error("Error al cargar los datos:", error);
         setError(
@@ -44,13 +44,41 @@ const ChartView = () => {
     getData();
   }, []);
 
-  // Configuración de datos para el gráfico semanal
+  // Formato de fecha con día de la semana (en español)
+  const formatSpanishDate = (fechaStr) => {
+    const date = new Date(fechaStr);
+    return date.toLocaleDateString("es-ES", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const dailyChartData = {
+    labels: dailyData?.map((item) =>
+      `${formatSpanishDate(item.fecha)}`
+        .replace(/^\w/, (c) => c.toUpperCase())
+        .replace(", ", " (") + ")"
+    ) || [],
+    datasets: [
+      {
+        label: "Estudiantes Asistieron (Diario)",
+        data: dailyData?.map((item) => item.totalEstudiantes) || [],
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
   const weeklyChartData = {
-    labels: weeklyData.map((item) => `Semana ${item.semana} (${item.mes})`),
+    labels:
+      weeklyData?.map((item) => `Semana ${item.semana} (${item.mes})`) || [],
     datasets: [
       {
         label: "Estudiantes Asistieron (Semanal)",
-        data: weeklyData.map((item) => item.totalEstudiantes),
+        data: weeklyData?.map((item) => item.totalEstudiantes) || [],
         backgroundColor: "rgba(54, 162, 235, 0.6)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
@@ -58,13 +86,12 @@ const ChartView = () => {
     ],
   };
 
-  // Configuración de datos para el gráfico mensual
   const monthlyChartData = {
-    labels: monthlyData.map((item) => item.nombre_mes),
+    labels: monthlyData?.map((item) => item.nombre_mes) || [],
     datasets: [
       {
         label: "Estudiantes Asistieron (Mensual)",
-        data: monthlyData.map((item) => item.totalEstudiantes),
+        data: monthlyData?.map((item) => item.totalEstudiantes) || [],
         backgroundColor: "rgba(255, 99, 132, 0.6)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
@@ -72,9 +99,16 @@ const ChartView = () => {
     ],
   };
 
-  // Manejar el cambio entre estadísticas semanales y mensuales
-  const toggleStatistics = () => {
-    setShowMonthlyStatistics((prev) => !prev);
+  const chartTitleMap = {
+    daily: "Asistencias Diarias",
+    weekly: "Asistencias Semanales",
+    monthly: "Asistencias Mensuales",
+  };
+
+  const chartDataMap = {
+    daily: dailyChartData,
+    weekly: weeklyChartData,
+    monthly: monthlyChartData,
   };
 
   return (
@@ -82,10 +116,8 @@ const ChartView = () => {
       <div className="p-10 bg-white rounded shadow-lg w-full max-w-4xl border-2 border-gray-300">
         <h1 className="text-xl font-bold mb-4 text-center text-gray-800">Estadísticas</h1>
 
-        {/* Mostrar mensaje de error si existe */}
         {error && <p className="text-red-500 text-center">{error}</p>}
 
-        {/* Mostrar carga mientras se obtienen los datos */}
         {isLoading ? (
           <p className="text-center">Cargando datos...</p>
         ) : (
@@ -93,31 +125,47 @@ const ChartView = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            key={showMonthlyStatistics ? "monthly" : "weekly"}
+            key={selectedView}
           >
             <h2 className="text-lg font-semibold mb-2 text-center text-gray-900">
-              {showMonthlyStatistics
-                ? "Asistencias Mensuales"
-                : "Asistencias Semanales"}
+              {chartTitleMap[selectedView]}
             </h2>
             <div className="h-64 w-full rounded p-4">
-              <Bar
-                data={showMonthlyStatistics ? monthlyChartData : weeklyChartData}
-                options={{ responsive: true }}
-              />
+              <Bar data={chartDataMap[selectedView]} options={{ responsive: true }} />
             </div>
           </motion.div>
         )}
 
-        {/* Botón para alternar entre estadísticas semanales y mensuales */}
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-4 mt-6">
           <button
-            onClick={toggleStatistics}
-            className="mt-4 mb-4 px-6 py-3 btn-primary text-white bg-cyan-700 border-2 border-cyan-700 rounded hover:bg-cyan-800 transition-colors"
+            onClick={() => setSelectedView("daily")}
+            className={`px-4 py-2 rounded text-white ${
+              selectedView === "daily"
+                ? "bg-teal-600 border-teal-600"
+                : "bg-gray-500 border-gray-500 hover:bg-teal-700"
+            } border-2 transition-colors`}
           >
-            {showMonthlyStatistics
-              ? "Mostrar Estadísticas Semanales"
-              : "Mostrar Estadísticas Mensuales"}
+            Diario
+          </button>
+          <button
+            onClick={() => setSelectedView("weekly")}
+            className={`px-4 py-2 rounded text-white ${
+              selectedView === "weekly"
+                ? "bg-blue-600 border-blue-600"
+                : "bg-gray-500 border-gray-500 hover:bg-blue-700"
+            } border-2 transition-colors`}
+          >
+            Semanal
+          </button>
+          <button
+            onClick={() => setSelectedView("monthly")}
+            className={`px-4 py-2 rounded text-white ${
+              selectedView === "monthly"
+                ? "bg-pink-600 border-pink-600"
+                : "bg-gray-500 border-gray-500 hover:bg-pink-700"
+            } border-2 transition-colors`}
+          >
+            Mensual
           </button>
         </div>
       </div>

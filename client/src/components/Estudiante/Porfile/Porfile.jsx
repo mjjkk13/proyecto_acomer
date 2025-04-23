@@ -10,6 +10,8 @@ const FIELDS = [
   { field: 'email', label: 'Email' },
   { field: 'telefono', label: 'Teléfono' },
   { field: 'direccion', label: 'Dirección' },
+  { field: 'nuevaContraseña', label: 'Nueva Contraseña' },
+  { field: 'confirmarContraseña', label: 'Confirmar Contraseña' },
 ];
 
 const Porfile = () => {
@@ -17,6 +19,7 @@ const Porfile = () => {
   const [datosOriginales, setDatosOriginales] = useState({});
   const [formData, setFormData] = useState({});
   const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     cargarDatos();
@@ -48,6 +51,12 @@ const Porfile = () => {
       return;
     }
 
+    // Verificar que las contraseñas coinciden si se están cambiando
+    if (formData.nuevaContraseña && formData.nuevaContraseña !== formData.confirmarContraseña) {
+      setError('Las contraseñas no coinciden');
+      return;
+    }
+
     try {
       await updateDatosPersonales(formData);
       await Swal.fire({
@@ -58,6 +67,7 @@ const Porfile = () => {
       });
       await cargarDatos();
       setIsEditing(false);
+      setError('');
     } catch (error) {
       Swal.fire('Error', error.message, 'error');
       setFormData(datosOriginales);
@@ -95,16 +105,26 @@ const Porfile = () => {
                     <td className="font-bold p-2">{label}</td>
                     <td className="p-2">
                       {isEditing ? (
-                        <input
-                          type="text"
-                          name={field}
-                          value={formData[field] || ''}
-                          onChange={manejarCambioInput}
-                          className="input input-bordered input-xs w-full"
-                        />
+                        field.includes('Contraseña') ? (
+                          <input
+                            type="password"
+                            name={field}
+                            value={formData[field] || ''}
+                            onChange={manejarCambioInput}
+                            className="input input-bordered input-xs w-full"
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            name={field}
+                            value={formData[field] || ''}
+                            onChange={manejarCambioInput}
+                            className="input input-bordered input-xs w-full"
+                          />
+                        )
                       ) : (
                         <div className="flex items-center justify-between">
-                          <span>{datosOriginales[field]}</span>
+                          <span>{field === 'nuevaContraseña' || field === 'confirmarContraseña' ? '••••••••' : datosOriginales[field]}</span>
                           <FontAwesomeIcon 
                             icon={faPen} 
                             className="text-gray-400 ml-2 cursor-pointer"
@@ -119,6 +139,8 @@ const Porfile = () => {
             </table>
           </div>
           
+          {error && <div className="text-red-500 text-sm">{error}</div>}
+
           <button 
             onClick={toggleEdicion}
             className={`btn btn-xs mt-4 ${isEditing ? 'btn-success' : 'btn-primary'}`}

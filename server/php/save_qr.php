@@ -71,12 +71,35 @@ try {
     $stmtUpdate = $pdo->prepare($sqlUpdate);
     $stmtUpdate->execute([':idestudiante_ss' => $idestudiante_ss]);
 
-    // Registrar estadística
+    // Registrar estadística (formato correcto para campo tipo DATE)
+    $fecha_actual = date('Y-m-d');
     $sqlEstadisticas = "INSERT INTO estadisticasqr 
                        (fecha, estudiantes_q_asistieron) 
-                       VALUES (NOW(), :cantidad)";
+                       VALUES (:fecha, :cantidad)";
     $stmtEstadisticas = $pdo->prepare($sqlEstadisticas);
-    $stmtEstadisticas->execute([':cantidad' => $cantidad_estudiantes]);
+    $stmtEstadisticas->execute([
+        ':fecha' => $fecha_actual,
+        ':cantidad' => $cantidad_estudiantes
+    ]);
+
+    /*
+    // OPCIONAL: Evitar duplicados por fecha en estadisticasqr
+    $checkSql = "SELECT COUNT(*) FROM estadisticasqr WHERE fecha = :fecha";
+    $checkStmt = $pdo->prepare($checkSql);
+    $checkStmt->execute([':fecha' => $fecha_actual]);
+    $existe = $checkStmt->fetchColumn();
+
+    if ($existe == 0) {
+        $sqlEstadisticas = "INSERT INTO estadisticasqr 
+                            (fecha, estudiantes_q_asistieron) 
+                            VALUES (:fecha, :cantidad)";
+        $stmtEstadisticas = $pdo->prepare($sqlEstadisticas);
+        $stmtEstadisticas->execute([
+            ':fecha' => $fecha_actual,
+            ':cantidad' => $cantidad_estudiantes
+        ]);
+    }
+    */
 
     echo json_encode([
         'status' => 'success',

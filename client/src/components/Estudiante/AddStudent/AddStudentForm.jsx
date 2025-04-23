@@ -36,18 +36,32 @@ const AddStudentForm = () => {
     setIsSubmitting(true);
 
     try {
-      const result = await studentService.agregarEstudiante(formData);
+      // Usamos la función 'addStudent' para enviar los datos al backend
+      const result = await studentService.addStudent(formData);
 
-      Swal.fire({
-        icon: "success",
-        title: "¡Éxito!",
-        text: result.message,
-        confirmButtonColor: "#6B46C1",
-        timer: 1500,
-      });
+      // Verificamos si la respuesta es un éxito
+      if (result.status === 'success') {
+        Swal.fire({
+          icon: "success",
+          title: "¡Éxito!",
+          text: result.message,  // El mensaje de éxito enviado desde el servidor
+          confirmButtonColor: "#6B46C1",
+          timer: 1500,
+        });
+      } else {
+        // Si el status es diferente, mostramos un error (como cuando no se encuentra el estudiante)
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: result.message,  // El mensaje de error enviado desde el servidor
+          confirmButtonColor: "#6B46C1",
+        });
+      }
 
+      // Limpiamos el formulario después de la respuesta
       setFormData({ nombreEstudiante: "", apellidoEstudiante: "", estado: "" });
     } catch (error) {
+      // Si ocurre un error en la solicitud, mostramos un mensaje de error
       Swal.fire({
         icon: "error",
         title: "Error",
