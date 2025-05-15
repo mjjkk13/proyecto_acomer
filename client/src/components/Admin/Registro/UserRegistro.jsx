@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { usuarioService } from '../../services/api';
+import { usuarioService } from '../../services/mailService';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';

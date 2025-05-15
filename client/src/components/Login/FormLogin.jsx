@@ -130,19 +130,6 @@ const FormLogin = () => {
           )}
         </div>
 
-        {/* Recordarme */}
-        <div className="form-control">
-          <label className="cursor-pointer label">
-            <input 
-              type="checkbox" 
-              className="checkbox" 
-              id="rememberMe"
-              disabled={isLoading}
-            />
-            <span className="label-text">Recordarme</span>
-          </label>
-        </div>
-
         {/* Botón de inicio de sesión */}
         <div className="form-control mt-6">
           <button 

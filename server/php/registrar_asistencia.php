@@ -1,4 +1,136 @@
 <?php 
+/**
+ * @OA\Post(
+ *     path="/api/asistencia",
+ *     summary="Registra las asistencias de los estudiantes y genera un código QR.",
+ *     description="Este endpoint registra la asistencia de los estudiantes en un curso y genera un código QR con la información de las asistencias.",
+ *     operationId="registrarAsistencia",
+ *     tags={"Asistencia"},
+ *     requestBody={
+ *         @OA\RequestBody(
+ *             required=true,
+ *             @OA\Content(
+ *                 mediaType="application/json",
+ *                 @OA\Schema(
+ *                     type="object",
+ *                     required={"idcursos", "asistencias"},
+ *                     @OA\Property(
+ *                         property="idcursos",
+ *                         type="integer",
+ *                         description="ID del curso al cual se está registrando la asistencia."
+ *                     ),
+ *                     @OA\Property(
+ *                         property="asistencias",
+ *                         type="array",
+ *                         @OA\Items(
+ *                             type="object",
+ *                             required={"alumno_id", "estado"},
+ *                             @OA\Property(
+ *                                 property="alumno_id",
+ *                                 type="integer",
+ *                                 description="ID del alumno cuya asistencia se registra."
+ *                             ),
+ *                             @OA\Property(
+ *                                 property="estado",
+ *                                 type="integer",
+ *                                 description="Estado de la asistencia (1 para presente, 0 para ausente)."
+ *                             )
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     },
+ *     responses={
+ *         @OA\Response(
+ *             response=200,
+ *             description="Asistencia registrada correctamente y QR generado.",
+ *             @OA\JsonContent(
+ *                 @OA\Property(
+ *                     property="status",
+ *                     type="string",
+ *                     example="success"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string",
+ *                     example="Asistencia registrada correctamente"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="qr_image",
+ *                     type="string",
+ *                     example="http://localhost/proyecto_acomer/server/php/qrcodes/qr_asistencia_1631845918.png"
+ *                 )
+ *             )
+ *         ),
+ *         @OA\Response(
+ *             response=400,
+ *             description="Datos incompletos o inválidos.",
+ *             @OA\JsonContent(
+ *                 @OA\Property(
+ *                     property="status",
+ *                     type="string",
+ *                     example="error"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string",
+ *                     example="Datos incompletos o inválidos."
+ *                 )
+ *             )
+ *         ),
+ *         @OA\Response(
+ *             response=401,
+ *             description="El usuario no ha iniciado sesión.",
+ *             @OA\JsonContent(
+ *                 @OA\Property(
+ *                     property="status",
+ *                     type="string",
+ *                     example="error"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string",
+ *                     example="No ha iniciado sesión"
+ *                 )
+ *             )
+ *         ),
+ *         @OA\Response(
+ *             response=404,
+ *             description="No se encontró un docente relacionado con este usuario o el curso no está asignado al docente.",
+ *             @OA\JsonContent(
+ *                 @OA\Property(
+ *                     property="status",
+ *                     type="string",
+ *                     example="error"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string",
+ *                     example="No se encontró un docente relacionado con este usuario."
+ *                 )
+ *             )
+ *         ),
+ *         @OA\Response(
+ *             response=500,
+ *             description="Error interno del servidor.",
+ *             @OA\JsonContent(
+ *                 @OA\Property(
+ *                     property="status",
+ *                     type="string",
+ *                     example="error"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string",
+ *                     example="Ocurrió un error al procesar la solicitud."
+ *                 )
+ *             )
+ *         )
+ *     }
+ * )
+ */
+
 header('Content-Type: application/json');
 header('Cache-Control: no-cache, must-revalidate');
 
@@ -71,7 +203,7 @@ try {
         SELECT nombrecurso FROM cursos 
         WHERE docente_id = :docente_id AND idcursos = :idcursos LIMIT 1
     ");
-    $stmtVerificar->execute([
+    $stmtVerificar->execute([ 
         ':docente_id' => $docente_id,
         ':idcursos' => $curso_id
     ]);

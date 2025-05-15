@@ -1,4 +1,60 @@
 <?php
+/**
+ * @OA\Post(
+ *     path="/login",
+ *     summary="Iniciar sesión",
+ *     description="Este endpoint permite a los usuarios iniciar sesión utilizando su nombre de usuario y contraseña.",
+ *     tags={"Autenticación"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             required={"usuario", "inputPassword"},
+ *             @OA\Property(property="usuario", type="string", example="johndoe"),
+ *             @OA\Property(property="inputPassword", type="string", example="password123")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Login exitoso",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Login exitoso"),
+ *             @OA\Property(property="rol", type="string", example="Docente"),
+ *             @OA\Property(property="redirect_url", type="string", example="/docente")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Error de validación de datos o usuario no encontrado",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="success", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Usuario no encontrado")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Contraseña incorrecta o usuario inactivo",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="success", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Contraseña incorrecta")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error en la base de datos o en el servidor",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="success", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Error en la base de datos. Por favor, intente más tarde.")
+ *         )
+ *     )
+ * )
+ */
+ 
 // Asegurar que la respuesta sea siempre JSON
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: http://localhost:5173'); 

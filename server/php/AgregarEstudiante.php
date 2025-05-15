@@ -1,4 +1,52 @@
 <?php
+/**
+ * @OA\Info(
+ *     title="API de Comedores Escolares",
+ *     version="1.0.0",
+ *     description="API para gestión de comedores escolares, incluyendo funciones para gestionar usuarios, menús, asistencia, etc."
+ * )
+ */
+/**
+ * @OA\Post(
+ *     path="/registrar-escaneo",
+ *     tags={"Escaneos"},
+ *     summary="Registrar escaneo de asistencia por estudiante de servicio social",
+ *     description="Registra un escaneo que indica la presencia de un estudiante en un curso determinado.",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"nombreEstudiante", "apellidoEstudiante"},
+ *             @OA\Property(property="nombreEstudiante", type="string", example="Juan"),
+ *             @OA\Property(property="apellidoEstudiante", type="string", example="Pérez")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Escaneo registrado exitosamente.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="message", type="string", example="Escaneo registrado exitosamente.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Datos faltantes o error de autenticación.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Faltan datos o usuario no autenticado.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor o error en la base de datos.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="Error BD: descripción del error")
+ *         )
+ *     )
+ * )
+ */
+
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: http://localhost:5173');
@@ -40,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Obtener el nombre del curso (opcional)
         $stmtCurso = $pdo->prepare("SELECT nombreCurso FROM cursos WHERE idCursos = :idCurso");
-        $stmtCurso->bindParam(':idCurso', $alumno['idCursos']);
+        $stmtCurso->bindParam(':idCurso', $alumno['curso_id']);
         $stmtCurso->execute();
         $nombreCurso = $stmtCurso->fetchColumn() ?? 'Curso desconocido';
 
@@ -55,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Construir el contenido a guardar como "qr_code" (aunque no sea un QR literal)
+        // Construir el contenido a guardar como "qr_code"
         $contenido = "Curso: $nombreCurso\nEstudiantes presentes: 1\nFecha: " . date('Y-m-d H:i:s');
 
         // Insertar el registro
@@ -72,3 +120,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'error', 'message' => 'Error BD: ' . $e->getMessage()]);
     }
 }
+?>
