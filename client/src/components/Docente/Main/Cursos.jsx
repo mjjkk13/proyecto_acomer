@@ -16,17 +16,27 @@ const CursosDocente = () => {
   }, []);
 
   const cargarCursos = async () => {
-    try {
-      setCargando(true);
-      const datos = await getCursosDocente();
-      setCursos(Array.isArray(datos) ? datos : []);
-      setCargando(false);
-    } catch (error) {
-      Swal.fire('Error', error.message, 'error');
-      console.error("Error al cargar los cursos:", error);
-      setCargando(false);
+  try {
+    setCargando(true);
+    const datos = await getCursosDocente();
+    const listaCursos = Array.isArray(datos) ? datos : [];
+    setCursos(listaCursos);
+    setCargando(false);
+
+    if (listaCursos.length === 0) {
+      Swal.fire(
+        'Sin cursos asignados',
+        'No tienes cursos asignados hasta el momento.',
+        'info'
+      );
     }
-  };
+  } catch (error) {
+    Swal.fire('Error', error.message, 'error');
+    console.error("Error al cargar los cursos:", error);
+    setCargando(false);
+  }
+};
+
 
   const seleccionarCurso = async (curso) => {
     setCursoSeleccionado(curso);
@@ -90,14 +100,23 @@ const CursosDocente = () => {
       Swal.fire('Error', error.message, 'error');
     }
   };
+if (cargando) {
+  return (
+    <div className="flex justify-center items-center h-64">
+      <span className="loading loading-spinner loading-lg"></span>
+    </div>
+  );
+}
 
-  if (cargando) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
+if (!cargando && cursos.length === 0) {
+  return (
+    <div className="flex justify-center items-center h-64">
+      <p className="text-center text-gray-600 text-lg">
+        No tienes cursos asignados hasta el momento.
+      </p>
+    </div>
+  );
+}
 
   return (
     <div className="max-w-7xl mx-auto p-4">

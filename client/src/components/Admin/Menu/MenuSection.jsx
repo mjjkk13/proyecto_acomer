@@ -159,43 +159,52 @@ const MenuSection = () => {
     }
   };
 
-  const handleAddMenu = async () => {
-    const { value: formValues } = await Swal.fire({
-      title: 'Agregar Menú',
-      html: `
-        <select id="tipoMenu" class="swal2-input" style="background-color: white;">
-          <option value="desayuno">Desayuno</option>
-          <option value="almuerzo">Almuerzo</option>
-          <option value="refrigerio">Refrigerio</option>
-        </select>
-        <input id="fecha" type="date" class="swal2-input">
-        <textarea id="descripcion" class="swal2-textarea" placeholder="Descripción"></textarea>
-      `,
-      showCancelButton: true,
-      confirmButtonText: 'Agregar',
-      focusConfirm: false,
-      preConfirm: () => ({
-        tipomenu: document.getElementById('tipoMenu').value,
-        fecha: document.getElementById('fecha').value,
-        descripcion: document.getElementById('descripcion').value
-      })
-    });
+const handleAddMenu = async () => {
+  const { value: formValues } = await Swal.fire({
+    title: 'Agregar Menú',
+    html: `
+      <select id="tipoMenu" class="swal2-input" style="background-color: white;">
+        <option value="">Seleccione un tipo de menú</option>
+        <option value="desayuno">Desayuno</option>
+        <option value="almuerzo">Almuerzo</option>
+        <option value="refrigerio">Refrigerio</option>
+      </select>
+      <input id="fecha" type="date" class="swal2-input">
+      <textarea id="descripcion" class="swal2-textarea" placeholder="Descripción"></textarea>
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Agregar',
+    focusConfirm: false,
+    preConfirm: () => {
+      const tipomenu = document.getElementById('tipoMenu').value;
+      const fecha = document.getElementById('fecha').value;
+      const descripcion = document.getElementById('descripcion').value;
 
-    if (formValues) {
-      try {
-        const response = await addMenu(formValues);
-        if (response.success) {
-          await loadMenus();
-          Swal.fire('Éxito', 'Menú agregado', 'success');
-        } else {
-          Swal.fire('Error', 'No se pudo agregar el menú.', 'error');
-        }
-      } catch (error) {
-        console.error('Error adding menu:', error);
+      if (!tipomenu || !fecha || !descripcion.trim()) {
+        Swal.showValidationMessage('Por favor, complete todos los campos.');
+        return false;
+      }
+
+      return { tipomenu, fecha, descripcion };
+    }
+  });
+
+  if (formValues) {
+    try {
+      const response = await addMenu(formValues);
+      if (response.success) {
+        await loadMenus();
+        Swal.fire('Éxito', 'Menú agregado', 'success');
+      } else {
         Swal.fire('Error', 'No se pudo agregar el menú.', 'error');
       }
+    } catch (error) {
+      console.error('Error adding menu:', error);
+      Swal.fire('Error', 'No se pudo agregar el menú.', 'error');
     }
-  };
+  }
+};
+
 
   return (
     <div className="container mx-auto my-4">
