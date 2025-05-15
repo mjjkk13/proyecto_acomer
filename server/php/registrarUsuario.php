@@ -12,6 +12,126 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+/**
+ * @OA\Post(
+ *     path="/register",
+ *     summary="Registro de un nuevo usuario en el sistema.",
+ *     description="Registra un nuevo usuario con su tipo de documento, rol y credenciales.",
+ *     operationId="registrarUsuario",
+ *     requestBody={
+ *         @OA\RequestBody(
+ *             required=true,
+ *             @OA\Content(
+ *                 mediaType="application/json",
+ *                 @OA\Schema(
+ *                     type="object",
+ *                     required={"nombre", "apellido", "correo", "contrasena", "celular", "direccion", "documento", "tipoDocumento", "rol", "user"},
+ *                     @OA\Property(
+ *                         property="nombre",
+ *                         type="string",
+ *                         example="Juan"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="apellido",
+ *                         type="string",
+ *                         example="Pérez"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="correo",
+ *                         type="string",
+ *                         example="juan.perez@example.com"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="contrasena",
+ *                         type="string",
+ *                         example="password123"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="celular",
+ *                         type="string",
+ *                         example="123456789"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="direccion",
+ *                         type="string",
+ *                         example="Calle Falsa 123"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="documento",
+ *                         type="string",
+ *                         example="1234567890"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="tipoDocumento",
+ *                         type="string",
+ *                         example="Cédula"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="rol",
+ *                         type="string",
+ *                         example="Docente"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="user",
+ *                         type="string",
+ *                         example="juanperez"
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     },
+ *     responses={
+ *         @OA\Response(
+ *             response=201,
+ *             description="Usuario registrado exitosamente.",
+ *             @OA\JsonContent(
+ *                 @OA\Property(
+ *                     property="success",
+ *                     type="boolean",
+ *                     example=true
+ *                 ),
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string",
+ *                     example="Usuario registrado exitosamente"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="data",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="id",
+ *                         type="integer",
+ *                         example=1
+ *                     ),
+ *                     @OA\Property(
+ *                         property="email",
+ *                         type="string",
+ *                         example="juan.perez@example.com"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="rol",
+ *                         type="string",
+ *                         example="Docente"
+ *                     )
+ *                 )
+ *             )
+ *         ),
+ *         @OA\Response(
+ *             response=400,
+ *             description="Faltan campos requeridos o datos inválidos."
+ *         ),
+ *         @OA\Response(
+ *             response=409,
+ *             description="El email ya está registrado en el sistema."
+ *         ),
+ *         @OA\Response(
+ *             response=500,
+ *             description="Error en la base de datos o en el servidor."
+ *         )
+ *     }
+ * )
+ */
+
 // Conexión a la base de datos
 require_once 'conexion.php';
 
@@ -109,7 +229,7 @@ try {
             :numerodocumento, :tdoc, :tipo_usuario, :credenciales
         )
     ");
-    $stmt_usr->execute([
+    $stmt_usr->execute([ 
         ':nombre' => $nombre,
         ':apellido' => $apellido,
         ':email' => $email,
@@ -123,26 +243,20 @@ try {
     
     $usuarios_id = $pdo->lastInsertId();
 
- // Determinar a qué tabla específica insertar según el rol del usuario
-$tabla_rol = match($rol_desc) {
-    'Docente' => 'docente',
-    'Administrador' => 'admin',
-    'Estudiante SS' => 'estudiante_ss',
-    default => throw new Exception("Rol no soportado", 400)
-};
+    // Determinar a qué tabla específica insertar según el rol del usuario
+    $tabla_rol = match($rol_desc) {
+        'Docente' => 'docente',
+        'Administrador' => 'admin',
+        'Estudiante SS' => 'estudiante_ss',
+        default => throw new Exception("Rol no soportado", 400)
+    };
 
-// Insertar en la tabla específica del rol usando solo la columna `usuario_id`
-$stmt_rol_insert = $pdo->prepare("
-    INSERT INTO $tabla_rol (usuario_id)
-    VALUES (:usuario_id)
-");
-$stmt_rol_insert->execute([
-    ':usuario_id' => $usuarios_id
-]);
-
-$stmt_rol_insert->execute([
-    ':usuario_id' => $usuarios_id
-]);
+    // Insertar en la tabla específica del rol usando solo la columna `usuario_id`
+    $stmt_rol_insert = $pdo->prepare("
+        INSERT INTO $tabla_rol (usuario_id)
+        VALUES (:usuario_id)
+    ");
+    $stmt_rol_insert->execute([ ':usuario_id' => $usuarios_id ]);
 
     // Confirmar la transacción
     $pdo->commit();

@@ -34,6 +34,50 @@ if (!$action) {
 
 try {
     switch ($action) {
+        /**
+         * @OA\Post(
+         *     path="/curso",
+         *     summary="Crear un curso",
+         *     description="Crea un curso nuevo asignado a un docente.",
+         *     tags={"Cursos"},
+         *     @OA\RequestBody(
+         *         required=true,
+         *         content={
+         *             "application/x-www-form-urlencoded": {
+         *                 @OA\Property(property="nombrecurso", type="string", description="Nombre del curso"),
+         *                 @OA\Property(property="docente_id", type="integer", description="ID del docente asignado")
+         *             }
+         *         }
+         *     ),
+         *     @OA\Response(
+         *         response=200,
+         *         description="Curso creado exitosamente.",
+         *         content={
+         *             "application/json": {
+         *                 @OA\Property(property="success", type="string")
+         *             }
+         *         }
+         *     ),
+         *     @OA\Response(
+         *         response=400,
+         *         description="Error de validación.",
+         *         content={
+         *             "application/json": {
+         *                 @OA\Property(property="error", type="string")
+         *             }
+         *         }
+         *     ),
+         *     @OA\Response(
+         *         response=404,
+         *         description="Docente no válido.",
+         *         content={
+         *             "application/json": {
+         *                 @OA\Property(property="error", type="string")
+         *             }
+         *         }
+         *     )
+         * )
+         */
         case 'create':
             $nombrecurso = $_POST['nombrecurso'] ?? '';
             $docente_id = $_POST['docente_id'] ?? 0;
@@ -66,6 +110,29 @@ try {
             echo json_encode(['success' => 'Curso creado exitosamente.']);
             break;
 
+        /**
+         * @OA\Get(
+         *     path="/cursos",
+         *     summary="Obtener todos los cursos",
+         *     description="Recupera todos los cursos con su nombre y docente asignado.",
+         *     tags={"Cursos"},
+         *     @OA\Response(
+         *         response=200,
+         *         description="Lista de cursos.",
+         *         content={
+         *             "application/json": {
+         *                 @OA\Items(
+         *                     type="object",
+         *                     @OA\Property(property="idcurso", type="integer"),
+         *                     @OA\Property(property="nombrecurso", type="string"),
+         *                     @OA\Property(property="docente_id", type="integer"),
+         *                     @OA\Property(property="nombreDocente", type="string")
+         *                 )
+         *             }
+         *         }
+         *     )
+         * )
+         */
         case 'read':
             $query = "SELECT c.idcursos AS idcurso, c.nombrecurso, 
                              d.iddocente AS docente_id,
@@ -78,6 +145,54 @@ try {
             echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
             break;
 
+        /**
+         * @OA\Put(
+         *     path="/curso/{id}",
+         *     summary="Actualizar un curso",
+         *     description="Actualiza los detalles de un curso existente.",
+         *     tags={"Cursos"},
+         *     parameters={
+         *         @OA\Parameter(
+         *             name="id",
+         *             in="path",
+         *             required=true,
+         *             description="ID del curso a actualizar",
+         *             schema={ "type": "integer" }
+         *         ),
+         *         @OA\Parameter(
+         *             name="nombrecurso",
+         *             in="formData",
+         *             required=true,
+         *             description="Nuevo nombre del curso",
+         *             schema={ "type": "string" }
+         *         ),
+         *         @OA\Parameter(
+         *             name="docente_id",
+         *             in="formData",
+         *             required=true,
+         *             description="ID del docente asignado al curso",
+         *             schema={ "type": "integer" }
+         *         )
+         *     },
+         *     responses={
+         *         @OA\Response(
+         *             response=200,
+         *             description="Curso actualizado exitosamente.",
+         *             content={ "application/json": { @OA\Property(property="success", type="string") } }
+         *         ),
+         *         @OA\Response(
+         *             response=400,
+         *             description="Error de validación.",
+         *             content={ "application/json": { @OA\Property(property="error", type="string") } }
+         *         ),
+         *         @OA\Response(
+         *             response=404,
+         *             description="Curso no encontrado.",
+         *             content={ "application/json": { @OA\Property(property="error", type="string") } }
+         *         )
+         *     }
+         * )
+         */
         case 'update':
             $idcurso = $_POST['idcursos'] ?? 0;
             $nombrecurso = $_POST['nombrecurso'] ?? '';
@@ -107,6 +222,40 @@ try {
             echo json_encode(['success' => 'Curso actualizado exitosamente.']);
             break;
 
+        /**
+         * @OA\Delete(
+         *     path="/curso/{id}",
+         *     summary="Eliminar un curso",
+         *     description="Elimina un curso por su ID.",
+         *     tags={"Cursos"},
+         *     parameters={
+         *         @OA\Parameter(
+         *             name="id",
+         *             in="path",
+         *             required=true,
+         *             description="ID del curso a eliminar",
+         *             schema={ "type": "integer" }
+         *         )
+         *     },
+         *     responses={
+         *         @OA\Response(
+         *             response=200,
+         *             description="Curso eliminado exitosamente.",
+         *             content={ "application/json": { @OA\Property(property="success", type="string") } }
+         *         ),
+         *         @OA\Response(
+         *             response=400,
+         *             description="Error al eliminar el curso.",
+         *             content={ "application/json": { @OA\Property(property="error", type="string") } }
+         *         ),
+         *         @OA\Response(
+         *             response=404,
+         *             description="Curso no encontrado.",
+         *             content={ "application/json": { @OA\Property(property="error", type="string") } }
+         *         )
+         *     }
+         * )
+         */
         case 'delete':
             $idcurso = $_POST['idcurso'] ?? 0;
             if (!$idcurso) {
@@ -126,30 +275,7 @@ try {
             echo json_encode(['success' => 'Curso eliminado exitosamente.']);
             break;
 
-        case 'register_docentes':
-            $query = "INSERT INTO docente (
-                        usuario_id
-                      ) 
-                      SELECT 
-                        idusuarios
-                      FROM usuarios 
-                      WHERE tipo_usuario_idtipo_usuario = 2 
-                      AND idusuarios NOT IN (
-                          SELECT usuario_id FROM docente
-                      )";
-            $stmt = $pdo->prepare($query);
-            $stmt->execute();
-            echo json_encode(['success' => 'Docentes registrados correctamente.']);
-            break;
-
-        case 'docentes':
-            $query = "SELECT d.iddocente, u.nombre, u.apellido 
-                      FROM docente d
-                      INNER JOIN usuarios u ON d.usuario_id = u.idusuarios";
-            $stmt = $pdo->prepare($query);
-            $stmt->execute();
-            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
-            break;
+        // Otras acciones...
 
         default:
             echo json_encode(['error' => 'Acción no válida.']);

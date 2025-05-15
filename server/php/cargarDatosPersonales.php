@@ -1,4 +1,132 @@
 <?php
+/**
+ * @OA\Get(
+ *     path="/usuario",
+ *     tags={"Usuario"},
+ *     summary="Obtener datos del usuario autenticado",
+ *     description="Devuelve los datos personales del usuario que ha iniciado sesión mediante la sesión PHP.",
+ *     @OA\Response(
+ *         response=200,
+ *         description="Datos del usuario obtenidos correctamente",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="idusuarios",
+ *                 type="integer",
+ *                 example=3
+ *             ),
+ *             @OA\Property(
+ *                 property="nombre",
+ *                 type="string",
+ *                 example="Juan"
+ *             ),
+ *             @OA\Property(
+ *                 property="apellido",
+ *                 type="string",
+ *                 example="Pérez"
+ *             ),
+ *             @OA\Property(
+ *                 property="email",
+ *                 type="string",
+ *                 example="juan@example.com"
+ *             ),
+ *             @OA\Property(
+ *                 property="telefono",
+ *                 type="string",
+ *                 example="3101234567"
+ *             ),
+ *             @OA\Property(
+ *                 property="direccion",
+ *                 type="string",
+ *                 example="Calle Falsa 123"
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Usuario no autenticado",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="status",
+ *                 type="string",
+ *                 example="error"
+ *             ),
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="Usuario no autenticado"
+ *             )
+ *         )
+ *     )
+ * )
+ * 
+ * @OA\Post(
+ *     path="/usuario",
+ *     tags={"Usuario"},
+ *     summary="Actualizar datos del usuario autenticado",
+ *     requestBody={
+ *         "required": true,
+ *         "content": {
+ *             "application/json": {
+ *                 "schema": {
+ *                     "type": "object",
+ *                     "properties": {
+ *                         "nombre": {
+ *                             "type": "string",
+ *                             "example": "Juan"
+ *                         },
+ *                         "apellido": {
+ *                             "type": "string",
+ *                             "example": "Pérez"
+ *                         },
+ *                         "email": {
+ *                             "type": "string",
+ *                             "example": "juan@example.com"
+ *                         },
+ *                         "telefono": {
+ *                             "type": "string",
+ *                             "example": "3101234567"
+ *                         },
+ *                         "direccion": {
+ *                             "type": "string",
+ *                             "example": "Calle Falsa 123"
+ *                         },
+ *                         "nuevaContraseña": {
+ *                             "type": "string",
+ *                             "example": "NuevaContraseñaSegura123"
+ *                         }
+ *                     }
+ *                 }
+ *             }
+ *         }
+ *     },
+ *     @OA\Response(
+ *         response=200,
+ *         description="Datos actualizados correctamente",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="status",
+ *                 type="string",
+ *                 example="success"
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Error en la entrada o datos faltantes"
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Usuario no autenticado"
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error en la base de datos"
+ *     )
+ * )
+ */
+
 session_start();  // Iniciar la sesión
 
 header('Content-Type: application/json; charset=utf-8');
@@ -7,22 +135,18 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Access-Control-Allow-Credentials: true');
 
-// Incluir el archivo de conexión
 require_once __DIR__ . '/conexion.php';
 
-// Verifica que la conexión se estableció correctamente
 if (!isset($pdo)) {
     echo json_encode(['status' => 'error', 'message' => 'La conexión a la base de datos no se ha establecido']);
     exit();
 }
 
-// Verifica que el usuario esté autenticado (almacenado en la sesión)
 if (isset($_SESSION['idusuarios'])) {
     $id_usuario = $_SESSION['idusuarios'];
 
     try {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            // Consulta de datos de usuario
             $sql = "SELECT idusuarios, nombre, apellido, email, telefono, direccion 
                     FROM usuarios 
                     WHERE idusuarios = :idusuarios";
@@ -34,7 +158,6 @@ if (isset($_SESSION['idusuarios'])) {
             echo json_encode($userData ? $userData : []);
             exit();
         } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Se reciben los datos actualizados en formato JSON
             $datosActualizados = json_decode(file_get_contents("php://input"), true);
 
             if (!$datosActualizados) {
@@ -42,7 +165,6 @@ if (isset($_SESSION['idusuarios'])) {
                 exit();
             }
 
-            // Actualización de los datos del usuario en la tabla "usuarios"
             $sql = "UPDATE usuarios 
                     SET nombre = :nombre, 
                         apellido = :apellido, 
@@ -59,11 +181,9 @@ if (isset($_SESSION['idusuarios'])) {
             $stmt->bindParam(':idusuarios', $id_usuario, PDO::PARAM_INT);
             $stmt->execute();
 
-            // Si se recibió una nueva contraseña, actualizarla en la tabla "credenciales"
             if (!empty($datosActualizados['nuevaContraseña'])) {
                 $nuevaContraseña = password_hash($datosActualizados['nuevaContraseña'], PASSWORD_BCRYPT);
 
-                // Obtener el idcredenciales de la tabla "usuarios"
                 $sql = "SELECT credenciales FROM usuarios WHERE idusuarios = :idusuarios";
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindParam(':idusuarios', $id_usuario, PDO::PARAM_INT);
@@ -73,7 +193,6 @@ if (isset($_SESSION['idusuarios'])) {
                 if ($usuario) {
                     $idcredenciales = $usuario['credenciales'];
 
-                    // Actualizar la contraseña en la tabla "credenciales"
                     $sql = "UPDATE credenciales 
                             SET contrasena = :contrasena 
                             WHERE idcredenciales = :idcredenciales";

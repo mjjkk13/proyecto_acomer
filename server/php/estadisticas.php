@@ -1,4 +1,55 @@
 <?php
+/**
+ * @OA\Get(
+ *     path="/estadisticas",
+ *     summary="Obtener estadísticas de escaneos de QR",
+ *     description="Este endpoint devuelve las estadísticas diarias, semanales y mensuales del número de estudiantes presentes basados en los escaneos de códigos QR.",
+ *     tags={"Estadísticas"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Estadísticas obtenidas correctamente",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="daily",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="fecha", type="string", example="2025-04-24"),
+ *                     @OA\Property(property="totalEstudiantes", type="integer", example=50)
+ *                 )
+ *             ),
+ *             @OA\Property(
+ *                 property="weekly",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="semana", type="integer", example=16),
+ *                     @OA\Property(property="mes", type="string", example="Abril"),
+ *                     @OA\Property(property="totalEstudiantes", type="integer", example=350)
+ *                 )
+ *             ),
+ *             @OA\Property(
+ *                 property="monthly",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="mes", type="integer", example=4),
+ *                     @OA\Property(property="nombre_mes", type="string", example="Abril"),
+ *                     @OA\Property(property="totalEstudiantes", type="integer", example=1000)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="string", example="Error en la base de datos: [mensaje de error]")
+ *         )
+ *     )
+ * )
+ */
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: http://localhost:5173');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
@@ -72,3 +123,4 @@ try {
         'error' => 'Error en la base de datos: ' . $e->getMessage()
     ]);
 }
+?>
