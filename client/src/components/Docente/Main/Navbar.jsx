@@ -55,9 +55,9 @@ const NavbarDocente = () => {
   };
 
   const menuItems = [
-    { to: '/docente', icon: faListCheck, label: 'Registro Asistencia' },
+    { to: '/docente', icon: faUtensils, label: 'Consultar Menú' },
+    { to: '/docente/registro-asistencia', icon: faListCheck, label: 'Registro Asistencia' },
     { to: '/docente/codigos-generados', icon: faListAlt, label: 'QR Generados' },
-    { to: '/docente/consultar-menu', icon: faUtensils, label: 'Consultar Menú' },
     { to: '/docente/perfil', icon: faUser, label: 'Mi Perfil' },
   ];
 

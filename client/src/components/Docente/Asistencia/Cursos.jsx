@@ -163,116 +163,113 @@ const CursosDocente = () => {
     );
   }
 
-  return (
-    <div className="max-w-7xl mx-auto p-4">
-      <div className="card bg-base-100 shadow-md">
-        <h2 className="text-lg font-bold text-center text-white bg-primary p-3">
-          Cursos Disponibles
-        </h2>
+return (
+  <div className="max-w-7xl mx-auto p-4 h-full flex flex-col">
+    <div className="card bg-base-100 shadow-md flex flex-col flex-grow overflow-auto">
+      <h2 className="text-lg font-bold text-center text-white bg-primary p-3">
+        Cursos Disponibles
+      </h2>
 
-        <div className="card-body p-4 flex gap-4">
-          <div className="w-1/3">
-            <ul className="menu menu-sm bg-base-200 rounded-box w-full">
-              {cursos.map((curso) => (
-                <li key={curso.idcursos}>
-                  <button
-                    onClick={() => seleccionarCurso(curso)}
-                    className="flex justify-between items-center w-full p-2 hover:bg-primary hover:text-white transition-colors"
-                  >
-                    {curso.nombrecurso}
-                    <FontAwesomeIcon icon={faChevronDown} />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <div className="card-body p-4 flex gap-4 flex-grow overflow-auto">
+        <div className="w-1/3 overflow-auto">
+          <ul className="menu menu-sm bg-base-200 rounded-box w-full">
+            {cursos.map((curso) => (
+              <li key={curso.idcursos}>
+                <button
+                  onClick={() => seleccionarCurso(curso)}
+                  className="flex justify-between items-center w-full p-2 hover:bg-primary hover:text-white transition-colors"
+                >
+                  {curso.nombrecurso}
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-          {cursoSeleccionado && (
-            <div className="w-2/3">
-              <h3 className="text-md font-bold text-center bg-gray-400 text-white p-2 rounded mb-4">
-                Estudiantes de {cursoSeleccionado.nombrecurso}
-              </h3>
+        {cursoSeleccionado && (
+          <div className="w-2/3 flex flex-col overflow-auto">
+            <h3 className="text-md font-bold text-center bg-gray-400 text-white p-2 rounded mb-4">
+              Estudiantes de {cursoSeleccionado.nombrecurso}
+            </h3>
 
-              <div className="space-y-2">
-                <div className="flex justify-between items-center mb-2 px-3">
-                  <span className="font-bold">Estudiante</span>
-                  <label className="flex items-center space-x-2 cursor-pointer">
+            <div className="space-y-2 flex-grow overflow-auto">
+              {/* Aquí va tu listado y paginación */}
+              <div className="flex justify-between items-center mb-2 px-3">
+                <span className="font-bold">Estudiante</span>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-primary checkbox-md w-6 h-6 border-2 border-primary bg-white"
+                    checked={todosMarcados}
+                    onChange={handleMarcarTodos}
+                  />
+                  <span className="font-bold">Marcar todos</span>
+                </label>
+              </div>
+
+              {estudiantesPagina.map((estudiante) => (
+                <div
+                  key={estudiante.idalumno}
+                  className="flex items-center justify-between bg-base-200 p-3 rounded-lg shadow-sm hover:bg-base-300 transition-colors"
+                >
+                  <div className="flex items-center space-x-3">
+                    <FontAwesomeIcon
+                      icon={faUserGraduate}
+                      className="text-xl text-gray-600"
+                    />
+                    <div className="text-left">
+                      <span className="font-medium block">
+                        {estudiante.nombre} {estudiante.apellido}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       className="checkbox checkbox-primary checkbox-md w-6 h-6 border-2 border-primary bg-white"
-                      checked={todosMarcados}
-                      onChange={handleMarcarTodos}
+                      checked={asistencias[estudiante.idalumno] || false}
+                      onChange={() => handleAsistencia(estudiante.idalumno)}
                     />
-                    <span className="font-bold">Marcar todos</span>
-                  </label>
+                  </div>
                 </div>
+              ))}
 
-                {estudiantesPagina.map((estudiante) => (
-                  <div
-                    key={estudiante.idalumno}
-                    className="flex items-center justify-between bg-base-200 p-3 rounded-lg shadow-sm hover:bg-base-300 transition-colors"
+              {totalPaginas > 1 && (
+                <div className="flex justify-center mt-4 space-x-4">
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => cambiarPagina(paginaActual - 1)}
+                    disabled={paginaActual === 1}
                   >
-                    <div className="flex items-center space-x-3">
-                      <FontAwesomeIcon
-                        icon={faUserGraduate}
-                        className="text-xl text-gray-600"
-                      />
-                      <div className="text-left">
-                        <span className="font-medium block">
-                          {estudiante.nombre} {estudiante.apellido}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary checkbox-md w-6 h-6 border-2 border-primary bg-white"
-                        checked={asistencias[estudiante.idalumno] || false}
-                        onChange={() => handleAsistencia(estudiante.idalumno)}
-                      />
-                    </div>
-                  </div>
-                ))}
-
-                {/* Navegación de paginación */}
-                {totalPaginas > 1 && (
-                  <div className="flex justify-center mt-4 space-x-4">
-                    <button
-                      className="btn btn-sm"
-                      onClick={() => cambiarPagina(paginaActual - 1)}
-                      disabled={paginaActual === 1}
-                    >
-                      Anterior
-                    </button>
-                    <span className="flex items-center px-3">
-                      Página {paginaActual} de {totalPaginas}
-                    </span>
-                    <button
-                      className="btn btn-sm"
-                      onClick={() => cambiarPagina(paginaActual + 1)}
-                      disabled={paginaActual === totalPaginas}
-                    >
-                      Siguiente
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4 flex justify-center">
-                <button
-                  className="btn btn-primary"
-                  onClick={enviarAsistencias}
-                >
-                  Enviar Asistencias
-                </button>
-              </div>
+                    Anterior
+                  </button>
+                  <span className="flex items-center px-3">
+                    Página {paginaActual} de {totalPaginas}
+                  </span>
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => cambiarPagina(paginaActual + 1)}
+                    disabled={paginaActual === totalPaginas}
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+
+            <div className="mt-4 flex justify-center">
+              <button className="btn btn-primary" onClick={enviarAsistencias}>
+                Enviar Asistencias
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default CursosDocente;
