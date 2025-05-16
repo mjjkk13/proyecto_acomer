@@ -10,46 +10,49 @@ const CursosDocente = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [asistencias, setAsistencias] = useState({});
+  const [todosMarcados, setTodosMarcados] = useState(false); // nuevo estado para checkbox global
 
   useEffect(() => {
     cargarCursos();
   }, []);
 
   const cargarCursos = async () => {
-  try {
-    setCargando(true);
-    const datos = await getCursosDocente();
-    const listaCursos = Array.isArray(datos) ? datos : [];
-    setCursos(listaCursos);
-    setCargando(false);
+    try {
+      setCargando(true);
+      const datos = await getCursosDocente();
+      const listaCursos = Array.isArray(datos) ? datos : [];
+      setCursos(listaCursos);
+      setCargando(false);
 
-    if (listaCursos.length === 0) {
-      Swal.fire(
-        'Sin cursos asignados',
-        'No tienes cursos asignados hasta el momento.',
-        'info'
-      );
+      if (listaCursos.length === 0) {
+        Swal.fire(
+          'Sin cursos asignados',
+          'No tienes cursos asignados hasta el momento.',
+          'info'
+        );
+      }
+    } catch (error) {
+      Swal.fire('Error', error.message, 'error');
+      console.error("Error al cargar los cursos:", error);
+      setCargando(false);
     }
-  } catch (error) {
-    Swal.fire('Error', error.message, 'error');
-    console.error("Error al cargar los cursos:", error);
-    setCargando(false);
-  }
-};
-
+  };
 
   const seleccionarCurso = async (curso) => {
     setCursoSeleccionado(curso);
     try {
       setCargando(true);
       const datos = await getEstudiantesCurso(curso.idcursos);
-      setEstudiantes(Array.isArray(datos) ? datos : []);
+      const estudiantesArray = Array.isArray(datos) ? datos : [];
+      setEstudiantes(estudiantesArray);
 
-      const asistenciasIniciales = datos.reduce((acc, estudiante) => {
+      // Inicializar asistencias a false
+      const asistenciasIniciales = estudiantesArray.reduce((acc, estudiante) => {
         acc[estudiante.idalumno] = false;
         return acc;
       }, {});
       setAsistencias(asistenciasIniciales);
+      setTodosMarcados(false); // resetear checkbox global
       setCargando(false);
     } catch (error) {
       Swal.fire('Error', error.message, 'error');
@@ -58,10 +61,38 @@ const CursosDocente = () => {
   };
 
   const handleAsistencia = (idEstudiante) => {
-    setAsistencias((prev) => ({
-      ...prev,
-      [idEstudiante]: !prev[idEstudiante],
-    }));
+    setAsistencias((prev) => {
+      const nuevoEstado = {
+        ...prev,
+        [idEstudiante]: !prev[idEstudiante],
+      };
+
+      // Actualizar estado global (todosMarcados)
+      const todos = estudiantes.length > 0 && estudiantes.every(est =>
+        nuevoEstado[est.idalumno] === true
+      );
+      setTodosMarcados(todos);
+
+      return nuevoEstado;
+    });
+  };
+
+  const handleMarcarTodos = () => {
+    const nuevoEstado = {};
+    if (!todosMarcados) {
+      // Marcar todos
+      estudiantes.forEach(est => {
+        nuevoEstado[est.idalumno] = true;
+      });
+      setTodosMarcados(true);
+    } else {
+      // Desmarcar todos
+      estudiantes.forEach(est => {
+        nuevoEstado[est.idalumno] = false;
+      });
+      setTodosMarcados(false);
+    }
+    setAsistencias(nuevoEstado);
   };
 
   const enviarAsistencias = async () => {
@@ -85,11 +116,11 @@ const CursosDocente = () => {
           Swal.fire({
             title: 'QR de Asistencia',
             html: `
-            <div style="text-align: center;">
-              <img src="${response.qr_image}" alt="QR de Asistencia" width="200" style="display: block; margin: 0 auto;" />
-            </div>
-          `,
-          showConfirmButton: true,
+              <div style="text-align: center;">
+                <img src="${response.qr_image}" alt="QR de Asistencia" width="200" style="display: block; margin: 0 auto;" />
+              </div>
+            `,
+            showConfirmButton: true,
           });
         }
       } else {
@@ -100,23 +131,24 @@ const CursosDocente = () => {
       Swal.fire('Error', error.message, 'error');
     }
   };
-if (cargando) {
-  return (
-    <div className="flex justify-center items-center h-64">
-      <span className="loading loading-spinner loading-lg"></span>
-    </div>
-  );
-}
 
-if (!cargando && cursos.length === 0) {
-  return (
-    <div className="flex justify-center items-center h-64">
-      <p className="text-center text-gray-600 text-lg">
-        No tienes cursos asignados hasta el momento.
-      </p>
-    </div>
-  );
-}
+  if (cargando) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+
+  if (!cargando && cursos.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p className="text-center text-gray-600 text-lg">
+          No tienes cursos asignados hasta el momento.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-4">
@@ -151,7 +183,15 @@ if (!cargando && cursos.length === 0) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center mb-2 px-3">
                   <span className="font-bold">Estudiante</span>
-                  <span className="font-bold">Asistió</span>
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="checkbox checkbox-primary checkbox-md w-6 h-6 border-2 border-primary bg-white"
+                      checked={todosMarcados}
+                      onChange={handleMarcarTodos}
+                    />
+                    <span className="font-bold">Marcar todos</span>
+                  </label>
                 </div>
 
                 {estudiantes.map((estudiante) => (
