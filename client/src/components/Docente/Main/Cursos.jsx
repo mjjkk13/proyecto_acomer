@@ -4,13 +4,18 @@ import { faChevronDown, faUserGraduate } from '@fortawesome/free-solid-svg-icons
 import Swal from 'sweetalert2';
 import { getCursosDocente, getEstudiantesCurso, registrarAsistencia } from '../../services/asistencia';
 
+const ITEMS_POR_PAGINA = 10; // Define cuántos estudiantes mostrar por página
+
 const CursosDocente = () => {
   const [cursos, setCursos] = useState([]);
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const [estudiantes, setEstudiantes] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [asistencias, setAsistencias] = useState({});
-  const [todosMarcados, setTodosMarcados] = useState(false); // nuevo estado para checkbox global
+  const [todosMarcados, setTodosMarcados] = useState(false);
+  
+  // Estado para paginación
+  const [paginaActual, setPaginaActual] = useState(1);
 
   useEffect(() => {
     cargarCursos();
@@ -52,7 +57,8 @@ const CursosDocente = () => {
         return acc;
       }, {});
       setAsistencias(asistenciasIniciales);
-      setTodosMarcados(false); // resetear checkbox global
+      setTodosMarcados(false);
+      setPaginaActual(1); // Reiniciar paginación al seleccionar nuevo curso
       setCargando(false);
     } catch (error) {
       Swal.fire('Error', error.message, 'error');
@@ -67,7 +73,6 @@ const CursosDocente = () => {
         [idEstudiante]: !prev[idEstudiante],
       };
 
-      // Actualizar estado global (todosMarcados)
       const todos = estudiantes.length > 0 && estudiantes.every(est =>
         nuevoEstado[est.idalumno] === true
       );
@@ -80,13 +85,11 @@ const CursosDocente = () => {
   const handleMarcarTodos = () => {
     const nuevoEstado = {};
     if (!todosMarcados) {
-      // Marcar todos
       estudiantes.forEach(est => {
         nuevoEstado[est.idalumno] = true;
       });
       setTodosMarcados(true);
     } else {
-      // Desmarcar todos
       estudiantes.forEach(est => {
         nuevoEstado[est.idalumno] = false;
       });
@@ -130,6 +133,16 @@ const CursosDocente = () => {
       console.error('Error en enviarAsistencias:', error);
       Swal.fire('Error', error.message, 'error');
     }
+  };
+
+  // Cálculo para paginación
+  const totalPaginas = Math.ceil(estudiantes.length / ITEMS_POR_PAGINA);
+  const indiceInicio = (paginaActual - 1) * ITEMS_POR_PAGINA;
+  const estudiantesPagina = estudiantes.slice(indiceInicio, indiceInicio + ITEMS_POR_PAGINA);
+
+  const cambiarPagina = (nuevaPagina) => {
+    if (nuevaPagina < 1 || nuevaPagina > totalPaginas) return;
+    setPaginaActual(nuevaPagina);
   };
 
   if (cargando) {
@@ -194,7 +207,7 @@ const CursosDocente = () => {
                   </label>
                 </div>
 
-                {estudiantes.map((estudiante) => (
+                {estudiantesPagina.map((estudiante) => (
                   <div
                     key={estudiante.idalumno}
                     className="flex items-center justify-between bg-base-200 p-3 rounded-lg shadow-sm hover:bg-base-300 transition-colors"
@@ -221,6 +234,29 @@ const CursosDocente = () => {
                     </div>
                   </div>
                 ))}
+
+                {/* Navegación de paginación */}
+                {totalPaginas > 1 && (
+                  <div className="flex justify-center mt-4 space-x-4">
+                    <button
+                      className="btn btn-sm"
+                      onClick={() => cambiarPagina(paginaActual - 1)}
+                      disabled={paginaActual === 1}
+                    >
+                      Anterior
+                    </button>
+                    <span className="flex items-center px-3">
+                      Página {paginaActual} de {totalPaginas}
+                    </span>
+                    <button
+                      className="btn btn-sm"
+                      onClick={() => cambiarPagina(paginaActual + 1)}
+                      disabled={paginaActual === totalPaginas}
+                    >
+                      Siguiente
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="mt-4 flex justify-center">
