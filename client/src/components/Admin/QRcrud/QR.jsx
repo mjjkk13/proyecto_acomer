@@ -6,6 +6,8 @@ import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 
 const QR = () => {
   const [qrCodes, setQrCodes] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Puedes ajustar este valor
   const API_URL = 'http://localhost/proyecto_acomer/server/php/qrcodes';
 
   useEffect(() => {
@@ -15,7 +17,7 @@ const QR = () => {
   const loadQRCodes = async () => {
     try {
       const data = await getQRCodes();
-      const fullURLs = data.map(codigo => ({
+      const fullURLs = data.map((codigo) => ({
         ...codigo,
         imagen: `${API_URL}/${codigo.imagen}`,
       }));
@@ -39,12 +41,23 @@ const QR = () => {
     if (result.isConfirmed) {
       try {
         await deleteQRCode(id);
-        setQrCodes(qrCodes.filter((q) => q.id !== id));
+        setQrCodes((prev) => prev.filter((q) => q.id !== id));
         Swal.fire('Eliminado', 'El QR fue eliminado.', 'success');
       } catch {
         Swal.fire('Error', 'No se pudo eliminar el QR', 'error');
       }
     }
+  };
+
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = qrCodes.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(qrCodes.length / itemsPerPage);
+
+  const goToPage = (pageNumber) => {
+    if (pageNumber < 1 || pageNumber > totalPages) return;
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -62,9 +75,9 @@ const QR = () => {
             </tr>
           </thead>
           <tbody>
-            {qrCodes.map((codigo, index) => (
+            {currentItems.map((codigo, index) => (
               <tr
-                key={index}
+                key={codigo.id}
                 className={`${
                   index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                 } hover:bg-gray-200`}
@@ -73,9 +86,16 @@ const QR = () => {
                 <td className="px-4 py-2">{codigo.nombrecurso}</td>
                 <td className="px-4 py-2">
                   {codigo.imagen ? (
-                    <img src={codigo.imagen} alt="QR" className="w-16 rounded-lg" />
+                    <img
+                      src={codigo.imagen}
+                      alt="QR"
+                      className="w-16 rounded-lg"
+                    />
                   ) : (
-                    <FontAwesomeIcon icon={faQrcode} className="text-2xl text-gray-600" />
+                    <FontAwesomeIcon
+                      icon={faQrcode}
+                      className="text-2xl text-gray-600"
+                    />
                   )}
                 </td>
                 <td className="px-4 py-2">
@@ -90,6 +110,39 @@ const QR = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Controles de paginación */}
+      <div className="mt-4 flex justify-center space-x-2">
+        <button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+        >
+          Anterior
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goToPage(i + 1)}
+            className={`px-3 py-1 rounded ${
+              currentPage === i + 1
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 hover:bg-gray-300'
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+        >
+          Siguiente
+        </button>
       </div>
     </div>
   );
