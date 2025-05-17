@@ -1,0 +1,14 @@
+# Usa una imagen oficial de PHP con Apache
+FROM php:8.2-apache
+
+# Habilita mod_rewrite para .htaccess (opcional)
+RUN a2enmod rewrite
+
+# Copia todos los archivos PHP al contenedor
+COPY . /var/www/html/
+
+# Asigna permisos correctos
+RUN chown -R www-data:www-data /var/www/html
+
+# Expón el puerto por donde Apache servirá tu backend
+EXPOSE 80
