@@ -1,5 +1,5 @@
 import Footer from '../../Footer';
-import Navbar from '../Main/Nabvar';
+import Navbar from '../Main/Navbar';
 import MenuSection from './MenuSection';
 
 const Main = () => {

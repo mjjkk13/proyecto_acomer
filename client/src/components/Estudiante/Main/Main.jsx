@@ -1,5 +1,5 @@
 import Footer from '../../Footer';
-import Navbar from './Nabvar';
+import Navbar from './Navbar';
 import QRScanner from './QRScanner';
 import '../../../styles/estudiante.css'
 

@@ -1,4 +1,4 @@
-import Navbar from "../Main/Nabvar";
+import Navbar from "../Main/Navbar";
 import AddStudentForm from "./AddStudentForm";
 import Footer from "../../Footer";
 

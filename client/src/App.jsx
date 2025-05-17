@@ -13,7 +13,7 @@ import AdminPorfile from './components/Admin/Porfile/AdminPorfile'
 import StudentPorfile from './components/Estudiante/Porfile/StudentPorfile'
 import TeacherPorfile from './components/Docente/Porfile/TeacherPorfile'
 import MenuStudent from './components/Estudiante/Menu/Menu'
-import MenuTeacher from './components/Docente/Menu/Menu'
+import Asistencia from './components/Docente/Asistencia/Asistencia'
 import Registro from './components/Admin/Registro/Registro'
 import Cursos from './components/Admin/Cursos/Cursos';
 import AddStudents from './components/Admin/AddStudents/AddStudents';
@@ -52,7 +52,7 @@ function App() {
                 <Routes>
                   <Route path='/' element={<MainDocente/>}/>
                   <Route path='codigos-generados' element={<QRgenerados/>}/>
-                  <Route path='consultar-menu' element={<MenuTeacher/>}/>
+                  <Route path='registro-asistencia' element={<Asistencia/>}/>
                   <Route path='perfil' element={<TeacherPorfile/>}/>
                 </Routes>
               </ProtectedRoute>

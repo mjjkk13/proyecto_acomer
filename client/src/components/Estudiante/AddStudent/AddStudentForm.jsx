@@ -134,7 +134,6 @@ const AddStudentForm = () => {
               >
                 <option value="">Seleccione una opción</option>
                 <option value="si">Asistió</option>
-                <option value="no">No asistió</option>
               </select>
               <FontAwesomeIcon
                 icon={formData.estado === "si" ? faCheckCircle : formData.estado === "no" ? faTimesCircle : null}

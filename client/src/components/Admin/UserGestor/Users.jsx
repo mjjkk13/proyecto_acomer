@@ -9,6 +9,14 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(usuarios.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = usuarios.slice(indexOfFirstItem, indexOfLastItem);
+
   useEffect(() => {
     loadData();
   }, []);
@@ -26,6 +34,11 @@ const Users = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const goToPage = (pageNumber) => {
+    if (pageNumber < 1 || pageNumber > totalPages) return;
+    setCurrentPage(pageNumber);
   };
 
   const handleEdit = async (id) => {
@@ -127,8 +140,8 @@ const Users = () => {
             </tr>
           </thead>
           <tbody className="bg-white text-gray-900">
-            {usuarios.length > 0 ? (
-              usuarios.map((usuario) => (
+            {currentItems.length > 0 ? (
+              currentItems.map((usuario) => (
                 <tr key={usuario.idcredenciales}>
                   <td>{usuario.nombre_usuario}</td>
                   <td>{usuario.rol}</td>
@@ -159,6 +172,39 @@ const Users = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Controles de paginación */}
+      <div className="mt-4 flex justify-center space-x-2">
+        <button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+        >
+          Anterior
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goToPage(i + 1)}
+            className={`px-3 py-1 rounded ${
+              currentPage === i + 1
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+        >
+          Siguiente
+        </button>
       </div>
     </div>
   );

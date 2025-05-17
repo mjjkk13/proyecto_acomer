@@ -7,14 +7,18 @@ import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const AddCursos = () => {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
+  
+  // Estados para paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 5; // Puedes ajustar esto
 
   useEffect(() => {
     cargarCursos();
   }, []);
 
   const cargarCursos = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const data = await courseService.getCourses();
 
@@ -22,17 +26,18 @@ const AddCursos = () => {
         throw new Error('Los datos recibidos no son un arreglo.');
       }
 
-      if (data.length && !data[0].hasOwnProperty('nombrecurso')) {
+      if (data.length && !Object.prototype.hasOwnProperty.call(data[0], 'nombrecurso')) {
         throw new Error('La estructura de los datos del curso es incorrecta.');
       }
 
       setCourses(data);
+      setCurrentPage(1); // Reiniciar a la primera página al cargar
     } catch (error) {
       console.error('Error al cargar los cursos:', error);
       Swal.fire('Error', error.message || 'No se pudieron cargar los cursos.', 'error');
       setCourses([]);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -54,11 +59,15 @@ const AddCursos = () => {
 
   const mostrarFormularioCurso = async (titulo, curso = {}) => {
     const docentes = await obtenerDocentes();
-    
-    const docenteOptions = docentes.map((doc) => `
+
+    const docenteOptions = docentes
+      .map(
+        (doc) => `
       <option value="${doc.iddocente}" ${doc.iddocente === curso.docente_id ? 'selected' : ''}>
         ${doc.nombre} ${doc.apellido}
-      </option>`).join('');
+      </option>`
+      )
+      .join('');
 
     const { value: formValues } = await Swal.fire({
       title: titulo,
@@ -99,7 +108,7 @@ const AddCursos = () => {
 
       if (data.success) {
         Swal.fire('¡Curso agregado!', '', 'success');
-        await cargarCursos(); 
+        await cargarCursos();
       } else {
         throw new Error(data.error || 'Error desconocido al agregar el curso.');
       }
@@ -166,16 +175,28 @@ const AddCursos = () => {
     }
   };
 
+  // Paginación: calcular índices para cursos visibles
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
+
+  const totalPages = Math.ceil(courses.length / coursesPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber < 1 || pageNumber > totalPages) return;
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div className="container px-4 mx-auto mt-4">
       <h3 className="text-xl font-bold mb-4">Cursos Disponibles</h3>
       <button onClick={handleAgregarCurso} className="btn btn-primary mb-4">
         <FontAwesomeIcon icon={faPlus} className="mr-2" /> Agregar Curso
       </button>
-      <div className="overflow-auto max-h-96 border border-gray-200 rounded-lg">
-        {loading ? (
-          <div className="text-center text-gray-500 py-4">Cargando cursos...</div>
-        ) : (
+      {loading ? (
+        <div className="text-center text-gray-500 py-4">Cargando cursos...</div>
+      ) : (
+        <>
           <table className="table w-full">
             <thead>
               <tr>
@@ -185,16 +206,22 @@ const AddCursos = () => {
               </tr>
             </thead>
             <tbody>
-              {courses.length > 0 ? (
-                courses.map((curso) => (
+              {currentCourses.length > 0 ? (
+                currentCourses.map((curso) => (
                   <tr className="text-gray-400" key={curso.idcurso}>
                     <td>{curso.nombrecurso}</td>
                     <td>{curso.nombreDocente || 'Sin asignar'}</td>
                     <td>
-                      <button onClick={() => handleEditarCurso(curso)} className="btn btn-warning btn-sm mr-2">
+                      <button
+                        onClick={() => handleEditarCurso(curso)}
+                        className="btn btn-warning btn-sm mr-2"
+                      >
                         <FontAwesomeIcon icon={faEdit} /> Editar
                       </button>
-                      <button onClick={() => handleBorrarCurso(curso.idcurso)} className="btn btn-error btn-sm">
+                      <button
+                        onClick={() => handleBorrarCurso(curso.idcurso)}
+                        className="btn btn-error btn-sm"
+                      >
                         <FontAwesomeIcon icon={faTrash} /> Borrar
                       </button>
                     </td>
@@ -202,13 +229,49 @@ const AddCursos = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="3" className="text-center text-gray-500">No hay cursos disponibles</td>
+                  <td colSpan="3" className="text-center text-gray-500">
+                    No hay cursos disponibles
+                  </td>
                 </tr>
               )}
             </tbody>
           </table>
-        )}
-      </div>
+
+          {/* Paginación */}
+          <div className="flex justify-center mt-4 space-x-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="btn btn-secondary btn-sm"
+            >
+              Anterior
+            </button>
+
+            {[...Array(totalPages)].map((_, index) => {
+              const pageNumber = index + 1;
+              return (
+                <button
+                  key={pageNumber}
+                  onClick={() => handlePageChange(pageNumber)}
+                  className={`btn btn-sm ${
+                    currentPage === pageNumber ? 'btn-primary' : 'btn-secondary'
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              );
+            })}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="btn btn-secondary btn-sm"
+            >
+              Siguiente
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
