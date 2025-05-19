@@ -51,6 +51,9 @@
  *     )
  * )
  */
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 $allowed_origins = [
     'http://localhost:5173',
@@ -58,17 +61,21 @@ $allowed_origins = [
 ];
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
+    header("Access-Control-Allow-Credentials: true");
 }
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Credentials: true');
 
 session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
 if (isset($_SESSION['usuario']) && isset($_SESSION['rol'])) {
     echo json_encode([
@@ -78,7 +85,6 @@ if (isset($_SESSION['usuario']) && isset($_SESSION['rol'])) {
         'message' => 'Inicio de sesión exitoso'
     ]);
 } else {
-    http_response_code(401);
     echo json_encode([
         'success' => false,
         'message' => 'No hay sesión activa'

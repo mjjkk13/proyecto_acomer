@@ -19,7 +19,6 @@
  * )
  */
 
-// 🔁 AHORA obtenemos las variables desde el entorno
 $host = getenv('DB_HOST') ?: 'localhost';
 $db = getenv('DB_DATABASE') ?: 'acomer';
 $user = getenv('DB_USERNAME') ?: 'root';
@@ -27,7 +26,6 @@ $pass = getenv('DB_PASSWORD') ?: '';
 $port = getenv('DB_PORT') ?: '3306';
 $charset = 'utf8mb4';
 
-// 🔧 Creamos el DSN completo (con puerto incluido)
 $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
 $options = [
