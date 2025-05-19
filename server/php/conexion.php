@@ -19,59 +19,17 @@
  * )
  */
 
-/**
- * @OA\Schema(
- *     schema="ErrorResponse",
- *     type="object",
- *     @OA\Property(property="message", type="string", example="Error de conexión a la base de datos")
- * )
- */
-
-/**
- * @OA\Response(
- *     response="DatabaseConnectionError",
- *     description="Error de conexión a la base de datos",
- *     @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
- * )
- */
-
-/**
- * @OA\Info(
- *     title="API de Conexión a Base de Datos",
- *     version="1.0.0",
- *     description="Documentación de la API que maneja la conexión a la base de datos."
- * )
- */
-
-/**
- * @OA\PathItem(
- *     path="/conexion"
- * )
- */
-
-/**
- * @OA\Get(
- *     path="/conexion",
- *     summary="Verificar conexión a la base de datos",
- *     @OA\Response(
- *         response=200,
- *         description="Conexión exitosa"
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Error de conexión a la base de datos",
- *         @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
- *     )
- * )
- */
-
-$host = 'localhost';
-$db = 'acomer';
-$user = 'root';
-$pass = ''; 
+// 🔁 AHORA obtenemos las variables desde el entorno
+$host = getenv('DB_HOST') ?: 'localhost';
+$db = getenv('DB_DATABASE') ?: 'acomer';
+$user = getenv('DB_USERNAME') ?: 'root';
+$pass = getenv('DB_PASSWORD') ?: '';
+$port = getenv('DB_PORT') ?: '3306';
 $charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+// 🔧 Creamos el DSN completo (con puerto incluido)
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
+
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -82,6 +40,8 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
-    die("Error de conexión a la base de datos");
+    http_response_code(500);
+    echo json_encode(['message' => 'Error de conexión a la base de datos']);
+    exit;
 }
 ?>
