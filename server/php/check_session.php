@@ -52,11 +52,21 @@
  * )
  */
 
+$allowed_origins = [
+    'http://localhost:5173',
+    'https://acomer.onrender.com'
+];
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: $origin");
+}
+
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: http://localhost:5173'); 
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS'); 
-header('Access-Control-Allow-Headers: Content-Type, Authorization'); 
-header('Access-Control-Allow-Credentials: true'); 
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Credentials: true');
 
 session_start();
 
@@ -68,6 +78,7 @@ if (isset($_SESSION['usuario']) && isset($_SESSION['rol'])) {
         'message' => 'Inicio de sesión exitoso'
     ]);
 } else {
+    http_response_code(401);
     echo json_encode([
         'success' => false,
         'message' => 'No hay sesión activa'
