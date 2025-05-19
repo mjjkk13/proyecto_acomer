@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost/proyecto_acomer/server/php/AgregarEstudiante.php';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/AgregarEstudiante.php`;
 
 const handleResponse = async (response) => {
   const contentType = response.headers.get('content-type');

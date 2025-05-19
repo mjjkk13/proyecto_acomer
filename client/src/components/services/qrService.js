@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost/proyecto_acomer/server/php';
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Servicio para cargar todos los códigos QR escaneados
 export const getQRCodes = async () => {

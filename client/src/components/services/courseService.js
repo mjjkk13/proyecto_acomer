@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost/proyecto_acomer/server/php/Cursos.php';
+const API_URL = import.meta.env.VITE_API_URL;
 
 async function fetchData(action, method = 'GET', data = null) {
   try {

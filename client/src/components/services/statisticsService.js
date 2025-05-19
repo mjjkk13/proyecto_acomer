@@ -1,8 +1,8 @@
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost/proyecto_acomer/server/php";
+
 export const fetchStatistics = async () => {
   try {
-    const response = await fetch(
-      "http://localhost/proyecto_acomer/server/php/estadisticas.php"
-    );
+    const response = await fetch(`${API_URL}/estadisticas.php`);
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
