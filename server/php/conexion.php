@@ -39,7 +39,10 @@ try {
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['message' => 'Error de conexión a la base de datos']);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error de conexión a la base de datos'
+    ]);
     exit;
 }
 ?>
