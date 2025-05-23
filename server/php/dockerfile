@@ -1,14 +1,20 @@
-# Usa una imagen oficial de PHP con Apache
 FROM php:8.2-apache
 
-# Habilita mod_rewrite para .htaccess (opcional)
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install pdo pdo_mysql
+
 RUN a2enmod rewrite
 
-# Copia todos los archivos PHP al contenedor
+ENV APACHE_DOCUMENT_ROOT /var/www/html
+
 COPY . /var/www/html/
 
-# Asigna permisos correctos
 RUN chown -R www-data:www-data /var/www/html
 
-# Expón el puerto por donde Apache servirá tu backend
 EXPOSE 80
