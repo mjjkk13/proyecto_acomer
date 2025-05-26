@@ -2,8 +2,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 async function fetchData(action, method = 'GET', data = null) {
   try {
-    const options = { method, headers: { 'Content-Type': 'application/json' } };
-    const url = `${BASE_URL}?action=${action}`;
+    const options = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'include' };
+    const url = `${API_URL}?action=${action}`;
     if (method !== 'GET' && data) {
       options.body = JSON.stringify(data);
     }
@@ -20,7 +20,6 @@ async function fetchData(action, method = 'GET', data = null) {
 
     const result = await response.json();
 
-    // Notificar cambios al front si la acción no es de solo lectura
     if (['create', 'update', 'delete'].includes(action)) {
       document.dispatchEvent(new CustomEvent('dataUpdated', { detail: { action, result } }));
     }
@@ -40,10 +39,10 @@ const courseService = {
     fetchData('create', 'POST', { nombrecurso: nombreCurso, docente_id: idDocente }),
 
   updateCourse: (idcursos, nombreCurso, idDocente) =>
-    fetchData('update', 'POST', { idcursos: idcursos, nombrecurso: nombreCurso, docente_id: idDocente }),
+    fetchData('update', 'POST', { idcursos, nombrecurso: nombreCurso, docente_id: idDocente }),
 
   deleteCourse: (idcursos) =>
-    fetchData('delete', 'POST', { idcurso: idcursos }).catch((error) => {
+    fetchData('delete', 'POST', { idcursos }).catch((error) => {
       console.error('Error al borrar el curso:', error.message);
       return { error: error.message };
     }),
