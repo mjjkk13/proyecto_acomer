@@ -1,4 +1,6 @@
 <?php
+header('Content-Type: application/json');
+
 /**
  * @OA\Schema(
  *     schema="DatabaseConnection",
@@ -19,6 +21,7 @@
  * )
  */
 
+// Carga de variables de entorno (si usas .env y phpdotenv, pero en Render esto no es necesario)
 $host = getenv('DB_HOST') ?: 'localhost';
 $db = getenv('DB_DATABASE') ?: 'acomer';
 $user = getenv('DB_USERNAME') ?: 'root';
@@ -26,6 +29,7 @@ $pass = getenv('DB_PASSWORD') ?: '';
 $port = getenv('DB_PORT') ?: '3306';
 $charset = 'utf8mb4';
 
+// Construcción del DSN
 $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
 $options = [
@@ -36,12 +40,16 @@ $options = [
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
+
+    // Si quieres confirmar que la conexión fue exitosa, puedes dejar este log (solo para pruebas)
+    // echo json_encode(["success" => true, "message" => "Conexión establecida correctamente."]);
 } catch (PDOException $e) {
-    error_log("Database error: " . $e->getMessage());
+    // Mostrar el mensaje exacto del error en la respuesta JSON para depurar
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Error de conexión a la base de datos'
+        'message' => 'Error de conexión a la base de datos',
+        'error' => $e->getMessage()  // Esto te mostrará el error real en Postman o consola
     ]);
     exit;
 }
