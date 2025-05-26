@@ -1,74 +1,57 @@
 <?php
 
-// CORS temprano antes de cualquier salida
-if (isset($_SERVER['HTTP_ORIGIN'])) {
-    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-    
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-
-    exit(0);
-}
-
-
-require 'conexion.php';
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// 🔒 Requisitos de cookies seguras para CORS
-ini_set('session.cookie_samesite', 'None');
-ini_set('session.cookie_secure', '1'); // Render usa HTTPS
-
-// --- Iniciar sesión
-session_start();
-error_log("=== INICIO login.php ===");
-
-// --- Validar y registrar ORIGIN
+// --- Lista de orígenes permitidos
 $allowed_origins = [
     'http://localhost:5173',
     'https://acomer.onrender.com'
 ];
 
-$origin = $_SERVER['HTTP_ORIGIN'] ?? 'NO_ORIGIN';
-error_log("Origin recibido: $origin");
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
-    error_log("Access-Control-Allow-Origin seteado: $origin");
-} else {
-    header("Access-Control-Allow-Origin: https://acomer.onrender.com");
-    error_log("Origin no permitido. Forzado a acomer.onrender.com");
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Max-Age: 86400'); // cache 1 día
 }
 
-header("Access-Control-Allow-Credentials: true");
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-
+// --- Manejo de preflight OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    error_log("Petición OPTIONS recibida. 204 enviado.");
-    http_response_code(204);
+    http_response_code(204); // No Content
     exit;
 }
 
+// --- Requiere conexión
+require 'conexion.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// 🔒 Cookies seguras con sesiones y CORS
+ini_set('session.cookie_samesite', 'None');
+ini_set('session.cookie_secure', '1');
+
+// --- Iniciar sesión
+session_start();
+error_log("=== INICIO login.php ===");
+
+header('Content-Type: application/json; charset=utf-8');
+
+// --- Función para responder con JSON
 function sendJsonResponse($success, $message, $data = []) {
-    echo json_encode(array_merge(['success' => $success, 'message' => $message], $data));
-    error_log("RESPUESTA: " . json_encode(array_merge(['success' => $success, 'message' => $message], $data)));
+    $response = array_merge(['success' => $success, 'message' => $message], $data);
+    echo json_encode($response);
+    error_log("RESPUESTA: " . json_encode($response));
     exit;
 }
 
+// --- Validar método
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendJsonResponse(false, 'Método no permitido');
 }
 
+// --- Obtener datos del formulario
 $usuario = $_POST['usuario'] ?? null;
 $contrasena = $_POST['inputPassword'] ?? null;
 error_log("Credenciales recibidas: usuario=$usuario");
@@ -78,6 +61,7 @@ if (!$usuario || !$contrasena) {
 }
 
 try {
+    // --- Consulta de usuario
     $stmt = $pdo->prepare("
         SELECT u.idusuarios, c.user, c.contrasena, c.estado, tu.rol
         FROM credenciales c
@@ -100,18 +84,18 @@ try {
         sendJsonResponse(false, 'Contraseña incorrecta');
     }
 
-    // --- Guardar sesión ---
+    // --- Guardar sesión
     $_SESSION['usuario'] = $usuario;
     $_SESSION['rol'] = $result['rol'];
     $_SESSION['idusuarios'] = $result['idusuarios'];
     error_log("Session ID: " . session_id());
     error_log("Sesión guardada: " . print_r($_SESSION, true));
 
-    // --- Actualizar último acceso ---
+    // --- Actualizar último acceso
     $pdo->prepare("UPDATE credenciales SET ultimoacceso = NOW() WHERE user = :user")
         ->execute(['user' => $usuario]);
 
-    // --- Redirección según rol ---
+    // --- Redirección por rol
     $redirect_url = match($result['rol']) {
         'Administrador' => '/admin',
         'Estudiante SS' => '/estudiante',
