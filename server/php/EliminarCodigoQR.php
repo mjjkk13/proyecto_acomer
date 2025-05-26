@@ -67,11 +67,7 @@
  * )
  */
 
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: http://localhost:5173');  
-header('Access-Control-Allow-Credentials: true'); 
-header("Access-Control-Allow-Methods: DELETE");
-header("Access-Control-Allow-Headers: Content-Type");
+require 'cors.php';
 
 // Verificar si el método de la solicitud es DELETE
 if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
