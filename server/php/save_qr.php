@@ -72,10 +72,17 @@
 
 session_start();
 require_once 'conexion.php';
-require 'cors.php';
 
 header('Content-Type: application/json; charset=utf-8');
-// Verificar si la sesión está iniciada
+header('Access-Control-Allow-Origin: http://localhost:5173');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Credentials: true');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
 if (!isset($_SESSION['idusuarios'])) {
     echo json_encode([
         'status' => 'error',

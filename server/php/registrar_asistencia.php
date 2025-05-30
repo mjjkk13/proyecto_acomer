@@ -24,16 +24,12 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once 'conexion.php';
 require_once __DIR__ . '/phpqrcode/qrlib.php';
-require 'cors.php';
 
 session_start();
 
-<<<<<<< HEAD
 // Zona horaria establecida correctamente
 date_default_timezone_set('America/Bogota');
 
-=======
->>>>>>> ea09f631d3af38e55533cdf4a90a6281cab1a512
 // Validación de sesión
 if (!isset($_SESSION['idusuarios'])) {
     echo json_encode(['status' => 'error', 'message' => 'No ha iniciado sesión']);

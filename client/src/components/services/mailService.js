@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = "http://localhost/proyecto_acomer/server/php";
 
 const PHP_API = axios.create({
   baseURL: API_BASE_URL,

@@ -11,94 +11,64 @@ import {
   faChartBar,
   faUserEdit,
   faBook,
-  faSchool,
+  faSchool
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Swal from "sweetalert2";
-
-const API_URL = import.meta.env.VITE_API_URL;
-
-const menuItems = [
-  { to: "/admin", icon: faChartBar, label: "Consultar Estadísticas" },
-  { to: "/admin/codigos-generados", icon: faListAlt, label: "QR Generados" },
-  { to: "/admin/gestionar-menu", icon: faUtensils, label: "Gestionar Menú" },
-  { to: "/admin/gestionar-usuarios", icon: faUserPlus, label: "Gestionar Usuarios" },
-  { to: "/admin/registro-usuarios", icon: faUserEdit, label: "Registrar Usuarios" },
-  { to: "/admin/cursos", icon: faBook, label: "Cursos" },
-  { to: "/admin/agregar-alumnos", icon: faSchool, label: "Agregar Alumnos" },
-  { to: "/admin/perfil", icon: faUser, label: "Mi Perfil" },
-];
-
-// Componente para renderizar el menú (desktop y móvil)
-const MenuList = ({ onClickItem }) => (
-  <ul>
-    {menuItems.map(({ to, icon, label }) => (
-      <li key={label}>
-        <Link
-          to={to}
-          className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center"
-          onClick={onClickItem}
-        >
-          <FontAwesomeIcon icon={icon} className="mr-2" />
-          {label}
-        </Link>
-      </li>
-    ))}
-    <li>
-      <button
-        onClick={onClickItem}
-        className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
-      >
-        <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-        Cerrar Sesión
-      </button>
-    </li>
-  </ul>
-);
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout = async (e) => {
+  const handleLogout = (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch(`${API_URL}/logout.php`, {
-        method: "POST",
-        credentials: "include",
+    fetch("http://localhost/proyecto_acomer/server/php/logout.php", {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.ok) {
+          Swal.fire({
+            icon: "success",
+            title: "Sesión cerrada",
+            text: "Hasta pronto",
+          }).then(() => navigate("/login"));
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo cerrar sesión.",
+          });
+        }
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `Error: ${error.message}`,
+        });
       });
-
-      if (!res.ok) throw new Error("No se pudo cerrar sesión.");
-
-      await Swal.fire({
-        icon: "success",
-        title: "Sesión cerrada",
-        text: "Hasta pronto",
-      });
-
-      navigate("/login");
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.message,
-      });
-    }
   };
 
-  // Cierra dropdown y menú móvil
-  const closeMenus = () => {
-    setIsDropdownOpen(false);
-    setIsMenuOpen(false);
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
   };
 
-  // Handler combinado para cerrar menus y logout
-  const handleLogoutAndClose = (e) => {
-    e.preventDefault();
-    closeMenus();
-    handleLogout(e);
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
   };
+
+  const menuItems = [
+    { to: "/admin", icon: faChartBar, label: "Consultar Estadísticas" },
+    { to: "/admin/codigos-generados", icon: faListAlt, label: "QR Generados" },
+    { to: "/admin/gestionar-menu", icon: faUtensils, label: "Gestionar Menú" },
+    { to: "/admin/gestionar-usuarios", icon: faUserPlus, label: "Gestionar Usuarios" },
+    { to: "/admin/registro-usuarios", icon: faUserEdit, label: "Registrar Usuarios" },
+    { to: "/admin/cursos", icon: faBook, label: "Cursos" },
+    { to: "/admin/agregar-alumnos", icon: faSchool, label: "Agregar Alumnos" },
+    { to: "/admin/perfil", icon: faUser, label: "Mi Perfil" },
+  ];
 
   return (
     <nav className="bg-[#27374D] text-white shadow-lg relative z-50">
@@ -109,9 +79,9 @@ const Navbar = () => {
           <span className="ml-2 text-xl font-bold">A Comer</span>
         </Link>
 
-        {/* Botón menú móvil */}
+        {/* Botón de menú para móviles y escritorio */}
         <button
-          onClick={() => setIsMenuOpen((v) => !v)}
+          onClick={toggleMenu}
           className="text-white flex items-center focus:outline-none md:hidden"
           aria-label="Abrir menú"
           aria-expanded={isMenuOpen}
@@ -119,13 +89,11 @@ const Navbar = () => {
           <FontAwesomeIcon icon={faBars} size="lg" />
         </button>
 
-        {/* Dropdown escritorio */}
+        {/* Menú desplegable */}
         <div className="relative hidden md:block">
           <button
-            onClick={() => setIsDropdownOpen((v) => !v)}
+            onClick={toggleDropdown}
             className="bg-[#1c2a3a] px-4 py-2 rounded-lg flex items-center"
-            aria-haspopup="true"
-            aria-expanded={isDropdownOpen}
           >
             <FontAwesomeIcon icon={faBars} className="ml-2" />
           </button>
@@ -145,7 +113,10 @@ const Navbar = () => {
               ))}
               <li>
                 <button
-                  onClick={handleLogoutAndClose}
+                  onClick={(e) => {
+                    handleLogout(e);
+                    setIsDropdownOpen(false);
+                  }}
                   className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
                 >
                   <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
@@ -160,23 +131,35 @@ const Navbar = () => {
       {/* Menú móvil */}
       {isMenuOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end">
-          <nav className="bg-[#27374D] w-64 h-full shadow-lg text-sm pt-4 relative">
-            <button
-              onClick={closeMenus}
-              className="absolute top-4 right-4 text-white text-xl"
-              aria-label="Cerrar menú"
-            >
+          <ul className="bg-[#27374D] w-64 h-full shadow-lg text-sm pt-4">
+            <button onClick={() => setIsMenuOpen(false)} className="absolute top-4 right-4 text-white text-xl">
               ✖
             </button>
-            <MenuList onClickItem={closeMenus} />
-            <button
-              onClick={handleLogoutAndClose}
-              className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
-            >
-              <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-              Cerrar Sesión
-            </button>
-          </nav>
+            {menuItems.map(({ to, icon, label }) => (
+              <li key={label}>
+                <Link
+                  to={to}
+                  className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <FontAwesomeIcon icon={icon} className="mr-2" />
+                  {label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <button
+                onClick={(e) => {
+                  handleLogout(e);
+                  setIsMenuOpen(false);
+                }}
+                className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+                Cerrar Sesión
+              </button>
+            </li>
+          </ul>
         </div>
       )}
     </nav>

@@ -1,16 +1,21 @@
 <?php
-/**
- * @OA\Info(
- *     title="API de Registro de Usuarios",
- *     version="1.0.0",
- *     description="API para registrar nuevos usuarios en el sistema.",
- *     @OA\Contact(
- *         email="**/
-require 'cors.php';
+// ===============================
+// CABECERAS PARA RESPUESTAS JSON Y CORS
+// ===============================
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: http://localhost:5173');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Credentials: true');
+header('Cache-Control: public, max-age=300');
+
 // ===============================
 // RESPUESTA A PETICIONES OPTIONS (preflight)
 // ===============================
-
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit();
+}
 
 // ===============================
 // CONEXIÓN A LA BASE DE DATOS

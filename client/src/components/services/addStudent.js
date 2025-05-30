@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = "http://localhost/proyecto_acomer/server/php"; // Ajusta según tu configuración
 
 /**
  * Obtiene los cursos disponibles desde el backend.

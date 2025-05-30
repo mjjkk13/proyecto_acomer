@@ -1,8 +1,7 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = 'http://localhost/proyecto_acomer/server/php/Cursos.php';
 
 async function fetchData(action, method = 'GET', data = null) {
   try {
-<<<<<<< HEAD
     const options = { 
       method, 
       headers: { 'Content-Type': 'application/json' },
@@ -16,11 +15,6 @@ async function fetchData(action, method = 'GET', data = null) {
       const params = new URLSearchParams(data);
       url += `&${params.toString()}`;
     } else if (method !== 'GET' && data) {
-=======
-    const options = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'include' };
-    const url = `${API_URL}?action=${action}`;
-    if (method !== 'GET' && data) {
->>>>>>> ea09f631d3af38e55533cdf4a90a6281cab1a512
       options.body = JSON.stringify(data);
     }
 
@@ -36,17 +30,7 @@ async function fetchData(action, method = 'GET', data = null) {
       throw new Error(errorMessage || `Error HTTP ${response.status}`);
     }
 
-<<<<<<< HEAD
     return await response.json();
-=======
-    const result = await response.json();
-
-    if (['create', 'update', 'delete'].includes(action)) {
-      document.dispatchEvent(new CustomEvent('dataUpdated', { detail: { action, result } }));
-    }
-
-    return result;
->>>>>>> ea09f631d3af38e55533cdf4a90a6281cab1a512
   } catch (error) {
     console.error(`Error en ${action}:`, error);
     throw error; // Re-lanzamos el error para manejo específico en los componentes
@@ -66,7 +50,6 @@ const courseService = {
     }),
 
   updateCourse: (idcursos, nombreCurso, idDocente) =>
-<<<<<<< HEAD
     fetchData('update', 'POST', { 
       idcursos: idcursos, 
       nombrecurso: nombreCurso, 
@@ -77,15 +60,6 @@ const courseService = {
     fetchData('delete', 'POST', { 
       idcurso: idcursos 
     })
-=======
-    fetchData('update', 'POST', { idcursos, nombrecurso: nombreCurso, docente_id: idDocente }),
-
-  deleteCourse: (idcursos) =>
-    fetchData('delete', 'POST', { idcursos }).catch((error) => {
-      console.error('Error al borrar el curso:', error.message);
-      return { error: error.message };
-    }),
->>>>>>> ea09f631d3af38e55533cdf4a90a6281cab1a512
 };
 
 export default courseService;

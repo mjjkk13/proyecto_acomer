@@ -1,4 +1,4 @@
-const API_URL = `${import.meta.env.VITE_API_URL}/cargarDatosPersonales.php`;
+const API_URL = "http://localhost/proyecto_acomer/server/php/cargarDatosPersonales.php";
 
 /**
  * Obtiene los datos personales del usuario autenticado.

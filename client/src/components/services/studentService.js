@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = 'http://localhost/proyecto_acomer/server/php/AgregarEstudiante.php';
 
 const handleResponse = async (response) => {
   const contentType = response.headers.get('content-type');
@@ -18,13 +18,13 @@ const handleResponse = async (response) => {
 const studentService = {
   addStudent: async (studentData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/AgregarEstudiante.php`, {
+      const response = await fetch(API_BASE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(studentData),
-        credentials: 'include'  // para enviar cookies PHPSESSID
+        credentials: 'include'  // 👈 Aquí se agregan las cookies (como PHPSESSID)
       });
       
       return await handleResponse(response);

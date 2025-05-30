@@ -63,8 +63,8 @@ export const deleteMenu = async (idmenu) => {
 const fetchData = async (payload) => {
   try {
     const response = await fetch(
-  `${import.meta.env.VITE_API_URL}/menuCRUD.php`,
-  {
+      'http://localhost/proyecto_acomer/server/php/menuCRUD.php',
+      {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
