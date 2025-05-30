@@ -54,88 +54,111 @@
  *     )
  * )
  */
- 
-// Asegurar que la respuesta sea siempre JSON
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: http://localhost:5173'); 
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS'); 
-header('Access-Control-Allow-Headers: Content-Type, Authorization'); 
-header('Access-Control-Allow-Credentials: true'); 
 
-require 'conexion.php';
+// --- Configuración CORS
+$allowed_origins = [
+    'http://localhost:5173',
+    'https://acomer.onrender.com'
+];
 
-session_start();
-
-// Función para manejar respuestas JSON
-function sendJsonResponse($success, $message, $data = []) {
-    echo json_encode(array_merge(
-        ['success' => $success, 'message' => $message],
-        $data
-    ));
-    exit;
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: $origin");
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Max-Age: 86400');
 }
 
-// Manejar preflight request
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
 
-// Verificar método POST
-if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+header('Content-Type: application/json; charset=utf-8');
+
+// --- Configuración de errores
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// --- Cookies seguras
+ini_set('session.cookie_samesite', 'None');
+ini_set('session.cookie_secure', '1');
+
+// --- Iniciar sesión
+session_start();
+error_log("=== INICIO login.php ===");
+
+// --- Función para respuesta JSON
+function sendJsonResponse($success, $message, $data = []) {
+    $response = array_merge(['success' => $success, 'message' => $message], $data);
+    echo json_encode($response);
+    error_log("RESPUESTA: " . json_encode($response));
+    exit;
+}
+
+// --- Verificar método
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendJsonResponse(false, 'Método no permitido');
 }
 
-// Verificar datos recibidos
-if (empty($_POST['usuario']) || empty($_POST['inputPassword'])) {
+// --- Requiere conexión
+require 'conexion.php';
+
+// --- Validar datos
+$usuario = trim($_POST['usuario'] ?? '');
+$contrasena = $_POST['inputPassword'] ?? '';
+error_log("Credenciales recibidas: usuario=$usuario");
+
+if (empty($usuario) || empty($contrasena)) {
     sendJsonResponse(false, 'Por favor, complete todos los campos');
 }
 
 try {
-    $usuario = trim($_POST['usuario']);
-    $contrasena = $_POST['inputPassword'];
-
-    if (!isset($pdo)) {
-        throw new Exception('Error de conexión a la base de datos');
-    }
-
-    // Consulta incluyendo el estado
-    $sql = "SELECT u.idusuarios, c.user, c.contrasena, c.estado, tu.rol 
-            FROM credenciales c
-            JOIN usuarios u ON c.idcredenciales = u.credenciales
-            JOIN tipo_usuario tu ON u.tipo_usuario = tu.idtipo_usuario
-            WHERE c.user = :user";
-
-    $stmt = $pdo->prepare($sql);
+    // --- Consulta de usuario
+    $stmt = $pdo->prepare("
+        SELECT u.idusuarios, c.user, c.contrasena, c.estado, tu.rol
+        FROM credenciales c
+        JOIN usuarios u ON c.idcredenciales = u.credenciales
+        JOIN tipo_usuario tu ON u.tipo_usuario = tu.idtipo_usuario
+        WHERE c.user = :user
+    ");
     $stmt->execute(['user' => $usuario]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$result) {
+        http_response_code(400);
         sendJsonResponse(false, 'Usuario no encontrado');
     }
 
-    // Validar si el usuario está inactivo
     if ((int)$result['estado'] === 0) {
+        http_response_code(401);
         sendJsonResponse(false, 'Este usuario está inactivo. Contacte al administrador.');
     }
 
     if (!password_verify($contrasena, $result['contrasena'])) {
+        http_response_code(401);
         sendJsonResponse(false, 'Contraseña incorrecta');
     }
 
-    // Login exitoso
-    $_SESSION['idusuarios'] = $result['idusuarios'];
-    $_SESSION['user'] = $usuario;
+    // --- Guardar sesión
+    $_SESSION['usuario'] = $usuario;
     $_SESSION['rol'] = $result['rol'];
+    $_SESSION['idusuarios'] = $result['idusuarios'];
 
     if ($result['rol'] === 'Docente') {
         $_SESSION['docente_id'] = $result['idusuarios'];
     }
 
-    // Actualizar último acceso
-    $updateStmt = $pdo->prepare("UPDATE credenciales SET ultimoacceso = NOW() WHERE user = :user");
-    $updateStmt->execute(['user' => $usuario]);
+    error_log("Session ID: " . session_id());
+    error_log("Sesión guardada: " . print_r($_SESSION, true));
 
+    // --- Actualizar último acceso
+    $pdo->prepare("UPDATE credenciales SET ultimoacceso = NOW() WHERE user = :user")
+        ->execute(['user' => $usuario]);
+
+    // --- Redirección según rol
     $redirect_url = match($result['rol']) {
         'Administrador' => '/admin',
         'Estudiante SS' => '/estudiante',
@@ -149,9 +172,11 @@ try {
     ]);
 
 } catch (PDOException $e) {
-    error_log("Error de BD: " . $e->getMessage());
+    http_response_code(500);
+    error_log("Error de base de datos: " . $e->getMessage());
     sendJsonResponse(false, 'Error en la base de datos. Por favor, intente más tarde.');
 } catch (Exception $e) {
+    http_response_code(500);
     error_log("Error general: " . $e->getMessage());
     sendJsonResponse(false, 'Error en el servidor. Por favor, intente más tarde.');
 }

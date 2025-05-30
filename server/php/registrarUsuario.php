@@ -132,8 +132,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
  * )
  */
 
-// Conexión a la base de datos
 require_once 'conexion.php';
+require 'cors.php';
+
 
 // Inicializar variables de respuesta y control de transacción
 $response = ['success' => false, 'message' => ''];
