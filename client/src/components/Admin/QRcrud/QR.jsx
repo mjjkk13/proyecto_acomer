@@ -7,7 +7,7 @@ import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 const QR = () => {
   const [qrCodes, setQrCodes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Puedes ajustar este valor
+  const itemsPerPage = 5;
   const API_URL = 'http://localhost/proyecto_acomer/server/php/qrcodes';
 
   useEffect(() => {
@@ -16,11 +16,23 @@ const QR = () => {
 
   const loadQRCodes = async () => {
     try {
-      const data = await getQRCodes();
+      const response = await getQRCodes();
+      console.log('Respuesta getQRCodes:', response);
+
+      // Si la respuesta es un arreglo, úsalo directamente, si es objeto con data, úsalo ahí
+      const data = Array.isArray(response) ? response : response.data || [];
+
+      if (!Array.isArray(data)) {
+        throw new Error('Los datos recibidos no son un arreglo');
+      }
+
       const fullURLs = data.map((codigo) => ({
-        ...codigo,
-        imagen: `${API_URL}/${codigo.imagen}`,
+        id: codigo.idqrgenerados,
+        nombrecurso: codigo.nombrecurso || 'Sin curso asignado',
+        fecha_hora: codigo.fechageneracion,
+        imagen: codigo.codigoqr ? `${API_URL}/${codigo.codigoqr}` : null,
       }));
+
       setQrCodes(fullURLs);
     } catch (error) {
       console.error('Error al cargar QR:', error);
@@ -78,24 +90,26 @@ const QR = () => {
             {currentItems.map((codigo, index) => (
               <tr
                 key={codigo.id}
-                className={`${
-                  index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                } hover:bg-gray-200`}
+                className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-200`}
               >
-                <td className="px-4 py-2">{codigo.fecha_hora}</td>
+                <td className="px-4 py-2">
+                  {new Date(codigo.fecha_hora).toLocaleDateString()}{' '}
+                  {new Date(codigo.fecha_hora).toLocaleTimeString()}
+                </td>
                 <td className="px-4 py-2">{codigo.nombrecurso}</td>
                 <td className="px-4 py-2">
                   {codigo.imagen ? (
                     <img
                       src={codigo.imagen}
                       alt="QR"
-                      className="w-16 rounded-lg"
+                      className="w-16 h-16 object-contain rounded-lg"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '';
+                      }}
                     />
                   ) : (
-                    <FontAwesomeIcon
-                      icon={faQrcode}
-                      className="text-2xl text-gray-600"
-                    />
+                    <FontAwesomeIcon icon={faQrcode} className="text-2xl text-gray-600" />
                   )}
                 </td>
                 <td className="px-4 py-2">

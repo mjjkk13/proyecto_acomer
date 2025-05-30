@@ -67,29 +67,25 @@ const fetchData = async (payload) => {
       {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // autenticación
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: new URLSearchParams(payload),
-        credentials: 'include' // cookies
+        body: JSON.stringify(payload),
+        credentials: 'include'
       }
     );
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-    }
-
     const result = await response.json();
     
-    
-    if (payload.action === 'read') return result;
-    
-    // Para otras acciones validar la respuesta del servidor
-    if (!result.success) throw new Error(result.error || 'Acción fallida');
+    if (!response.ok) {
+      throw new Error(result.error || `HTTP error! status: ${response.status}`);
+    }
+
+    if (payload.action === 'read') {
+      return result.data || [];
+    }
     
     return result;
-
   } catch (error) {
     console.error('Error en fetchData:', error);
     throw error;

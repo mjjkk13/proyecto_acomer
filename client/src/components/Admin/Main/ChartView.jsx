@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import { motion } from "framer-motion";
 import { fetchStatistics } from "../../services/statisticsService";
+import { handleDownloadExcel } from "../../services/excelService";
 
 ChartJS.register(
   CategoryScale,
@@ -195,6 +196,13 @@ const ChartView = () => {
         </motion.div>
       )}
     </div>
+    <button
+      onClick={handleDownloadExcel}
+      className="mt-6 px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded shadow"
+    >
+      Descargar Excel
+    </button>
+
   </div>
 );
 

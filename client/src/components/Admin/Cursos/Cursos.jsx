@@ -5,13 +5,14 @@ import AddCursos from './AddCursos';
 const Cursos = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-    <Navbar />
-    <main className="flex-1 items-center">
-       <AddCursos />
-    </main>
-    <Footer />
-  </div>
-);
+      <Navbar />
+      <main className="flex-1 items-center">
+        <div className="my-8" />
+        <AddCursos />
+      </main>
+      <Footer />
+    </div>
+  );
 };
 
 

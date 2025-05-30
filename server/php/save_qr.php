@@ -142,16 +142,6 @@ try {
     $stmtUpdate = $pdo->prepare($sqlUpdate);
     $stmtUpdate->execute([':idestudiante_ss' => $idestudiante_ss]);
 
-    // Registrar estadística (formato correcto para campo tipo DATE)
-    $fecha_actual = date('Y-m-d');
-    $sqlEstadisticas = "INSERT INTO estadisticasqr 
-                       (fecha, estudiantes_q_asistieron) 
-                       VALUES (:fecha, :cantidad)";
-    $stmtEstadisticas = $pdo->prepare($sqlEstadisticas);
-    $stmtEstadisticas->execute([
-        ':fecha' => $fecha_actual,
-        ':cantidad' => $cantidad_estudiantes
-    ]);
 
     echo json_encode([
         'status' => 'success',

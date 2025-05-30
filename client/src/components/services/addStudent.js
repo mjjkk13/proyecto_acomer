@@ -5,7 +5,7 @@ const API_URL = "http://localhost/proyecto_acomer/server/php"; // Ajusta según 
  */
 export const getCourses = async () => {
     try {
-        const response = await fetch(`${API_URL}/obtenerCursos.php`);
+        const response = await fetch(`${API_URL}/cargarCursos.php`);
         const data = await response.json();
         
         if (Array.isArray(data)) {

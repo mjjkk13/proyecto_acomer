@@ -11,21 +11,16 @@ const UploadStudents = () => {
 
     useEffect(() => {
         getCourses().then((response) => {
-            console.log("✅ Respuesta completa del backend:", response);
             
             if (response.success && Array.isArray(response.data)) {
-                console.log("📌 Cursos obtenidos:", response.data);
                 setCourses(response.data);
             } else if (Array.isArray(response)) { 
                 // Si el backend devuelve un array directamente
-                console.warn("⚠️ Respuesta inesperada del backend, ajustando datos...");
                 setCourses(response); 
             } else {
-                console.error("❌ Estructura inesperada en la respuesta del backend:", response);
                 setCourses([]);
             }
-        }).catch((error) => {
-            console.error("❌ Error obteniendo los cursos:", error);
+        }).catch(() => {
             setCourses([]);
         });
     }, []);

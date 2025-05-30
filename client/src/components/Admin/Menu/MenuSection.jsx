@@ -6,6 +6,7 @@ import desayunoImg from '../../../img/desayuno.png';
 import almuerzoImg from '../../../img/almuerzo.png';
 import refrigerioImg from '../../../img/refrigerio-saludable.png';
 import { fetchMenus, addMenu, fetchMenuByType, updateMenu, deleteMenu } from '../../services/menuService';
+import { useCallback } from 'react';
 
 const menuImages = {
   desayuno: desayunoImg,
@@ -62,12 +63,7 @@ const showData = (title, data, handleEdit, handleDelete) => {
 const MenuSection = () => {
   const [setGroupedMenus] = useState({});
 
-
-  useEffect(() => {
-    loadMenus();
-  }, []);
-
-  const loadMenus = async () => {
+  const loadMenus = useCallback(async () => {
     try {
       const data = await fetchMenus();
       const grouped = data.reduce((acc, menu) => {
@@ -80,7 +76,11 @@ const MenuSection = () => {
     } catch (error) {
       console.error('Error loading menus:', error);
     }
-  };
+  }, [setGroupedMenus]);
+
+  useEffect(() => {
+    loadMenus();
+  }, [loadMenus]);
 
   const handleBoxClick = async (mealType) => {
     try {

@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 import desayunoImg from '../../../img/desayuno.png';
 import almuerzoImg from '../../../img/almuerzo.png';
 import refrigerioImg from '../../../img/refrigerio-saludable.png';
-import { fetchMenus, fetchMenuByType } from '../../services/menuService';
+import { fetchMenuByType } from '../../services/menuService';
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -14,6 +14,15 @@ const menuImages = {
 };
 
 const showData = (title, data) => {
+  if (!data || data.length === 0) {
+    Swal.fire({
+      title: title,
+      text: 'No hay datos disponibles para este menú',
+      icon: 'info'
+    });
+    return;
+  }
+
   Swal.fire({
     title: title,
     html: `
@@ -44,28 +53,46 @@ const showData = (title, data) => {
 };
 
 const MenuSection = () => {
-
-  useEffect(() => {
-    loadMenus();
-  }, []);
-
-  const loadMenus = async () => {
-    try {
-      await fetchMenus();
-    } catch (error) {
-      console.error('Error loading menus:', error);
-    }
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleBoxClick = async (mealType) => {
     try {
+      setLoading(true);
+      setError(null);
       const data = await fetchMenuByType(mealType);
       showData(`${capitalize(mealType)}`, data);
-    } catch (error) {
-      console.error('Error fetching menu by type:', error);
+    } catch (err) {
+      console.error('Error fetching menu by type:', err);
+      setError('Error al cargar el menú');
       Swal.fire('Error', 'No se pudo cargar el menú.', 'error');
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto my-4 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+        <p className="mt-2">Cargando menú...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto my-4 text-center text-red-500">
+        <p>{error}</p>
+        <button 
+          onClick={() => setError(null)}
+          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Volver
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto my-4">
@@ -93,5 +120,3 @@ const MenuSection = () => {
 };
 
 export default MenuSection;
-
-

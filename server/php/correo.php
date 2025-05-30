@@ -1,13 +1,27 @@
 <?php
+// 1. Configuración CORS - Debe ser lo primero en el archivo
+header('Access-Control-Allow-Origin: http://localhost:5173');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Credentials: true');
+header('Content-Type: application/json; charset=utf-8');
+
+// 2. Manejar preflight (OPTIONS) request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
+// 3. Cargar dependencias y configuración
 require 'vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Cargar variables de entorno
+// 4. Cargar variables de entorno
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-// Validar variables de entorno requeridas
+// 5. Validar variables de entorno requeridas
 $requiredEnvVars = ['EMAIL_USER', 'EMAIL_PASSWORD'];
 foreach ($requiredEnvVars as $var) {
     if (!isset($_ENV[$var])) {
@@ -17,12 +31,12 @@ foreach ($requiredEnvVars as $var) {
     }
 }
 
-// Función para validar email
+// 6. Función para validar email
 function isValidEmail($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
-// Función para crear plantilla HTML
+// 7. Función para crear plantilla HTML
 function createCredentialsTemplate($usuario, $contrasena) {
     return '
     <!DOCTYPE html>
@@ -51,7 +65,7 @@ function createCredentialsTemplate($usuario, $contrasena) {
     ';
 }
 
-// Función principal para enviar credenciales
+// 8. Función principal para enviar credenciales
 function enviarCredenciales($destinatario, $usuario, $contrasena) {
     if (!isValidEmail($destinatario)) {
         return ['success' => false, 'error' => 'Formato de correo electrónico inválido'];
@@ -100,12 +114,18 @@ function enviarCredenciales($destinatario, $usuario, $contrasena) {
     }
 }
 
-// Manejo de la solicitud POST
+// 9. Manejo de la solicitud POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
-    
     // Obtener datos del cuerpo de la solicitud
-    $data = json_decode(file_get_contents('php://input'), true);
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
+    
+    // Validar si el JSON se decodificó correctamente
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Formato JSON inválido']);
+        exit;
+    }
     
     // Validación básica
     if (empty($data['destinatario']) || empty($data['usuario']) || empty($data['contrasena'])) {
@@ -129,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// Si se accede directamente al archivo sin POST
+// 10. Si se accede directamente al archivo sin POST
 http_response_code(405);
 echo json_encode(['success' => false, 'message' => 'Método no permitido']);
 ?>

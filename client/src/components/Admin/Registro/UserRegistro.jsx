@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { usuarioService, mailService } from '../../services/mailService';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,12 +15,10 @@ const UserRegistro = () => {
     documento: '',
     tipoDocumento: '',
     rol: '',
-    user: '',
-    cursos: ''
+    user: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [cursos, setCursos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [touchedFields, setTouchedFields] = useState({});
@@ -66,48 +64,9 @@ const UserRegistro = () => {
       newErrors.correo = 'Correo inválido';
     }
 
-    if (formData.rol === 'Docente' && !formData.cursos) {
-      newErrors.cursos = 'Seleccione un curso';
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
-  useEffect(() => {
-    const obtenerCursos = async () => {
-      try {
-        const response = await usuarioService.obtenerCursos();
-        let cursosData = [];
-
-        if (response.data?.success) {
-          cursosData = response.data.data || [];
-        } else if (Array.isArray(response.data)) {
-          cursosData = response.data;
-        } else if (Array.isArray(response)) {
-          cursosData = response;
-        }
-
-        const cursosNormalizados = cursosData.map(curso => ({
-          id: curso.id,
-          nombre: curso.nombre
-        }));
-
-        setCursos(cursosNormalizados);
-
-      } catch (error) {
-        console.error('Error obteniendo cursos:', error);
-        Swal.fire({
-          title: 'Error',
-          text: 'No se pudieron cargar los cursos',
-          icon: 'error',
-          confirmButtonColor: '#ef4444'
-        });
-      }
-    };
-    
-    obtenerCursos();
-  }, []);
 
   const handleBlur = (e) => {
     const { name } = e.target;
@@ -176,8 +135,7 @@ const UserRegistro = () => {
         documento: '',
         tipoDocumento: '',
         rol: '',
-        user: '',
-        cursos: ''
+        user: ''
       });
       setTouchedFields({});
 
@@ -413,36 +371,6 @@ const UserRegistro = () => {
                   <p className="mt-1 text-xs text-red-500">{errors.rol}</p>
                 )}
               </div>
-
-              {/* Cursos (solo para Docentes) */}
-              {formData.rol === 'Docente' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">
-                    Cursos
-                  </label>
-                  <select
-                    name="cursos"
-                    value={formData.cursos}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={getSelectClasses('cursos')}
-                  >
-                    <option value="" disabled className="text-gray-400">Seleccione...</option>
-                    {cursos.map(curso => (
-                      <option 
-                        key={curso.id} 
-                        value={curso.id}
-                        className="text-gray-700"
-                      >
-                        {curso.nombre}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.cursos && (
-                    <p className="mt-1 text-xs text-red-500">{errors.cursos}</p>
-                  )}
-                </div>
-              )}
             </div>
           </div>
 

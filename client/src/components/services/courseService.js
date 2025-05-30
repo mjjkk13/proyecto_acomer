@@ -2,51 +2,64 @@ const BASE_URL = 'http://localhost/proyecto_acomer/server/php/Cursos.php';
 
 async function fetchData(action, method = 'GET', data = null) {
   try {
-    const options = { method, headers: { 'Content-Type': 'application/json' } };
-    const url = `${BASE_URL}?action=${action}`;
-    if (method !== 'GET' && data) {
+    const options = { 
+      method, 
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include' // Para manejar sesiones/cookies si es necesario
+    };
+    
+    let url = `${BASE_URL}?action=${action}`;
+    
+    // Para peticiones GET con datos, añadir parámetros a la URL
+    if (method === 'GET' && data) {
+      const params = new URLSearchParams(data);
+      url += `&${params.toString()}`;
+    } else if (method !== 'GET' && data) {
       options.body = JSON.stringify(data);
     }
 
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      if (response.status === 500 && errorText.includes('SQLSTATE[23000]')) {
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.error || await response.text();
+      
+      if (response.status === 500 && errorMessage.includes('SQLSTATE[23000]')) {
         throw new Error('No se puede eliminar el curso porque está siendo utilizado en otra tabla.');
       }
-      throw new Error(`Error HTTP ${response.status}: ${errorText}`);
+      throw new Error(errorMessage || `Error HTTP ${response.status}`);
     }
 
-    const result = await response.json();
-
-    // Notificar cambios al front si la acción no es de solo lectura
-    if (['create', 'update', 'delete'].includes(action)) {
-      document.dispatchEvent(new CustomEvent('dataUpdated', { detail: { action, result } }));
-    }
-
-    return result;
+    return await response.json();
   } catch (error) {
     console.error(`Error en ${action}:`, error);
-    return { error: `No se pudo completar la acción (${action})` };
+    throw error; // Re-lanzamos el error para manejo específico en los componentes
   }
 }
 
 const courseService = {
   getCourses: () => fetchData('read'),
-  getDocentes: () => fetchData('docentes'),
+  
+  // Cambiado de 'docentes' a 'get_docentes' para coincidir con el backend
+  getDocentes: () => fetchData('get_docentes'),
 
   addCourse: (nombreCurso, idDocente) =>
-    fetchData('create', 'POST', { nombrecurso: nombreCurso, docente_id: idDocente }),
+    fetchData('create', 'POST', { 
+      nombrecurso: nombreCurso, 
+      docente_id: idDocente 
+    }),
 
   updateCourse: (idcursos, nombreCurso, idDocente) =>
-    fetchData('update', 'POST', { idcursos: idcursos, nombrecurso: nombreCurso, docente_id: idDocente }),
+    fetchData('update', 'POST', { 
+      idcursos: idcursos, 
+      nombrecurso: nombreCurso, 
+      docente_id: idDocente 
+    }),
 
   deleteCourse: (idcursos) =>
-    fetchData('delete', 'POST', { idcurso: idcursos }).catch((error) => {
-      console.error('Error al borrar el curso:', error.message);
-      return { error: error.message };
-    }),
+    fetchData('delete', 'POST', { 
+      idcurso: idcursos 
+    })
 };
 
 export default courseService;
