@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost/proyecto_acomer/server/php';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const getQRCodes = async () => {
   try {

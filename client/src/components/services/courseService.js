@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost/proyecto_acomer/server/php/Cursos.php';
+const API_URL = import.meta.env.VITE_API_URL;
 
 async function fetchData(action, method = 'GET', data = null) {
   try {
@@ -20,13 +20,7 @@ async function fetchData(action, method = 'GET', data = null) {
       throw new Error(errorMessage || `Error HTTP ${response.status}`);
     }
 
-    const result = await response.json();
-
-    if (['create', 'update', 'delete'].includes(action)) {
-      document.dispatchEvent(new CustomEvent('dataUpdated', { detail: { action, result } }));
-    }
-
-    return result;
+    return await response.json();
   } catch (error) {
     console.error(`Error en ${action}:`, error);
     throw error; // Re-lanzamos el error para manejo específico en los componentes
@@ -53,3 +47,6 @@ const courseService = {
       console.error('Error al borrar el curso:', error.message);
       return { error: error.message };
     }),
+};
+
+export default courseService;

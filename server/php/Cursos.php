@@ -1,19 +1,20 @@
 <?php
 session_start();
 require_once 'conexion.php';
+require 'cors.php';
 
 // Configuración de CORS y headers
 header('Content-Type: application/json; charset=utf-8');
+<<<<<<< HEAD
 header('Access-Control-Allow-Origin: http://localhost:5173');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Access-Control-Allow-Credentials: true');
+=======
+header('Cache-Control: public, max-age=300');
+>>>>>>> ea09f631d3af38e55533cdf4a90a6281cab1a512
 
-// Manejo de solicitud OPTIONS para CORS
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit();
-}
+
 
 // Captura de datos JSON si existen
 if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {

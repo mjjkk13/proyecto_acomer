@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'http://localhost/proyecto_acomer/server/php';
+export const API_BASE_URL = 'https://backend-acomer.onrender.com';
