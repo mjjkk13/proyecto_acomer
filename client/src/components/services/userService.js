@@ -14,12 +14,13 @@ const parseResponse = async (response) => {
         throw new Error('Payload inválido');
       }
   
-      const response = await fetch('http://localhost/proyecto_acomer/server/php/Usuarios.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        credentials: 'include'
-      });
+     const response = await fetch(`${import.meta.env.VITE_API_URL}/Usuarios.php`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+  credentials: 'include'
+});
+
   
       const data = await parseResponse(response);
   

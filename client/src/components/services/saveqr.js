@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/proyecto_acomer/server/php/save_qr.php';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const saveQRCode = async (qrCode) => {
   try {

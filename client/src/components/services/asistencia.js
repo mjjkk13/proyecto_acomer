@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/proyecto_acomer/server/php'; // Ajusta esta ruta según tu config
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const getCursosDocente = async () => {
   try {

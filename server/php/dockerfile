@@ -1,0 +1,28 @@
+# server/php/dockerfile
+
+FROM php:8.2-apache
+
+# Instala dependencias necesarias para PHP
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install pdo pdo_mysql
+
+# Activa el módulo rewrite de Apache (útil para muchas APIs y frameworks)
+RUN a2enmod rewrite
+
+# Establece la carpeta del documento raíz
+ENV APACHE_DOCUMENT_ROOT /var/www/html
+
+# Copia todo el contenido de tu backend al directorio del servidor
+COPY . /var/www/html/
+
+# Asegura los permisos adecuados
+RUN chown -R www-data:www-data /var/www/html
+
+# Expone el puerto 80 (HTTP)
+EXPOSE 80
