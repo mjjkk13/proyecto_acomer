@@ -1,22 +1,16 @@
 <?php
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-<<<<<<< HEAD
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: http://localhost:5173');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+require 'cors.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
-=======
 require 'cors.php';
->>>>>>> ea09f631d3af38e55533cdf4a90a6281cab1a512
 
 if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     http_response_code(405);

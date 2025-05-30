@@ -1,21 +1,15 @@
 <?php
-<<<<<<< HEAD
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: http://localhost:5173');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Credentials: true');
+
+require 'cors.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 
-=======
+
 // ===============================
 // ENCABEZADOS PARA API JSON + CORS
 // ===============================
-require 'cors.php';
->>>>>>> ea09f631d3af38e55533cdf4a90a6281cab1a512
 require_once 'conexion.php';
 
 function getInputData() {

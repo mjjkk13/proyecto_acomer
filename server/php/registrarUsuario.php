@@ -121,7 +121,6 @@
  * )
  */
 
-// Conexión a la base de datos
 require_once 'conexion.php';
 require 'cors.php';
 

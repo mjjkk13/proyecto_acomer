@@ -15,6 +15,50 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import PropTypes from "prop-types";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const menuItems = [
+  { to: "/admin", icon: faChartBar, label: "Consultar Estadísticas" },
+  { to: "/admin/codigos-generados", icon: faListAlt, label: "QR Generados" },
+  { to: "/admin/gestionar-menu", icon: faUtensils, label: "Gestionar Menú" },
+  { to: "/admin/gestionar-usuarios", icon: faUserPlus, label: "Gestionar Usuarios" },
+  { to: "/admin/registro-usuarios", icon: faUserEdit, label: "Registrar Usuarios" },
+  { to: "/admin/cursos", icon: faBook, label: "Cursos" },
+  { to: "/admin/agregar-alumnos", icon: faSchool, label: "Agregar Alumnos" },
+  { to: "/admin/perfil", icon: faUser, label: "Mi Perfil" },
+];
+
+const MenuList = ({ onClickItem }) => (
+  <ul>
+    {menuItems.map(({ to, icon, label }) => (
+      <li key={label}>
+        <Link
+          to={to}
+          className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center"
+          onClick={onClickItem}
+        >
+          <FontAwesomeIcon icon={icon} className="mr-2" />
+          {label}
+        </Link>
+      </li>
+    ))}
+    <li>
+      <button
+        onClick={onClickItem}
+        className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
+      >
+        <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+        Cerrar Sesión
+      </button>
+    </li>
+  </ul>
+);
+
+MenuList.propTypes = {
+  onClickItem: PropTypes.func.isRequired,
+};
 
 const API_URL = import.meta.env.VITE_API_URL;
 

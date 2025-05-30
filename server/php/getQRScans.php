@@ -28,9 +28,8 @@
  *     )
  * )
  */
-require 'cors.php';
-
 require_once 'conexion.php';
+require 'cors.php';
 
 try {
     $sql = "SELECT fecha_escaneo, qr_code FROM qrescaneados ORDER BY fecha_escaneo DESC";

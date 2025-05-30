@@ -1,22 +1,16 @@
 <?php
 session_start();
 header('Content-Type: application/json; charset=utf-8');
-<<<<<<< HEAD
-header('Access-Control-Allow-Origin: http://localhost:5173');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Cache-Control');
-header('Access-Control-Allow-Credentials: true');
+header('Cache-Control: public, max-age=300');
+
+require 'cors.php';
+require_once 'conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-=======
-header('Cache-Control: public, max-age=300');
->>>>>>> ea09f631d3af38e55533cdf4a90a6281cab1a512
 
-require 'cors.php';
-require_once 'conexion.php';
 
 try {
     if (!isset($_SESSION['idusuarios']) || !isset($_SESSION['user']) || !isset($_SESSION['rol'])) {

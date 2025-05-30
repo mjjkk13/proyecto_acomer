@@ -1,11 +1,7 @@
 <?php
-/**
- * @OA\Info(
- *     title="API de Registro de Usuarios",
- *     version="1.0.0",
- *     description="API para registrar nuevos usuarios en el sistema.",
- *     @OA\Contact(
- *         email="**/
+// ===============================
+// CABECERAS PARA RESPUESTAS JSON Y CORS
+// ===============================
 require 'cors.php';
 // ===============================
 // RESPUESTA A PETICIONES OPTIONS (preflight)

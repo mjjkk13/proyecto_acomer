@@ -74,8 +74,10 @@ session_start();
 require_once 'conexion.php';
 require 'cors.php';
 
-header('Content-Type: application/json; charset=utf-8');
-// Verificar si la sesión está iniciada
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
 if (!isset($_SESSION['idusuarios'])) {
     echo json_encode([
         'status' => 'error',

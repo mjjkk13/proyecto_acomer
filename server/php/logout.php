@@ -27,7 +27,6 @@
 
 // Asegurar que la respuesta sea siempre JSON
 require 'cors.php';
-
 session_start();
 session_destroy();
 

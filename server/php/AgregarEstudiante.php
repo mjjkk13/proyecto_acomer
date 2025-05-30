@@ -52,6 +52,7 @@ header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 include 'conexion.php';
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents("php://input"), true);
 
