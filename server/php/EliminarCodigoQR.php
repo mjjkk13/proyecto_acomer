@@ -10,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
-require 'cors.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     http_response_code(405);
@@ -27,6 +26,7 @@ if (!isset($_GET['idqrgenerados'])) {
 $id = intval($_GET['idqrgenerados']);
 
 require 'conexion.php';
+$pdo = getPDO(); 
 
 if (!isset($pdo)) {
     http_response_code(500);

@@ -4,6 +4,7 @@ header('Cache-Control: public, max-age=300');
 
 require 'cors.php';
 require_once 'conexion.php';
+$pdo = getPDO(); 
 // ===============================
 // RESPUESTA A PETICIONES OPTIONS (preflight)
 // ===============================

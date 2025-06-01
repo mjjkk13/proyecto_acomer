@@ -10,7 +10,7 @@ require 'cors.php';
 
 session_start();
 
-
+$pdo = getPDO(); 
 date_default_timezone_set('America/Bogota');
 
 // Validar sesión

@@ -12,7 +12,7 @@ require 'cors.php';
 // CONEXIÓN A LA BASE DE DATOS
 // ===============================
 require_once 'conexion.php';
-
+$pdo = getPDO(); 
 // ===============================
 // ESTRUCTURA DE RESPUESTA
 // ===============================

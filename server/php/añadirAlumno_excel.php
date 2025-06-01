@@ -67,7 +67,7 @@ header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 require 'vendor/autoload.php';
 require 'conexion.php'; // Usa la variable $pdo para la conexión
-
+$pdo = getPDO(); 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_POST['courseId'])) {

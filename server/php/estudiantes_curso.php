@@ -50,7 +50,7 @@
  */
 require_once 'conexion.php';
 require 'cors.php';
-
+$pdo = getPDO(); 
 if (!isset($_GET['curso_id'])) {
     echo json_encode([
         'status' => 'error',

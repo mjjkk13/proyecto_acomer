@@ -73,7 +73,7 @@
 session_start();
 require_once 'conexion.php';
 require 'cors.php';
-
+$pdo = getPDO(); 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }

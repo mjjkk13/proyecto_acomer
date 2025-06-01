@@ -5,7 +5,7 @@ header('Cache-Control: public, max-age=300');
 
 require 'cors.php';
 require_once 'conexion.php';
-
+$pdo = getPDO(); 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();

@@ -61,6 +61,7 @@
  */
 require 'cors.php';
 require_once 'conexion.php';
+$pdo = getPDO(); 
 
 try {
     // Estadísticas diarias

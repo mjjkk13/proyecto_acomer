@@ -123,7 +123,7 @@
 
 require_once 'conexion.php';
 require 'cors.php';
-
+$pdo = getPDO(); 
 // Inicializar variables de respuesta y control de transacción
 $response = ['success' => false, 'message' => ''];
 $transactionStarted = false;

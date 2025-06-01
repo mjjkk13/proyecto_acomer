@@ -130,7 +130,7 @@
 session_start();  // Iniciar la sesión
 require 'cors.php';
 require_once __DIR__ . '/conexion.php';
-
+$pdo = getPDO(); 
 if (!isset($pdo)) {
     echo json_encode(['status' => 'error', 'message' => 'La conexión a la base de datos no se ha establecido']);
     exit();

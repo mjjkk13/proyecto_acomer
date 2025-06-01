@@ -1,7 +1,7 @@
 <?php
 
 require 'cors.php';
-
+$pdo = getPDO(); 
 require 'vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;

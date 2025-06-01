@@ -2,6 +2,7 @@
 session_start();
 require_once 'conexion.php';
 require 'cors.php';
+$pdo = getPDO(); 
 /**
  * @OA\Get(
  *     path="/getCursos",

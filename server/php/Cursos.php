@@ -7,7 +7,7 @@ require 'cors.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: public, max-age=300');
 
-
+$pdo = getPDO(); 
 
 // Captura de datos JSON si existen
 if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {
