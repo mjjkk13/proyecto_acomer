@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/conexion.php';
+$pdo = getPDO(); // ← Aquí se crea la conexión con PDO
+
 /**
  * @OA\Post(
  *     path="/login",
