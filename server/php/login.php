@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/conexion.php';
+require_once 'conexion.php';
 $pdo = getPDO(); // ← Aquí se crea la conexión con PDO
 
 /**
