@@ -3,7 +3,7 @@
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
-    'domain' => 'acomer.onrender.com', // cámbialo por tu dominio real
+    'domain' => 'acomer.onrender.com', 
     'secure' => true,
     'httponly' => true,
     'samesite' => 'None',
