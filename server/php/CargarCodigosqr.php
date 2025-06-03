@@ -1,7 +1,5 @@
 <?php
 session_start();
-header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: public, max-age=300');
 
 require 'cors.php';
 require_once 'conexion.php';
