@@ -1,6 +1,5 @@
 <?php
-
-require 'cors.php';
+require 'conexion.php';
 $pdo = getPDO(); 
 require 'vendor/autoload.php';
 
@@ -133,7 +132,10 @@ try {
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment; filename="estadisticas_por_horario.xlsx"');
     header('Cache-Control: max-age=0');
-    
+    if (ob_get_length()) {
+    ob_end_clean();
+}
+
     $writer->save('php://output');
     exit;
 

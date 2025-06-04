@@ -173,6 +173,13 @@ const Navbar = () => {
               ✖
             </button>
             <MenuList onClickItem={closeMenus} />
+            <button
+              onClick={handleLogoutAndClose}
+              className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
+            >
+              <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+              Cerrar Sesión
+            </button>
           </nav>
         </div>
       )}
