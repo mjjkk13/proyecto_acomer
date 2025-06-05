@@ -3,10 +3,8 @@
 // CABECERAS PARA RESPUESTAS JSON Y CORS
 // ===============================
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: http://localhost:5173');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Credentials: true');
+require_once 'cors.php';
+
 header('Cache-Control: public, max-age=300');
 
 // ===============================

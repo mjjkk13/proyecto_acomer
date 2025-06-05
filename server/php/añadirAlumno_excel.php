@@ -62,11 +62,8 @@
  * )
  */
 
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: http://localhost:5173'); 
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS'); 
-header('Access-Control-Allow-Headers: Content-Type, Authorization'); 
-header('Access-Control-Allow-Credentials: true'); 
+require_once 'cors.php';
+
 
 require 'vendor/autoload.php';
 require 'conexion.php'; // Usa la variable $pdo para la conexión

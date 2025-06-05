@@ -2,16 +2,8 @@
 // Manejo de CORS - debe ir antes de cualquier salida
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
-if ($origin === 'http://localhost:5173') {
-    header("Access-Control-Allow-Origin: $origin");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization');
-} else {
-    // Opcional: si quieres bloquear otros orígenes, no pongas nada aquí o
-    // puedes permitir uno genérico (solo para desarrollo)
-    // header("Access-Control-Allow-Origin: *");
-}
+require_once 'cors.php';
+
 
 // Responder a la petición OPTIONS de preflight y terminar aquí
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
