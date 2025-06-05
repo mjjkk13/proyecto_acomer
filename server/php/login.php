@@ -1,17 +1,8 @@
 <?php
 
 // --- Lista de orígenes permitidos
-$allowed_origins = [
-    'http://localhost:5173',
-    'https://acomer.onrender.com'
-];
-
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-
-if (in_array($origin, $allowed_origins)) {
 require_once 'cors.php';
 
-}
 
 // --- Manejo de preflight OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
