@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require 'conexion.php';
+require 'cors.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
