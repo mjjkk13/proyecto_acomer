@@ -65,19 +65,14 @@
  * )
  */
 
-$host = getenv('MYSQL_HOST') ?: 'localhost';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1'; // CAMBIADO: localhost → 127.0.0.1
 $db = getenv('MYSQL_DATABASE') ?: 'acomer';
 $user = getenv('MYSQL_USER') ?: 'root';
 $pass = getenv('MYSQL_PASSWORD') ?: '';
 $charset = 'utf8mb4';
+$port = getenv('MYSQL_PORT') ?: '3306'; // Asegura puerto por defecto
 
-$port = getenv('MYSQL_PORT');
-
-$dsn = "mysql:host=$host";
-if ($port) {
-    $dsn .= ";port=$port";
-}
-$dsn .= ";dbname=$db;charset=$charset";
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -89,6 +84,12 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
-    die("Error de conexión a la base de datos");
+    http_response_code(500);
+    echo json_encode([
+        "success" => false,
+        "message" => "Error de conexión a la base de datos",
+        "error" => $e->getMessage()
+    ]);
+    exit;
 }
 ?>
