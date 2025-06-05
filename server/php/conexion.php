@@ -70,7 +70,7 @@ $db = getenv('MYSQL_DATABASE') ?: 'acomer';
 $user = getenv('MYSQL_USER') ?: 'root';
 $pass = getenv('MYSQL_PASSWORD') ?: '';
 $charset = 'utf8mb4';
-$port = getenv('MYSQL_PORT') ?: '3306'; // Asegura puerto por defecto
+$port = getenv('MYSQL_PORT') ?: '45701'; // Asegura puerto por defecto
 
 $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
