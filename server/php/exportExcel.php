@@ -6,7 +6,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 // Configuración CORS
-require_once 'cors.php';
+require 'cors.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

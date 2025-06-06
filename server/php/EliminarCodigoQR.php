@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 header('Content-Type: application/json; charset=utf-8');
-require_once 'cors.php';
+require 'cors.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

@@ -1,10 +1,7 @@
 <?php
 
 // --- Encabezados CORS obligatorios
-header("Access-Control-Allow-Origin: https://acomer.onrender.com");
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+require 'cors.php';
 
 // --- Manejo de preflight OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

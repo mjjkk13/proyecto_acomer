@@ -1,7 +1,7 @@
 <?php
 // Configuración de cabeceras para permitir CORS desde el frontend
 header('Content-Type: application/json; charset=utf-8');
-require_once 'cors.php';
+require 'cors.php';
 
 
 // Manejar preflight requests (CORS OPTIONS)

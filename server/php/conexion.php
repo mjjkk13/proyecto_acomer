@@ -65,12 +65,12 @@
  * )
  */
 
-$host = getenv('MYSQL_HOST') ?: '127.0.0.1'; // CAMBIADO: localhost → 127.0.0.1
-$db = getenv('MYSQL_DATABASE') ?: 'acomer';
-$user = getenv('MYSQL_USER') ?: 'root';
-$pass = getenv('MYSQL_PASSWORD') ?: '';
+$host = getenv('DB_HOST') ?: '127.0.0.1';
+$db = getenv('DB_NAME') ?: 'railway';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASSWORD') ?: '';
 $charset = 'utf8mb4';
-$port = getenv('MYSQL_PORT') ?: '3306'; // Asegura puerto por defecto
+$port = getenv('DB_PORT') ?: '3306';
 
 $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
@@ -82,6 +82,8 @@ $options = [
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
+    // Si quieres puedes agregar aquí un echo para saber que conectó bien:
+    // echo json_encode(["success" => true, "message" => "Conexión exitosa"]);
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
     http_response_code(500);

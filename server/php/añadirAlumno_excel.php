@@ -62,7 +62,7 @@
  * )
  */
 
-require_once 'cors.php';
+require 'cors.php';
 
 
 require 'vendor/autoload.php';

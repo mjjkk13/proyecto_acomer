@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'cors.php';
+require 'cors.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

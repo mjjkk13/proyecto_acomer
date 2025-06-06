@@ -2,7 +2,7 @@
 // Manejo de CORS - debe ir antes de cualquier salida
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
-require_once 'cors.php';
+require 'cors.php';
 
 
 // Responder a la petición OPTIONS de preflight y terminar aquí

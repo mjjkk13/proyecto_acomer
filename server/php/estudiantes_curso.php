@@ -51,7 +51,7 @@
 require_once 'conexion.php';
 
 header('Content-Type: application/json; charset=utf-8');
-require_once 'cors.php';
+require 'cors.php';
 
 
 if (!isset($_GET['curso_id'])) {

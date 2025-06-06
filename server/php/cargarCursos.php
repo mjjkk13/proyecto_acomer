@@ -3,7 +3,7 @@
 // CABECERAS PARA RESPUESTAS JSON Y CORS
 // ===============================
 header('Content-Type: application/json; charset=utf-8');
-require_once 'cors.php';
+require 'cors.php';
 header('Cache-Control: no-cache, no-store, must-revalidate');
 
 // ===============================

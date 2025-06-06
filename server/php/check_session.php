@@ -53,7 +53,7 @@
  */
 
 header('Content-Type: application/json; charset=utf-8');
-require_once 'cors.php';
+require 'cors.php';
 
 
 session_start();

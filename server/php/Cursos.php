@@ -4,7 +4,7 @@ require_once 'conexion.php';
 
 // Configuración de CORS y headers
 header('Content-Type: application/json; charset=utf-8');
-require_once 'cors.php';
+require 'cors.php';
 
 
 // Manejo de solicitud OPTIONS para CORS

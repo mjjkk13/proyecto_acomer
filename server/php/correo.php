@@ -1,6 +1,6 @@
 <?php
 // 1. Configuración CORS - Debe ser lo primero en el archivo
-require_once 'cors.php';
+require 'cors.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
