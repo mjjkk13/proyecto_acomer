@@ -9,7 +9,7 @@ const Navbar = () => {
       <a href="/">
         <img src={logo} alt="Logo" width="40" height="40" />
       </a>
-      <span className="ml-3 text-xl font-bold">A Comer</span>
+      <span className="ml-3 text-xl font-bold"><a href="/">A Comer</a></span>
       </div>
       </div>
       </nav>
