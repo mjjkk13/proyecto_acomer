@@ -5,36 +5,48 @@ require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+<<<<<<< HEAD
 // Configuración CORS
 require 'cors.php';
 
+=======
+$pdo = getPDO();
+>>>>>>> main
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
+    http_response_code(204);
     exit;
 }
 
+// Evita que se envíe contenido antes de los headers
+ob_clean();
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+header("Content-Disposition: attachment;filename=\"estadisticas.xlsx\"");
+header("Cache-Control: max-age=0");
+
 try {
     $spreadsheet = new Spreadsheet();
-    $spreadsheet->removeSheetByIndex(0); // Elimina la hoja por defecto
+    $spreadsheet->removeSheetByIndex(0); // Eliminar hoja por defecto
 
-    // Función para ejecutar consultas y crear hojas
     function crearHojaEstadisticas($pdo, $spreadsheet, $nombreHoja, $query, $headers) {
         $stmt = $pdo->prepare($query);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle($nombreHoja);
+        $sheet->setTitle(substr($nombreHoja, 0, 31)); // Máximo 31 caracteres
 
-        // Agregar encabezados
+        // Encabezados
         $col = 'A';
         foreach ($headers as $header) {
             $sheet->setCellValue($col . '1', $header);
             $col++;
         }
 
-        // Agregar datos
+        // Datos
         $row = 2;
         foreach ($data as $fila) {
             $col = 'A';
@@ -46,107 +58,42 @@ try {
         }
     }
 
-    // Consulta para estadísticas diarias
+    // Estadísticas diarias
     $queryDiario = "
         SELECT 
             DATE(fecha_escaneo) AS fecha,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '07:00:00' AND '09:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS desayuno,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '11:30:00' AND '13:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS almuerzo,
-            SUM(CASE WHEN (TIME(fecha_escaneo) NOT BETWEEN '07:00:00' AND '09:00:00') 
-                      AND (TIME(fecha_escaneo) NOT BETWEEN '11:30:00' AND '13:00:00')
-                      AND TIME(fecha_escaneo) <= '13:00:00'
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS refrigerio,
-            SUM(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)) AS total
-        FROM qrescaneados
-        WHERE TIME(fecha_escaneo) <= '13:00:00'
+            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '07:00:00' AND '10:00:00' THEN 1 ELSE 0 END) AS desayuno,
+            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '12:00:00' AND '15:00:00' THEN 1 ELSE 0 END) AS almuerzo,
+            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '18:00:00' AND '20:00:00' THEN 1 ELSE 0 END) AS cena
+        FROM escaneos
         GROUP BY DATE(fecha_escaneo)
-        ORDER BY fecha ASC
+        ORDER BY fecha ASC;
     ";
 
-    // Consulta para estadísticas semanales
-    $querySemanal = "
+    crearHojaEstadisticas($pdo, $spreadsheet, 'Estadísticas Diarias', $queryDiario, ['Fecha', 'Desayuno', 'Almuerzo', 'Cena']);
+
+    // Otra hoja de ejemplo (puedes agregar más con otras consultas)
+    $queryTotales = "
         SELECT 
-            WEEK(fecha_escaneo, 1) AS semana,
-            MONTHNAME(MIN(fecha_escaneo)) AS mes,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '07:00:00' AND '09:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS desayuno,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '11:30:00' AND '13:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS almuerzo,
-            SUM(CASE WHEN (TIME(fecha_escaneo) NOT BETWEEN '07:00:00' AND '09:00:00') 
-                      AND (TIME(fecha_escaneo) NOT BETWEEN '11:30:00' AND '13:00:00')
-                      AND TIME(fecha_escaneo) <= '13:00:00'
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS refrigerio,
-            SUM(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)) AS total
-        FROM qrescaneados
-        WHERE TIME(fecha_escaneo) <= '13:00:00'
-        GROUP BY WEEK(fecha_escaneo, 1)
-        ORDER BY MIN(fecha_escaneo) ASC
+            tipo_comida,
+            COUNT(*) AS total_servicios
+        FROM escaneos
+        GROUP BY tipo_comida;
     ";
+    crearHojaEstadisticas($pdo, $spreadsheet, 'Totales por Comida', $queryTotales, ['Tipo de comida', 'Total servicios']);
 
-    // Consulta para estadísticas mensuales
-    $queryMensual = "
-        SELECT 
-            MONTH(fecha_escaneo) AS mes,
-            MONTHNAME(MIN(fecha_escaneo)) AS nombre_mes,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '07:00:00' AND '09:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS desayuno,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '11:30:00' AND '13:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS almuerzo,
-            SUM(CASE WHEN (TIME(fecha_escaneo) NOT BETWEEN '07:00:00' AND '09:00:00') 
-                      AND (TIME(fecha_escaneo) NOT BETWEEN '11:30:00' AND '13:00:00')
-                      AND TIME(fecha_escaneo) <= '13:00:00'
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS refrigerio,
-            SUM(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)) AS total
-        FROM qrescaneados
-        WHERE TIME(fecha_escaneo) <= '13:00:00'
-        GROUP BY MONTH(fecha_escaneo)
-        ORDER BY mes ASC
-    ";
-
-    // Crear hojas con los datos
-    crearHojaEstadisticas($pdo, $spreadsheet, 'Diario', $queryDiario, 
-        ['Fecha', 'Desayuno', 'Almuerzo', 'Refrigerio', 'Total Estudiantes']);
-    
-    crearHojaEstadisticas($pdo, $spreadsheet, 'Semanal', $querySemanal, 
-        ['Semana', 'Mes', 'Desayuno', 'Almuerzo', 'Refrigerio', 'Total Estudiantes']);
-    
-    crearHojaEstadisticas($pdo, $spreadsheet, 'Mensual', $queryMensual, 
-        ['Mes (número)', 'Nombre Mes', 'Desayuno', 'Almuerzo', 'Refrigerio', 'Total Estudiantes']);
-
-    // Generar el archivo Excel
-    $writer = new Xlsx($spreadsheet);
-    
-    if (ob_get_length()) {
-        ob_end_clean();
+    // Eliminar hoja vacía inicial si queda
+    if (count($spreadsheet->getAllSheets()) > 1) {
+        $spreadsheet->removeSheetByIndex(0);
     }
 
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment; filename="estadisticas_por_horario.xlsx"');
-    header('Cache-Control: max-age=0');
-    
+    // Enviar el archivo al navegador
+    $writer = new Xlsx($spreadsheet);
     $writer->save('php://output');
     exit;
 
-} catch (PDOException $e) {
-    error_log('Error en la base de datos: ' . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
-    exit;
 } catch (Exception $e) {
-    error_log('Error general: ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['error' => 'Error al generar el archivo Excel']);
+    echo "Error al generar el archivo: " . $e->getMessage();
     exit;
 }
-?>

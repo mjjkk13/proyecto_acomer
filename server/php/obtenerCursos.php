@@ -2,24 +2,25 @@
 // ===============================
 // CABECERAS PARA RESPUESTAS JSON Y CORS
 // ===============================
+<<<<<<< HEAD
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
 header('Cache-Control: public, max-age=300');
 
+=======
+require 'cors.php';
+>>>>>>> main
 // ===============================
 // RESPUESTA A PETICIONES OPTIONS (preflight)
 // ===============================
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit();
-}
+
 
 // ===============================
 // CONEXIÓN A LA BASE DE DATOS
 // ===============================
 require_once 'conexion.php';
-
+$pdo = getPDO(); 
 // ===============================
 // ESTRUCTURA DE RESPUESTA
 // ===============================

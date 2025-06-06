@@ -1,7 +1,7 @@
 <?php
-// Manejo de CORS - debe ir antes de cualquier salida
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+require 'cors.php'; // Manejo de CORS (debe estar al inicio)
 
+<<<<<<< HEAD
 require 'cors.php';
 
 
@@ -12,17 +12,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Cabecera para indicar que la respuesta es JSON
+=======
+>>>>>>> main
 header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-cache, must-revalidate');
 
 require_once 'conexion.php';
 require_once __DIR__ . '/phpqrcode/qrlib.php';
+require 'cors.php';
 
 session_start();
 
-// Zona horaria establecida correctamente
+$pdo = getPDO(); 
 date_default_timezone_set('America/Bogota');
 
-// Validación de sesión
+// Validar sesión
 if (!isset($_SESSION['idusuarios'])) {
     echo json_encode(['status' => 'error', 'message' => 'No ha iniciado sesión']);
     exit;
@@ -30,8 +34,8 @@ if (!isset($_SESSION['idusuarios'])) {
 
 $usuario_id = $_SESSION['idusuarios'];
 
+// Obtener ID del docente
 try {
-    // Obtener iddocente desde usuario_id
     $stmtDocente = $pdo->prepare("SELECT iddocente FROM docente WHERE usuario_id = :usuario_id");
     $stmtDocente->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
     $stmtDocente->execute();
@@ -43,23 +47,29 @@ try {
     }
 
     $docente_id = $docente['iddocente'];
+} catch (PDOException $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Error al obtener el docente.']);
+    exit;
+}
 
-    // Obtener y decodificar el JSON
-    $data = json_decode(file_get_contents('php://input'), true);
+// Obtener y validar los datos JSON recibidos
+$data = json_decode(file_get_contents('php://input'), true);
 
-    if (!$data || !isset($data['idcursos']) || !isset($data['asistencias'])) {
-        echo json_encode(['status' => 'error', 'message' => 'Datos incompletos o inválidos.']);
-        exit;
-    }
+if (!$data || !isset($data['idcursos']) || !isset($data['asistencias'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Datos incompletos o inválidos.']);
+    exit;
+}
 
-    $curso_id = $data['idcursos'];
-    $asistencias = $data['asistencias'];
+$fecha = date('Y-m-d');
+$curso_id = $data['idcursos'];
+$asistencias = $data['asistencias'];
 
-    if (!is_array($asistencias) || empty($asistencias)) {
-        echo json_encode(['status' => 'error', 'message' => 'No hay asistencias para registrar.']);
-        exit;
-    }
+if (!is_array($asistencias) || empty($asistencias)) {
+    echo json_encode(['status' => 'error', 'message' => 'No hay asistencias para registrar.']);
+    exit;
+}
 
+try {
     // Verificar que el curso pertenece al docente
     $stmtVerificar = $pdo->prepare("
         SELECT nombrecurso FROM cursos 
@@ -78,40 +88,28 @@ try {
 
     $nombreCurso = $curso['nombrecurso'];
 
-    // Fecha y hora actual precisa
-    $fechaHoraActual = date('Y-m-d H:i:s');
-
-    // Filtrar solo asistencias con estado = 1 (presentes)
-    $asistenciasPresentes = array_filter($asistencias, function ($a) {
-        return isset($a['estado']) && $a['estado'] == 1;
-    });
-
+    // Filtrar asistencias presentes
+    $asistenciasPresentes = array_filter($asistencias, fn($a) => isset($a['estado']) && $a['estado'] == 1);
     $cantidadPresentes = count($asistenciasPresentes);
 
-    // Generar QR solo con alumnos presentes
-    $qrData = "Curso: $nombreCurso\nEstudiantes presentes: $cantidadPresentes\nFecha: $fechaHoraActual";
+    // Generar QR con la información
+    $qrData = "Curso: $nombreCurso\nEstudiantes presentes: $cantidadPresentes\nFecha: $fecha";
     $qrFileName = 'qr_asistencia_' . time() . '.png';
     $qrDir = 'qrcodes/';
     $qrFilePath = $qrDir . $qrFileName;
 
-    if (!file_exists($qrDir)) {
-        mkdir($qrDir, 0777, true);
-    }
-
+    if (!file_exists($qrDir)) mkdir($qrDir, 0777, true);
     QRcode::png($qrData, $qrFilePath);
 
-    // Guardar QR en la tabla qrgenerados
-    $stmtQR = $pdo->prepare("
-        INSERT INTO qrgenerados (codigoqr, fechageneracion) 
-        VALUES (:filename, :fechageneracion)
-    ");
+    // Registrar QR en base de datos
+    $stmtQR = $pdo->prepare("INSERT INTO qrgenerados (codigoqr, fechageneracion) VALUES (:filename, :fechageneracion)");
     $stmtQR->execute([
         ':filename' => $qrFileName,
-        ':fechageneracion' => $fechaHoraActual
+        ':fechageneracion' => date('Y-m-d H:i:s')
     ]);
     $qrgenerados_id = $pdo->lastInsertId();
 
-    // Registrar asistencias
+    // Insertar asistencias
     $stmtAsistencia = $pdo->prepare("
         INSERT INTO asistencia (fecha, estado, qrgenerados_id, docente_id, alumno_id) 
         VALUES (:fecha, :estado, :qrgenerados_id, :docente_id, :alumno_id)
@@ -123,7 +121,7 @@ try {
 
         if ($alumno_id !== null) {
             $stmtAsistencia->execute([
-                ':fecha' => $fechaHoraActual,
+                ':fecha' => $fecha,
                 ':estado' => $estado ? 1 : 0,
                 ':qrgenerados_id' => $qrgenerados_id,
                 ':docente_id' => $docente_id,
@@ -135,8 +133,7 @@ try {
     echo json_encode([
         'status' => 'success',
         'message' => 'Asistencia registrada correctamente',
-        'qr_image' => "http://localhost/proyecto_acomer/server/php/$qrFilePath",
-        'timestamp' => $fechaHoraActual
+        'qr_image' => "http://localhost/proyecto_acomer/server/php/$qrFilePath"
     ]);
 } catch (Throwable $e) {
     http_response_code(500);
@@ -144,6 +141,6 @@ try {
         'status' => 'error',
         'message' => 'Ocurrió un error al procesar la solicitud.'
     ]);
-    error_log('Error al registrar asistencia: ' . $e->getMessage());
     exit;
 }
+?>

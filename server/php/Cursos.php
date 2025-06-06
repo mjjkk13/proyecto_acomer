@@ -1,17 +1,18 @@
 <?php
 session_start();
 require_once 'conexion.php';
-
-// Configuración de CORS y headers
-header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
+// Encabezados CORS y configuración
+header('Content-Type: application/json; charset=utf-8');
+<<<<<<< HEAD
+require 'cors.php';
 
-// Manejo de solicitud OPTIONS para CORS
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit();
-}
+=======
+header('Cache-Control: public, max-age=300');
+>>>>>>> main
+
+$pdo = getPDO(); 
 
 // Captura de datos JSON si existen
 if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {

@@ -1,9 +1,9 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-
+const API_URL = import.meta.env.VITE_API_URL;
 export const handleDownloadExcel = async () => {
   try {
-    const response = await axios.get("http://localhost/proyecto_acomer/server/php/exportExcel.php", {
+    const response = await axios.get(`${API_URL}/exportExcel.php`, {
       responseType: "blob", // Importante para recibir archivos binarios
     });
 

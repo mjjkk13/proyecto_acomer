@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import PropTypes from "prop-types";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -29,7 +30,6 @@ const menuItems = [
   { to: "/admin/perfil", icon: faUser, label: "Mi Perfil" },
 ];
 
-// Componente para renderizar el menú (desktop y móvil)
 const MenuList = ({ onClickItem }) => (
   <ul>
     {menuItems.map(({ to, icon, label }) => (
@@ -55,6 +55,10 @@ const MenuList = ({ onClickItem }) => (
     </li>
   </ul>
 );
+
+MenuList.propTypes = {
+  onClickItem: PropTypes.func.isRequired,
+};
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

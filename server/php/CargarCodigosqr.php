@@ -1,14 +1,36 @@
 <?php
+<<<<<<< HEAD
 session_start();
 require 'cors.php';
 
+=======
+// Aseguramos la configuración adecuada de la cookie de sesión
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => 'acomer.onrender.com', 
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'None',
+]);
+>>>>>>> main
 
+session_start();
+
+// CORS headers DEBEN ir antes de cualquier salida
+require 'cors.php';
+require_once 'conexion.php';
+
+$pdo = getPDO(); 
+
+// Manejo de preflight (OPTIONS)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-require_once 'conexion.php';
+// DEBUG opcional para ver sesión
+// file_put_contents('debug.log', "SESSION: " . print_r($_SESSION, true), FILE_APPEND);
 
 try {
     if (!isset($_SESSION['idusuarios']) || !isset($_SESSION['user']) || !isset($_SESSION['rol'])) {

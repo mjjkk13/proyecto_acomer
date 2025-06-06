@@ -28,12 +28,16 @@
  *     )
  * )
  */
+<<<<<<< HEAD
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
 
+=======
+>>>>>>> main
 require_once 'conexion.php';
-
+require 'cors.php';
+$pdo = getPDO(); 
 try {
     $sql = "SELECT fecha_escaneo, qr_code FROM qrescaneados ORDER BY fecha_escaneo DESC";
     $stmt = $pdo->prepare($sql);

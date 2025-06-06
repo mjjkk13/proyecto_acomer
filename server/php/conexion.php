@@ -1,48 +1,23 @@
 <?php
-/**
- * @OA\Schema(
- *     schema="DatabaseConnection",
- *     type="object",
- *     @OA\Property(property="host", type="string", example="localhost"),
- *     @OA\Property(property="db", type="string", example="acomer"),
- *     @OA\Property(property="user", type="string", example="root"),
- *     @OA\Property(property="pass", type="string", example=""),
- *     @OA\Property(property="charset", type="string", example="utf8mb4"),
- *     @OA\Property(property="dsn", type="string", example="mysql:host=localhost;dbname=acomer;charset=utf8mb4"),
- *     @OA\Property(
- *         property="options",
- *         type="object",
- *         @OA\Property(property="PDO::ATTR_ERRMODE", type="integer", example=2),
- *         @OA\Property(property="PDO::ATTR_DEFAULT_FETCH_MODE", type="integer", example=2),
- *         @OA\Property(property="PDO::ATTR_EMULATE_PREPARES", type="boolean", example=false)
- *     )
- * )
- */
+header('Content-Type: application/json');
 
-/**
- * @OA\Schema(
- *     schema="ErrorResponse",
- *     type="object",
- *     @OA\Property(property="message", type="string", example="Error de conexión a la base de datos")
- * )
- */
+function getPDO() {
+    $host = getenv('DB_HOST') ?: 'localhost';
+    $db = getenv('DB_DATABASE') ?: 'acomer';
+    $user = getenv('DB_USERNAME') ?: 'root';
+    $pass = getenv('DB_PASSWORD') ?: '';
+    $port = getenv('DB_PORT') ?: '3306';
+    $charset = 'utf8mb4';
 
-/**
- * @OA\Response(
- *     response="DatabaseConnectionError",
- *     description="Error de conexión a la base de datos",
- *     @OA\JsonContent(ref="#/components/schemas/ErrorResponse")
- * )
- */
+    $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
-/**
- * @OA\Info(
- *     title="API de Conexión a Base de Datos",
- *     version="1.0.0",
- *     description="Documentación de la API que maneja la conexión a la base de datos."
- * )
- */
+    $options = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES   => false,
+    ];
 
+<<<<<<< HEAD
 /**
  * @OA\PathItem(
  *     path="/conexion"
@@ -93,5 +68,18 @@ try {
         "error" => $e->getMessage()
     ]);
     exit;
+=======
+    try {
+        return new PDO($dsn, $user, $pass, $options);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error de conexión a la base de datos',
+            'error' => $e->getMessage()
+        ]);
+        exit;
+    }
+>>>>>>> main
 }
 ?>

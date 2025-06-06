@@ -1,14 +1,12 @@
 <?php
+<<<<<<< HEAD
 // Configuración de cabeceras para permitir CORS desde el frontend
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
+=======
+>>>>>>> main
 
-// Manejar preflight requests (CORS OPTIONS)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
 
 /**
  * @OA\Post(
@@ -130,9 +128,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
  * )
  */
 
-// Conexión a la base de datos
 require_once 'conexion.php';
-
+require 'cors.php';
+$pdo = getPDO(); 
 // Inicializar variables de respuesta y control de transacción
 $response = ['success' => false, 'message' => ''];
 $transactionStarted = false;

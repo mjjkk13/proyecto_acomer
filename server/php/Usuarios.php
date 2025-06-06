@@ -1,16 +1,24 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
+<<<<<<< HEAD
 
 
+=======
+require 'conexion.php';
+$pdo = getPDO(); 
+>>>>>>> main
 // Soporte para preflight CORS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
+<<<<<<< HEAD
 require 'conexion.php';
 require 'cors.php';
+=======
+>>>>>>> main
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -47,33 +55,6 @@ try {
 // FUNCIONES
 // ======================================
 
-/**
- * @OA\Get(
- *     path="/usuarios",
- *     summary="Obtener todos los usuarios",
- *     description="Retorna una lista de todos los usuarios con detalles de credenciales y estado.",
- *     operationId="fetchAllUsers",
- *     responses={
- *         @OA\Response(
- *             response=200,
- *             description="Lista de usuarios",
- *             @OA\JsonContent(
- *                 type="array",
- *                 @OA\Items(
- *                     type="object",
- *                     properties={
- *                         @OA\Property(property="idcredenciales", type="integer"),
- *                         @OA\Property(property="nombre_usuario", type="string"),
- *                         @OA\Property(property="rol", type="string"),
- *                         @OA\Property(property="estado", type="string"),
- *                         @OA\Property(property="ultimoacceso", type="string", format="date-time")
- *                     }
- *                 )
- *             )
- *         )
- *     }
- * )
- */
 function fetchAll($pdo) {
     $stmt = $pdo->query('
         SELECT 
@@ -92,51 +73,6 @@ function fetchAll($pdo) {
     exit;
 }
 
-/**
- * @OA\Put(
- *     path="/usuarios",
- *     summary="Actualizar un usuario",
- *     description="Actualiza la información del usuario, incluyendo usuario, estado, rol y contraseña (opcional).",
- *     operationId="updateUser",
- *     requestBody={
- *         @OA\RequestBody(
- *             required=true,
- *             @OA\Content(
- *                 mediaType="application/json",
- *                 @OA\Schema(
- *                     type="object",
- *                     properties={
- *                         @OA\Property(property="id", type="integer"),
- *                         @OA\Property(property="user", type="string"),
- *                         @OA\Property(property="status", type="string"),
- *                         @OA\Property(property="rol", type="string"),
- *                         @OA\Property(property="password", type="string", nullable=true)
- *                     }
- *                 )
- *             )
- *         )
- *     },
- *     responses={
- *         @OA\Response(
- *             response=200,
- *             description="Usuario actualizado correctamente",
- *             @OA\JsonContent(
- *                 properties={
- *                     @OA\Property(property="success", type="boolean")
- *                 }
- *             )
- *         ),
- *         @OA\Response(
- *             response=400,
- *             description="Error en la solicitud o datos incompletos"
- *         ),
- *         @OA\Response(
- *             response=500,
- *             description="Error en la base de datos"
- *         )
- *     }
- * )
- */
 function updateUser($pdo, $data) {
     $required = ['id', 'user', 'status', 'rol'];
     foreach ($required as $field) {
@@ -178,42 +114,6 @@ function updateUser($pdo, $data) {
     exit;
 }
 
-/**
- * @OA\Delete(
- *     path="/usuarios",
- *     summary="Eliminar un usuario",
- *     description="Elimina un usuario y sus credenciales asociadas.",
- *     operationId="deleteUser",
- *     requestBody={
- *         @OA\RequestBody(
- *             required=true,
- *             @OA\Content(
- *                 mediaType="application/json",
- *                 @OA\Schema(
- *                     type="object",
- *                     properties={
- *                         @OA\Property(property="id", type="integer")
- *                     }
- *                 )
- *             )
- *         )
- *     },
- *     responses={
- *         @OA\Response(
- *             response=200,
- *             description="Usuario eliminado correctamente"
- *         ),
- *         @OA\Response(
- *             response=400,
- *             description="Error en la solicitud o ID no proporcionado"
- *         ),
- *         @OA\Response(
- *             response=500,
- *             description="Error en la base de datos"
- *         )
- *     }
- * )
- */
 function deleteUser($pdo, $data) {
     if (empty($data['id'])) {
         throw new Exception("ID requerido");

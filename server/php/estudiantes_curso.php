@@ -49,11 +49,16 @@
  * )
  */
 require_once 'conexion.php';
+<<<<<<< HEAD
 
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
 
+=======
+require 'cors.php';
+$pdo = getPDO(); 
+>>>>>>> main
 if (!isset($_GET['curso_id'])) {
     echo json_encode([
         'status' => 'error',

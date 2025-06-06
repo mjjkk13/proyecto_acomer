@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost/proyecto_acomer/server/php";
+
 export const fetchStatistics = async () => {
   try {
     const response = await fetch(`${API_URL}/estadisticas.php`);

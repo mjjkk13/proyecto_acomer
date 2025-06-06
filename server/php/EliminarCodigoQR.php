@@ -1,11 +1,16 @@
 <?php
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+<<<<<<< HEAD
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
+=======
+require 'cors.php';
+>>>>>>> main
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -27,6 +32,7 @@ if (!isset($_GET['idqrgenerados'])) {
 $id = intval($_GET['idqrgenerados']);
 
 require 'conexion.php';
+$pdo = getPDO(); 
 
 if (!isset($pdo)) {
     http_response_code(500);

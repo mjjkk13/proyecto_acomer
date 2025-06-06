@@ -128,13 +128,17 @@
  */
 
 session_start();  // Iniciar la sesión
+<<<<<<< HEAD
 
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
 
+=======
+require 'cors.php';
+>>>>>>> main
 require_once __DIR__ . '/conexion.php';
-
+$pdo = getPDO(); 
 if (!isset($pdo)) {
     echo json_encode(['status' => 'error', 'message' => 'La conexión a la base de datos no se ha establecido']);
     exit();
