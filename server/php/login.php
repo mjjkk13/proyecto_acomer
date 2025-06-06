@@ -1,4 +1,8 @@
 <?php
+// --- Iniciar sesión
+session_start();
+error_log("=== INICIO login.php ===");
+
 require_once 'conexion.php';
 $pdo = getPDO(); // ← Aquí se crea la conexión con PDO
 
@@ -98,9 +102,6 @@ session_set_cookie_params([
     'httponly' => true,
     'samesite' => 'None',
 ]);
-// --- Iniciar sesión
-session_start();
-error_log("=== INICIO login.php ===");
 
 // --- Función para respuesta JSON
 function sendJsonResponse($success, $message, $data = []) {
