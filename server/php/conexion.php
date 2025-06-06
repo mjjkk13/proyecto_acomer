@@ -16,8 +16,7 @@ function getPDO() {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES   => false,
     ];
-
-<<<<<<< HEAD
+}
 /**
  * @OA\PathItem(
  *     path="/conexion"
@@ -68,18 +67,5 @@ try {
         "error" => $e->getMessage()
     ]);
     exit;
-=======
-    try {
-        return new PDO($dsn, $user, $pass, $options);
-    } catch (PDOException $e) {
-        http_response_code(500);
-        echo json_encode([
-            'success' => false,
-            'message' => 'Error de conexión a la base de datos',
-            'error' => $e->getMessage()
-        ]);
-        exit;
-    }
->>>>>>> main
 }
 ?>

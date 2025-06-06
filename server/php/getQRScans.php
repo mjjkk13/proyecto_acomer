@@ -28,13 +28,6 @@
  *     )
  * )
  */
-<<<<<<< HEAD
-header('Content-Type: application/json; charset=utf-8');
-require 'cors.php';
-
-
-=======
->>>>>>> main
 require_once 'conexion.php';
 require 'cors.php';
 $pdo = getPDO(); 

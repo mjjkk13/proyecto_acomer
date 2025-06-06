@@ -27,13 +27,8 @@ if (in_array($origin, $allowed_origins)) {
 // --- Headers CORS ---
 header("Access-Control-Allow-Credentials: true");
 header('Content-Type: application/json; charset=utf-8');
-<<<<<<< HEAD
 require 'cors.php';
 
-=======
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
->>>>>>> main
 
 // --- OPTIONS ---
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

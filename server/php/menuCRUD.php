@@ -1,9 +1,5 @@
 <?php
-<<<<<<< HEAD
 header('Content-Type: application/json; charset=utf-8');
-=======
-
->>>>>>> main
 require 'cors.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {

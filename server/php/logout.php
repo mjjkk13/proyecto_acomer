@@ -26,14 +26,10 @@
  */
 
 // Asegurar que la respuesta sea siempre JSON
-<<<<<<< HEAD
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
 
-=======
-require 'cors.php';
->>>>>>> main
 session_start();
 session_destroy();
 

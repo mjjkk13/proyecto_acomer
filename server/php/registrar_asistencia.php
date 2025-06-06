@@ -1,8 +1,7 @@
 <?php
 require 'cors.php'; // Manejo de CORS (debe estar al inicio)
 
-<<<<<<< HEAD
-require 'cors.php';
+
 
 
 // Responder a la petición OPTIONS de preflight y terminar aquí
@@ -12,14 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Cabecera para indicar que la respuesta es JSON
-=======
->>>>>>> main
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');
 
 require_once 'conexion.php';
 require_once __DIR__ . '/phpqrcode/qrlib.php';
-require 'cors.php';
 
 session_start();
 

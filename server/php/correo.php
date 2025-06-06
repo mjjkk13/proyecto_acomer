@@ -1,10 +1,6 @@
 <?php
 // 1. Configuración CORS - Debe ser lo primero en el archivo
 require 'cors.php';
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 header('Content-Type: application/json; charset=utf-8');
 
 // 2. Manejar preflight (OPTIONS) request

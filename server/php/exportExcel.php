@@ -5,13 +5,9 @@ require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-<<<<<<< HEAD
 // Configuración CORS
 require 'cors.php';
 
-=======
-$pdo = getPDO();
->>>>>>> main
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);

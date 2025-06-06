@@ -1,16 +1,11 @@
 <?php 
 session_start();
 require_once 'conexion.php';
-<<<<<<< HEAD
 
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
 
-=======
-require 'cors.php';
-$pdo = getPDO(); 
->>>>>>> main
 /**
  * @OA\Get(
  *     path="/getCursos",

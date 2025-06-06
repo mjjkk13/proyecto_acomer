@@ -1,11 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-<<<<<<< HEAD
 require 'cors.php';
 header('Cache-Control: no-cache, no-store, must-revalidate');
-=======
-header('Cache-Control: public, max-age=300');
->>>>>>> main
 
 require 'cors.php';
 require_once 'conexion.php';

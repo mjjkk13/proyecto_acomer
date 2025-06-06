@@ -1,9 +1,4 @@
 <?php
-<<<<<<< HEAD
-session_start();
-require 'cors.php';
-
-=======
 // Aseguramos la configuración adecuada de la cookie de sesión
 session_set_cookie_params([
     'lifetime' => 0,
@@ -13,7 +8,6 @@ session_set_cookie_params([
     'httponly' => true,
     'samesite' => 'None',
 ]);
->>>>>>> main
 
 session_start();
 

@@ -1,21 +1,3 @@
-<<<<<<< HEAD
-# Usa la imagen oficial de PHP con Apache
-FROM php:8.2-apache
-
-# Instala extensiones necesarias (como pdo_mysql)
-RUN docker-php-ext-install pdo pdo_mysql
-
-# Habilita mod_rewrite si es necesario (útil si usás rutas amigables)
-RUN a2enmod rewrite
-
-# Copia tus archivos al directorio donde Apache los sirve
-COPY . /var/www/html
-
-# Da permisos correctos
-RUN chown -R www-data:www-data /var/www/html
-
-# Expone el puerto por defecto de Apache
-=======
 # server/php/dockerfile
 
 FROM php:8.2-apache
@@ -43,5 +25,4 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 
 # Expone el puerto 80 (HTTP)
->>>>>>> main
 EXPOSE 80

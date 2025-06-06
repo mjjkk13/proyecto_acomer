@@ -72,16 +72,11 @@
 
 session_start();
 require_once 'conexion.php';
-<<<<<<< HEAD
 
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
 
-=======
-require 'cors.php';
-$pdo = getPDO(); 
->>>>>>> main
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }

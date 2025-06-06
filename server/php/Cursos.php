@@ -5,12 +5,8 @@ require 'cors.php';
 
 // Encabezados CORS y configuración
 header('Content-Type: application/json; charset=utf-8');
-<<<<<<< HEAD
 require 'cors.php';
 
-=======
-header('Cache-Control: public, max-age=300');
->>>>>>> main
 
 $pdo = getPDO(); 
 

@@ -1,24 +1,16 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require 'cors.php';
-<<<<<<< HEAD
 
 
-=======
-require 'conexion.php';
-$pdo = getPDO(); 
->>>>>>> main
+
 // Soporte para preflight CORS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-<<<<<<< HEAD
 require 'conexion.php';
 require 'cors.php';
-=======
->>>>>>> main
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
