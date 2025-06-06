@@ -3,12 +3,12 @@
  * @OA\Schema(
  *     schema="DatabaseConnection",
  *     type="object",
- *     @OA\Property(property="host", type="string", example="shuttle.proxy.rlwy.net"),
- *     @OA\Property(property="db", type="string", example="railway"),
+ *     @OA\Property(property="host", type="string", example="localhost"),
+ *     @OA\Property(property="db", type="string", example="acomer"),
  *     @OA\Property(property="user", type="string", example="root"),
- *     @OA\Property(property="pass", type="string", example="XbCktZKUDyJBPvNQmJwUvdxyyWuvFDjm"),
+ *     @OA\Property(property="pass", type="string", example=""),
  *     @OA\Property(property="charset", type="string", example="utf8mb4"),
- *     @OA\Property(property="dsn", type="string", example="mysql:host=shuttle.proxy.rlwy.net;port=45701;dbname=railway;charset=utf8mb4"),
+ *     @OA\Property(property="dsn", type="string", example="mysql:host=localhost;dbname=acomer;charset=utf8mb4"),
  *     @OA\Property(
  *         property="options",
  *         type="object",
@@ -65,26 +65,12 @@
  * )
  */
 
-// Si este archivo se accede directamente, configurar CORS (para pruebas)
-if (basename(__FILE__) === basename($_SERVER['SCRIPT_FILENAME'])) {
-    header("Access-Control-Allow-Origin: https://acomer.onrender.com");
-    header("Access-Control-Allow-Credentials: true");
-    header("Access-Control-Allow-Headers: Content-Type");
-    header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        http_response_code(204);
-        exit;
-    }
-}
-
-// Datos de conexión Railway
-$host = 'shuttle.proxy.rlwy.net';
-$port = 45701;
-$db = 'railway';
-$user = 'root';
-$pass = 'XbCktZKUDyJBPvNQmJwUvdxyyWuvFDjm';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1'; // CAMBIADO: localhost → 127.0.0.1
+$db = getenv('MYSQL_DATABASE') ?: 'acomer';
+$user = getenv('MYSQL_USER') ?: 'root';
+$pass = getenv('MYSQL_PASSWORD') ?: '';
 $charset = 'utf8mb4';
+$port = getenv('MYSQL_PORT') ?: '3306'; // Asegura puerto por defecto
 
 $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 
