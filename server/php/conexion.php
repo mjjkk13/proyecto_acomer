@@ -1,6 +1,5 @@
 <?php
 header('Content-Type: application/json');
-
 function getPDO() {
     $host = getenv('DB_HOST') ?: 'localhost';
     $db = getenv('DB_DATABASE') ?: 'acomer';
