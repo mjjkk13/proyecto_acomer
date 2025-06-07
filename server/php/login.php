@@ -159,9 +159,7 @@ try {
 
     if ($result['rol'] === 'Administrador') {
         $_SESSION['admin_id'] = $result['idusuarios'];
-    }
-    
-    if ($result['rol'] === 'Docente') {
+    }elseif($result['rol'] === 'Docente') {
         $_SESSION['docente_id'] = $result['idusuarios'];
     }
 
