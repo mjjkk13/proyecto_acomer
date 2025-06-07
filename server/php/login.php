@@ -8,24 +8,19 @@ error_reporting(E_ALL);
 // --- Configuración de cookies y sesión (antes de session_start)
 ini_set('session.cookie_samesite', 'None');
 ini_set('session.cookie_secure', '1');
-ini_set('session.cookie_httponly', '1');
-ini_set('session.use_strict_mode', '1');
 
-// Configuración mejorada de cookies para producción
 session_set_cookie_params([
-    'lifetime' => 86400, // 1 día
+    'lifetime' => 0,
     'path' => '/',
-    'domain' => 'acomer.onrender.com', // Dominio con punto inicial para subdominios
+    'domain' => 'acomer.onrender.com',
     'secure' => true,
     'httponly' => true,
-    'samesite' => 'None'
+    'samesite' => 'None',
 ]);
 
 // --- Iniciar sesión
 session_start();
 error_log("=== INICIO login.php ===");
-error_log("Session ID: " . session_id());
-error_log("Session Cookie Params: " . print_r(session_get_cookie_params(), true));
 
 require_once 'conexion.php';
 $pdo = getPDO();
@@ -86,7 +81,7 @@ $pdo = getPDO();
  * )
  */
 
-// --- Configuración CORS mejorada
+// --- Configuración CORS
 $allowed_origins = [
     'http://localhost:5173',
     'https://acomer.onrender.com'
@@ -96,9 +91,8 @@ $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
     header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Expose-Headers: Set-Cookie'); // Importante para cookies
     header('Access-Control-Allow-Headers: Content-Type, Authorization');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Max-Age: 86400');
 }
 
@@ -119,23 +113,20 @@ function sendJsonResponse($success, $message, $data = []) {
 
 // --- Verificar método
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
     sendJsonResponse(false, 'Método no permitido');
 }
 
 // --- Obtener datos del formulario
-$data = json_decode(file_get_contents("php://input"), true);
 $usuario = $_POST['usuario'] ?? null;
 $contrasena = $_POST['inputPassword'] ?? null;
 error_log("Credenciales recibidas: usuario=$usuario");
 
 if (!$usuario || !$contrasena) {
-    http_response_code(400);
     sendJsonResponse(false, 'Por favor, complete todos los campos');
 }
 
 try {
-    // --- Consulta de usuario ORIGINAL
+    // --- Consulta de usuario
     $stmt = $pdo->prepare("
         SELECT u.idusuarios, c.user, c.contrasena, c.estado, tu.rol
         FROM credenciales c
@@ -161,42 +152,27 @@ try {
         sendJsonResponse(false, 'Contraseña incorrecta');
     }
 
-    // --- Guardar sesión con información básica
-    $_SESSION['usuario'] = $result['user'];
+    // --- Guardar sesión
+    $_SESSION['usuario'] = $usuario;
     $_SESSION['rol'] = $result['rol'];
     $_SESSION['idusuarios'] = $result['idusuarios'];
 
-    // --- Obtener IDs específicos según el rol
     if ($result['rol'] === 'Administrador') {
-        // Consulta ORIGINAL para obtener ID de administrador
-        $adminStmt = $pdo->prepare("SELECT idadmin FROM admin WHERE usuarios_idusuarios = :usuario_id");
-        $adminStmt->execute(['usuario_id' => $result['idusuarios']]);
-        $adminData = $adminStmt->fetch();
-        
-        if ($adminData) {
-            $_SESSION['admin_id'] = $adminData['idadmin'];
-        }
+        $_SESSION['admin_id'] = $result['idusuarios'];
     }
     
     if ($result['rol'] === 'Docente') {
-        // Consulta ORIGINAL para obtener ID de docente
-        $docenteStmt = $pdo->prepare("SELECT iddocentes FROM docentes WHERE usuarios_idusuarios = :usuario_id");
-        $docenteStmt->execute(['usuario_id' => $result['idusuarios']]);
-        $docenteData = $docenteStmt->fetch();
-        
-        if ($docenteData) {
-            $_SESSION['docente_id'] = $docenteData['iddocentes'];
-        }
+        $_SESSION['docente_id'] = $result['idusuarios'];
     }
 
     error_log("Session ID: " . session_id());
     error_log("Sesión guardada: " . print_r($_SESSION, true));
 
-    // --- Actualizar último acceso ORIGINAL
+    // --- Actualizar último acceso
     $pdo->prepare("UPDATE credenciales SET ultimoacceso = NOW() WHERE user = :user")
         ->execute(['user' => $usuario]);
 
-    // --- Redirección según rol ORIGINAL
+    // --- Redirección según rol
     $redirect_url = match($result['rol']) {
         'Administrador' => '/admin',
         'Estudiante SS' => '/estudiante',
@@ -204,20 +180,10 @@ try {
         default => '/'
     };
 
-    // Preparar datos de respuesta ORIGINAL más IDs específicos si existen
-    $responseData = [
+    sendJsonResponse(true, 'Login exitoso', [
         'rol' => $result['rol'],
         'redirect_url' => $redirect_url
-    ];
-
-    // Añadir IDs específicos si están disponibles
-    if ($result['rol'] === 'Administrador' && isset($_SESSION['admin_id'])) {
-        $responseData['admin_id'] = $_SESSION['admin_id'];
-    } elseif ($result['rol'] === 'Docente' && isset($_SESSION['docente_id'])) {
-        $responseData['docente_id'] = $_SESSION['docente_id'];
-    }
-
-    sendJsonResponse(true, 'Login exitoso', $responseData);
+    ]);
 
 } catch (PDOException $e) {
     http_response_code(500);
