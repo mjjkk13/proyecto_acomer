@@ -124,6 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // --- Obtener datos del formulario
+$data = json_decode(file_get_contents("php://input"), true);
 $usuario = $_POST['usuario'] ?? null;
 $contrasena = $_POST['inputPassword'] ?? null;
 error_log("Credenciales recibidas: usuario=$usuario");
