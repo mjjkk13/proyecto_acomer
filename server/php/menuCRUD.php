@@ -1,16 +1,13 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require 'cors.php';
+require 'cors.php'; // Si usas CORS, mantén esto
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 
-$pdo = getPDO(); 
-// ===============================
-// ENCABEZADOS PARA API JSON + CORS
-// ===============================
-require_once 'conexion.php';
+require_once 'conexion.php'; // Incluye conexión primero
+$pdo = getPDO();             // Luego obtén la conexión PDO
 
 function getInputData() {
     $contentType = isset($_SERVER['CONTENT_TYPE']) ? trim($_SERVER['CONTENT_TYPE']) : '';
