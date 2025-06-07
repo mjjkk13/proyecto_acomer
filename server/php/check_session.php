@@ -1,34 +1,34 @@
 <?php
+// --- Configuración de errores
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// --- Configuración de cookies y sesión (antes de session_start)
+ini_set('session.cookie_samesite', 'None');
+ini_set('session.cookie_secure', '1');
+ini_set('session.cookie_httponly', '1');
+ini_set('session.use_strict_mode', '1');
+
+// Configuración mejorada de cookies para producción
+session_set_cookie_params([
+    'lifetime' => 86400, // 1 día
+    'path' => '/',
+    'domain' => '.acomer.onrender.com', // Dominio con punto inicial para subdominios
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'None'
+]);
+
 // --- Logging para depuración ---
 error_log("=== INICIO check_session.php ===");
 
-$allowed_origins = [
-    'http://localhost:5173',
-    'https://acomer.onrender.com'
-];
-
-// --- Validación del Origin ---
-$origin = $_SERVER['HTTP_ORIGIN'] ?? 'NO_ORIGIN';
-error_log("Origin recibido: $origin");
-
-if (in_array($origin, $allowed_origins)) {
-    header("Access-Control-Allow-Origin: $origin");
-    error_log("Access-Control-Allow-Origin seteado: $origin");
-} else {
-    // Para detectar si no coincide, igual seteamos uno seguro para ver si cambia algo
-    header("Access-Control-Allow-Origin: https://acomer.onrender.com");
-    error_log("Origin NO permitido. Forzando header a acomer.onrender.com");
-}
-
-// --- Headers CORS ---
-header("Access-Control-Allow-Credentials: true");
-header('Content-Type: application/json; charset=utf-8');
+// --- Incluir configuración CORS
 require 'cors.php';
 
+// --- Headers adicionales para CORS ---
+header("Access-Control-Allow-Credentials: true");
+header('Content-Type: application/json; charset=utf-8');
 
 // --- OPTIONS ---
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -43,13 +43,29 @@ error_log("Session ID: " . session_id());
 error_log("Session data: " . print_r($_SESSION, true));
 
 // --- Validar sesión ---
-if (isset($_SESSION['usuario']) && isset($_SESSION['rol'])) {
+if (isset($_SESSION['usuario']) && isset($_SESSION['rol']) && isset($_SESSION['loggedin'])) {
     $response = [
         'success' => true,
         'usuario' => $_SESSION['usuario'],
         'rol' => $_SESSION['rol'],
-        'message' => 'Inicio de sesión exitoso'
+        'message' => 'Sesión activa'
     ];
+    
+    // Añadir admin_id si está presente
+    if (isset($_SESSION['admin_id'])) {
+        $response['admin_id'] = $_SESSION['admin_id'];
+    }
+    
+    // Añadir docente_id si está presente
+    if (isset($_SESSION['docente_id'])) {
+        $response['docente_id'] = $_SESSION['docente_id'];
+    }
+    
+    // Añadir idusuarios si está presente
+    if (isset($_SESSION['idusuarios'])) {
+        $response['idusuarios'] = $_SESSION['idusuarios'];
+    }
+    
     echo json_encode($response);
     error_log("Sesión activa: " . json_encode($response));
 } else {
@@ -57,6 +73,7 @@ if (isset($_SESSION['usuario']) && isset($_SESSION['rol'])) {
         'success' => false,
         'message' => 'No hay sesión activa'
     ];
+    http_response_code(401); // Código de estado no autorizado
     echo json_encode($response);
     error_log("No hay sesión activa.");
 }
