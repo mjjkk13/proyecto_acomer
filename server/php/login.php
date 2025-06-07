@@ -15,7 +15,7 @@ ini_set('session.use_strict_mode', '1');
 session_set_cookie_params([
     'lifetime' => 86400, // 1 día
     'path' => '/',
-    'domain' => '.acomer.onrender.com', // Dominio con punto inicial para subdominios
+    'domain' => 'acomer.onrender.com', // Dominio con punto inicial para subdominios
     'secure' => true,
     'httponly' => true,
     'samesite' => 'None'
