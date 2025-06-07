@@ -1,4 +1,6 @@
 <?php
+session_start(); // INICIA SESIÓN PARA ACCEDER A $_SESSION
+
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php'; // Si usas CORS, mantén esto
 
@@ -45,6 +47,12 @@ try {
             break;
             
         case 'create':
+            // Validar que el admin_id esté en sesión
+            if (empty($_SESSION['admin_id'])) {
+                throw new Exception('No se encontró la sesión del administrador');
+            }
+            $admin_id = $_SESSION['admin_id'];
+
             $required = ['tipomenu', 'fecha', 'descripcion'];
             foreach ($required as $field) {
                 if (empty($data[$field])) {
@@ -52,8 +60,13 @@ try {
                 }
             }
             
-            $stmt = $pdo->prepare("INSERT INTO menu (tipomenu, fecha, descripcion) VALUES (?, ?, ?)");
-            $stmt->execute([$data['tipomenu'], $data['fecha'], $data['descripcion']]);
+            $stmt = $pdo->prepare("INSERT INTO menu (tipomenu, fecha, descripcion, admin_id) VALUES (?, ?, ?, ?)");
+            $stmt->execute([
+                $data['tipomenu'], 
+                $data['fecha'], 
+                $data['descripcion'], 
+                $admin_id
+            ]);
             
             echo json_encode([
                 'success' => true,
