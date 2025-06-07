@@ -156,11 +156,11 @@ try {
     $_SESSION['usuario'] = $usuario;
     $_SESSION['rol'] = $result['rol'];
     $_SESSION['idusuarios'] = $result['idusuarios'];
-    
-    if ($result['rol'] === 'Administrador') {
-    $_SESSION['admin_id'] = $result['idusuarios'];
-}
 
+    if ($result['rol'] === 'Administrador') {
+        $_SESSION['admin_id'] = $result['idusuarios'];
+    }
+    
     if ($result['rol'] === 'Docente') {
         $_SESSION['docente_id'] = $result['idusuarios'];
     }
