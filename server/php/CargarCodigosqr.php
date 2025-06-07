@@ -27,12 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // file_put_contents('debug.log', "SESSION: " . print_r($_SESSION, true), FILE_APPEND);
 
 try {
-    if (!isset($_SESSION['idusuarios']) || !isset($_SESSION['user']) || !isset($_SESSION['rol'])) {
+    if (!isset($_SESSION['idusuarios']) || !isset($_SESSION['usuario']) || !isset($_SESSION['rol'])) {
         throw new Exception("Sesión no iniciada correctamente.");
     }
 
     $userId = $_SESSION['idusuarios'];
-    $usuario = $_SESSION['user'];
+    $usuario = $_SESSION['usuario'];
     $role = $_SESSION['rol'];
 
     $whereSql = '';
