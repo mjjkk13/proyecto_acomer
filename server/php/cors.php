@@ -20,7 +20,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204); // No Content
     exit;
 }
-
-// 🔒 Cookies seguras con sesiones y CORS
-ini_set('session.cookie_samesite', 'None');
-ini_set('session.cookie_secure', '1');
