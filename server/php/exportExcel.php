@@ -1,6 +1,7 @@
 <?php
 require 'vendor/autoload.php';
 require_once 'conexion.php';
+require 'cors.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
