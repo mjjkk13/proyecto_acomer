@@ -1,10 +1,29 @@
 <?php
+
+// --- Configuración de errores
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// --- Configuración de cookies y sesión (antes de session_start)
+ini_set('session.cookie_samesite', 'None');
+ini_set('session.cookie_secure', '1');
+
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => 'acomer.onrender.com',
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'None',
+]);
+
 // --- Iniciar sesión
 session_start();
 error_log("=== INICIO login.php ===");
 
 require_once 'conexion.php';
-$pdo = getPDO(); // ← Aquí se crea la conexión con PDO
+$pdo = getPDO();
 
 /**
  * @OA\Post(
@@ -83,25 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 header('Content-Type: application/json; charset=utf-8');
-
-// --- Configuración de errores
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// --- Cookies seguras
-ini_set('session.cookie_samesite', 'None');
-ini_set('session.cookie_secure', '1');
-
-// Aseguramos la configuración adecuada de la cookie de sesión
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'domain' => 'acomer.onrender.com', 
-    'secure' => true,
-    'httponly' => true,
-    'samesite' => 'None',
-]);
 
 // --- Función para respuesta JSON
 function sendJsonResponse($success, $message, $data = []) {
