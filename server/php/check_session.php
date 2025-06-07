@@ -29,6 +29,10 @@ header("Access-Control-Allow-Credentials: true");
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
+// --- Iniciar sesión ---
+session_start();
+error_log("Session ID: " . session_id());
+error_log("Session data: " . print_r($_SESSION, true));
 
 // --- OPTIONS ---
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -36,11 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
-
-// --- Iniciar sesión ---
-session_start();
-error_log("Session ID: " . session_id());
-error_log("Session data: " . print_r($_SESSION, true));
 
 // --- Validar sesión ---
 if (isset($_SESSION['usuario']) && isset($_SESSION['rol'])) {

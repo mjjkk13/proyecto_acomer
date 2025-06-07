@@ -9,12 +9,11 @@ session_set_cookie_params([
     'samesite' => 'None',
 ]);
 
-session_start();
-
 // CORS headers DEBEN ir antes de cualquier salida
 require 'cors.php';
 require_once 'conexion.php';
 
+session_start();
 $pdo = getPDO(); 
 
 // Manejo de preflight (OPTIONS)
