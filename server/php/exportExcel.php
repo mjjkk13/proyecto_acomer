@@ -8,14 +8,16 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 // Configuración CORS
 require 'cors.php';
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
 
-// Evita que se envíe contenido antes de los headers
-ob_clean();
+// Limpiar buffer si existe
+if (ob_get_length()) {
+    ob_end_clean();
+}
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -25,7 +27,10 @@ header("Cache-Control: max-age=0");
 
 try {
     $spreadsheet = new Spreadsheet();
-    $spreadsheet->removeSheetByIndex(0); // Eliminar hoja por defecto
+    // Remover hoja por defecto si existe
+    if ($spreadsheet->getSheetCount() > 0) {
+        $spreadsheet->removeSheetByIndex(0);
+    }
 
     function crearHojaEstadisticas($pdo, $spreadsheet, $nombreHoja, $query, $headers) {
         $stmt = $pdo->prepare($query);
@@ -68,7 +73,7 @@ try {
 
     crearHojaEstadisticas($pdo, $spreadsheet, 'Estadísticas Diarias', $queryDiario, ['Fecha', 'Desayuno', 'Almuerzo', 'Cena']);
 
-    // Otra hoja de ejemplo (puedes agregar más con otras consultas)
+    // Totales por comida
     $queryTotales = "
         SELECT 
             tipo_comida,
@@ -78,18 +83,18 @@ try {
     ";
     crearHojaEstadisticas($pdo, $spreadsheet, 'Totales por Comida', $queryTotales, ['Tipo de comida', 'Total servicios']);
 
-    // Eliminar hoja vacía inicial si queda
-    if (count($spreadsheet->getAllSheets()) > 1) {
-        $spreadsheet->removeSheetByIndex(0);
-    }
-
-    // Enviar el archivo al navegador
+    // Enviar archivo
     $writer = new Xlsx($spreadsheet);
     $writer->save('php://output');
     exit;
 
 } catch (Exception $e) {
+    // En caso de error, enviar código 500 sin enviar contenido binario corrupto
     http_response_code(500);
-    echo "Error al generar el archivo: " . $e->getMessage();
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => 'Error al generar el archivo',
+        'message' => $e->getMessage()
+    ]);
     exit;
 }
