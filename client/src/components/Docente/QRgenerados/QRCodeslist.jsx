@@ -11,7 +11,7 @@ const QRCodesList = () => {
   const [error, setError] = useState(null);
   const [userRole, setUserRole] = useState('user');
   const codesPerPage = 5;
-  const API_URL = 'http://localhost/proyecto_acomer/server/php/qrcodes';
+  const API_URL = 'https://backend-acomer.onrender.com/qrcodes';
 
   useEffect(() => {
     loadQRCodes();
