@@ -48,12 +48,14 @@
  *     )
  * )
  */
+
 require_once 'conexion.php';
+$pdo = getPDO(); // ⬅️ Aquí se obtiene la conexión a la base de datos
 
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
 
-
+// Validar el parámetro
 if (!isset($_GET['curso_id'])) {
     echo json_encode([
         'status' => 'error',
@@ -79,7 +81,10 @@ try {
 
     $estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode($estudiantes);
+    echo json_encode([
+        'status' => 'success',
+        'data' => $estudiantes
+    ]);
 
 } catch (PDOException $e) {
     echo json_encode([
