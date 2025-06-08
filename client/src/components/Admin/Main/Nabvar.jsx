@@ -81,7 +81,7 @@ const Navbar = () => {
         text: "Hasta pronto",
       });
 
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       Swal.fire({
         icon: "error",

@@ -20,6 +20,9 @@ const NavbarDocente = () => {
 
   const handleLogout = async (e) => {
     if (e) e.preventDefault();
+
+    setIsDropdownOpen(false);  // Cerrar menú antes de continuar
+
     try {
       const res = await fetch(`${API_URL}/logout.php`, {
         method: 'POST',
@@ -33,8 +36,7 @@ const NavbarDocente = () => {
         text: 'Hasta pronto',
       });
 
-      setIsDropdownOpen(false);
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -44,7 +46,7 @@ const NavbarDocente = () => {
     }
   };
 
-  const toggleDropdown = () => setIsDropdownOpen(v => !v);
+  const toggleDropdown = () => setIsDropdownOpen((v) => !v);
   const closeDropdown = () => setIsDropdownOpen(false);
 
   const menuItems = [
@@ -74,7 +76,10 @@ const NavbarDocente = () => {
             </li>
           ))}
           <li>
-            <button onClick={handleLogout} className="hover:underline cursor-pointer flex items-center">
+            <button
+              onClick={handleLogout}
+              className="hover:underline cursor-pointer flex items-center"
+            >
               <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
               Cerrar Sesión
             </button>

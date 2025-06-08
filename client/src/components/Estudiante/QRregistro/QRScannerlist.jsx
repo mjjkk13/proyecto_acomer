@@ -56,20 +56,15 @@ const QRScannerlist = () => {
     }
 
     return currentScans.map((item) => {
-      // Convertir string de fecha a objeto Date
-      const fechaObj = new Date(item.fecha);
-
-      // Formatear fecha y hora, si es válida
-      const fechaConHora = isNaN(fechaObj)
-        ? item.fecha
-        : fechaObj.toLocaleString();
+      // Mostrar la fecha tal cual está en la base de datos, sin formateo
+      const fechaOriginal = item.fecha;
 
       return (
         <tr
           key={`${item.fecha}-${item.curso}-${item.cantidad}`}
           className="bg-white hover:bg-gray-50 transition duration-150"
         >
-          <td className="px-4 py-2 whitespace-nowrap">{fechaConHora}</td>
+          <td className="px-4 py-2 whitespace-nowrap">{fechaOriginal}</td>
           <td className="px-4 py-2">{item.curso}</td>
           <td className="px-4 py-2 text-center">{item.cantidad}</td>
         </tr>

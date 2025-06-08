@@ -19,8 +19,9 @@ const NavbarEstudiante = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  // Modificamos handleLogout para que e sea opcional
   const handleLogout = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     try {
       const res = await fetch(`${API_URL}/logout.php`, {
         method: 'POST',
@@ -34,7 +35,7 @@ const NavbarEstudiante = () => {
         text: 'Hasta pronto',
       });
       setIsDropdownOpen(false);
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -42,6 +43,13 @@ const NavbarEstudiante = () => {
         text: error.message,
       });
     }
+  };
+
+  // Nueva función para móvil que espera a cerrar sesión antes de cerrar menú
+  const handleMobileLogout = async (e) => {
+    e.preventDefault();
+    await handleLogout();
+    setIsDropdownOpen(false);
   };
 
   const toggleDropdown = () => setIsDropdownOpen(v => !v);
@@ -67,7 +75,10 @@ const NavbarEstudiante = () => {
             </li>
           ))}
           <li>
-            <button onClick={handleLogout} className="hover:underline cursor-pointer flex items-center bg-transparent border-0 p-0">
+            <button
+              onClick={handleLogout}
+              className="hover:underline cursor-pointer flex items-center bg-transparent border-0 p-0"
+            >
               <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
               Cerrar Sesión
             </button>
@@ -108,7 +119,7 @@ const NavbarEstudiante = () => {
                 ))}
                 <li>
                   <button
-                    onClick={() => { handleLogout(); closeDropdown(); }}
+                    onClick={handleMobileLogout}
                     className="block px-4 py-2 hover:bg-[#1c2a3a] flex items-center w-full text-left bg-transparent border-0 p-0 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
