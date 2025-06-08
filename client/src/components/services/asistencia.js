@@ -32,11 +32,12 @@ export const getEstudiantesCurso = async (cursoId) => {
 
     const data = response.data;
 
-    if (Array.isArray(data)) {
-      return data;
+    // Ahora la respuesta es un objeto { status, data }
+    if (data.status === 'success' && Array.isArray(data.data)) {
+      return data.data;
     }
 
-    if (data.success === false) {
+    if (data.status === 'error') {
       throw new Error(data.message || 'No se pudo obtener estudiantes');
     }
 
