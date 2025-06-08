@@ -1,13 +1,4 @@
 <?php
-// Aseguramos la configuración adecuada de la cookie de sesión
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'domain' => 'acomer.onrender.com', 
-    'secure' => true,
-    'httponly' => true,
-    'samesite' => 'None',
-]);
 
 // CORS headers DEBEN ir antes de cualquier salida
 require 'cors.php';
