@@ -1,8 +1,9 @@
 <?php
+require 'cors.php';
 header('Content-Type: application/json; charset=utf-8');
 
 require 'conexion.php';
-require 'cors.php';
+
 
 // Conectar a la base de datos
 $pdo = getPDO();
