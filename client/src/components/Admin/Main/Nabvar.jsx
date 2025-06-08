@@ -30,7 +30,8 @@ const menuItems = [
   { to: "/admin/perfil", icon: faUser, label: "Mi Perfil" },
 ];
 
-const MenuList = ({ onClickItem }) => (
+// ✅ COMPONENTE LISTA DE MENÚ
+const MenuList = ({ onClickItem, onLogout }) => (
   <ul>
     {menuItems.map(({ to, icon, label }) => (
       <li key={label}>
@@ -46,7 +47,7 @@ const MenuList = ({ onClickItem }) => (
     ))}
     <li>
       <button
-        onClick={onClickItem}
+        onClick={onLogout} // ✅ LLAMA AL LOGOUT CORRECTAMENTE
         className="block px-6 py-3 hover:bg-[#1c2a3a] flex items-center w-full text-left"
       >
         <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
@@ -58,13 +59,16 @@ const MenuList = ({ onClickItem }) => (
 
 MenuList.propTypes = {
   onClickItem: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
 };
 
+// ✅ COMPONENTE PRINCIPAL
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Cierre de sesión
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
@@ -91,13 +95,13 @@ const Navbar = () => {
     }
   };
 
-  // Cierra dropdown y menú móvil
+  // Cierra ambos menús
   const closeMenus = () => {
     setIsDropdownOpen(false);
     setIsMenuOpen(false);
   };
 
-  // Handler combinado para cerrar menus y logout
+  // Logout combinado
   const handleLogoutAndClose = (e) => {
     e.preventDefault();
     closeMenus();
@@ -113,7 +117,7 @@ const Navbar = () => {
           <span className="ml-2 text-xl font-bold">A Comer</span>
         </Link>
 
-        {/* Botón menú móvil */}
+        {/* Botón móvil */}
         <button
           onClick={() => setIsMenuOpen((v) => !v)}
           className="text-white flex items-center focus:outline-none md:hidden"
@@ -172,7 +176,10 @@ const Navbar = () => {
             >
               ✖
             </button>
-            <MenuList onClickItem={closeMenus} />
+            <MenuList
+              onClickItem={closeMenus}
+              onLogout={handleLogoutAndClose} // ✅ SE PASA FUNCION DE LOGOUT
+            />
           </nav>
         </div>
       )}
