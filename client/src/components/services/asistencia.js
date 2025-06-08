@@ -2,48 +2,84 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Obtener los cursos del docente autenticado
 export const getCursosDocente = async () => {
   try {
-    const response = await axios.get(`${API_URL}/cursos_docente.php`, { withCredentials: true });
+    const response = await axios.get(`${API_URL}/cursos_docente.php`, {
+      withCredentials: true,
+    });
+
+    if (!response.data || !Array.isArray(response.data)) {
+      throw new Error('Formato de respuesta inválido al obtener cursos del docente');
+    }
+
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error('Error en getCursosDocente:', error.response?.data || error.message);
     throw new Error('Error al obtener los cursos del docente');
   }
 };
 
+// Obtener estudiantes de un curso específico
 export const getEstudiantesCurso = async (cursoId) => {
+  if (!cursoId) throw new Error('ID de curso es obligatorio');
+
   try {
-    const response = await axios.get(`${API_URL}/estudiantes_curso.php?curso_id=${cursoId}`);
-    return response.data;
+    const response = await axios.get(`${API_URL}/estudiantes_curso.php`, {
+      params: { curso_id: cursoId },
+      withCredentials: true,
+    });
+
+    const data = response.data;
+
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    if (data.success === false) {
+      throw new Error(data.message || 'No se pudo obtener estudiantes');
+    }
+
+    throw new Error('Respuesta inesperada del servidor al obtener estudiantes');
   } catch (error) {
-    console.log(error);
+    console.error('Error en getEstudiantesCurso:', error.response?.data || error.message);
     throw new Error('Error al obtener los estudiantes del curso');
   }
 };
 
+// Registrar asistencia de los estudiantes en un curso
 export const registrarAsistencia = async (cursoId, asistencias) => {
+  if (!cursoId || !Array.isArray(asistencias)) {
+    throw new Error('Datos inválidos: cursoId o asistencias no válidos');
+  }
+
+  const datosValidos = asistencias.every(
+    a => a && typeof a.alumno_id !== 'undefined' && typeof a.estado !== 'undefined'
+  );
+
+  if (!datosValidos) {
+    throw new Error('Cada asistencia debe tener "alumno_id" y "estado"');
+  }
+
   try {
-    if (!Array.isArray(asistencias)) {
-      throw new Error('Los datos de asistencia no son válidos');
-    }
-
-    // Validar que cada elemento tenga alumno_id y estado
-    const datosValidos = asistencias.every(a => typeof a.alumno_id !== 'undefined' && typeof a.estado !== 'undefined');
-    if (!datosValidos) {
-      throw new Error('Cada asistencia debe incluir alumno_id y estado');
-    }
-
     const response = await axios.post(
       `${API_URL}/registrar_asistencia.php`,
       {
         idcursos: cursoId,
-        asistencias: asistencias, // Array de objetos con alumno_id y estado
+        asistencias,
       },
-      { withCredentials: true }
+      {
+        withCredentials: true,
+      }
     );
 
-    return response.data;
+    const data = response.data;
+
+    if (data?.success === false) {
+      throw new Error(data.message || 'Error en el registro de asistencia');
+    }
+
+    return data;
   } catch (error) {
     console.error('Error en registrarAsistencia:', error.response?.data || error.message);
     throw new Error('Error al registrar la asistencia');
