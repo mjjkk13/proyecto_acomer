@@ -37,7 +37,7 @@ try {
         throw new Exception('El parámetro "action" es requerido');
     }
 
-    // Validar sesión general
+    // Validar sesión
     if (!isset($_SESSION['idusuarios'], $_SESSION['usuario'], $_SESSION['rol'])) {
         throw new Exception("Sesión no iniciada correctamente.");
     }
@@ -46,12 +46,10 @@ try {
     $usuario = $_SESSION['usuario'];
     $role = $_SESSION['rol'];
 
-    // Define qué roles tienen permisos para modificar
-    $rolesAdmin = ['Administrador', 'Admin', 'admin']; // Ajusta según tus roles reales
+    $rolesAdmin = ['Administrador', 'Admin', 'admin'];
 
     switch ($data['action']) {
         case 'read':
-            // Cualquier usuario con sesión puede leer
             $tipomenu = $data['tipomenu'] ?? null;
 
             if ($tipomenu) {
@@ -61,7 +59,7 @@ try {
                 $stmt = $pdo->prepare("SELECT * FROM menu ORDER BY fecha DESC");
                 $stmt->execute();
             }
-            
+
             $menus = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             echo json_encode([
@@ -74,7 +72,6 @@ try {
         case 'create':
         case 'update':
         case 'delete':
-            // Solo roles con permiso pueden crear, actualizar o eliminar
             if (!in_array($role, $rolesAdmin, true)) {
                 throw new Exception("No tiene permisos para realizar esta acción.");
             }
@@ -86,13 +83,26 @@ try {
                         throw new Exception("El campo '$field' es obligatorio");
                     }
                 }
+
+                // Obtener idadmin desde usuario_id
+                $stmtAdmin = $pdo->prepare("SELECT idadmin FROM admin WHERE usuario_id = ?");
+                $stmtAdmin->execute([$userId]);
+                $admin = $stmtAdmin->fetch(PDO::FETCH_ASSOC);
+
+                if (!$admin) {
+                    throw new Exception("No se encontró el administrador correspondiente al usuario actual.");
+                }
+
+                $adminId = $admin['idadmin'];
+
                 $stmt = $pdo->prepare("INSERT INTO menu (tipomenu, fecha, descripcion, admin_id) VALUES (?, ?, ?, ?)");
                 $stmt->execute([
                     trim($data['tipomenu']),
                     trim($data['fecha']),
                     trim($data['descripcion']),
-                    $userId // el id del usuario que está creando
+                    $adminId
                 ]);
+
                 echo json_encode([
                     'success' => true,
                     'message' => 'Menú creado correctamente',
@@ -110,6 +120,7 @@ try {
                     trim($data['descripcion']),
                     (int)$data['idmenu']
                 ]);
+
                 echo json_encode([
                     'success' => $stmt->rowCount() > 0,
                     'message' => $stmt->rowCount() > 0 ? 'Menú actualizado correctamente' : 'No se realizaron cambios'
