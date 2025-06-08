@@ -159,8 +159,16 @@ try {
     error_log("Sesión guardada: " . print_r($_SESSION, true));
 
     // --- Actualizar último acceso
-    $pdo->prepare("UPDATE credenciales SET ultimoacceso = NOW() WHERE user = :user")
-        ->execute(['user' => $usuario]);
+    // Configura la zona horaria de Bogotá
+    date_default_timezone_set('America/Bogota');
+
+    // Obtén la fecha y hora actual en Bogotá
+    $fechaBogota = date('Y-m-d H:i:s');
+
+    // Prepara y ejecuta la consulta pasando la fecha desde PHP
+    $pdo->prepare("UPDATE credenciales SET ultimoacceso = :fecha WHERE user = :user")
+        ->execute(['fecha' => $fechaBogota, 'user' => $usuario]);
+
 
     // --- Redirección según rol
     $redirect_url = match($result['rol']) {
