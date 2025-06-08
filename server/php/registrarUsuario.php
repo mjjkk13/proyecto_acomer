@@ -48,26 +48,29 @@ try {
     $pdo->beginTransaction();
     $transactionStarted = true;
 
+    // Obtener tipo de documento
     $stmt_doc = $pdo->prepare("SELECT tdoc FROM tipo_documento WHERE tdoc = :descripcion");
     $stmt_doc->execute([':descripcion' => $tipo_documento_desc]);
     if (!$tipo_documento = $stmt_doc->fetchColumn()) {
         throw new Exception("Tipo documento no válido", 400);
     }
 
+    // Obtener tipo de usuario
     $stmt_rol = $pdo->prepare("SELECT idtipo_usuario FROM tipo_usuario WHERE rol = :rol");
     $stmt_rol->execute([':rol' => $rol_desc]);
     if (!$tipo_usuario = $stmt_rol->fetchColumn()) {
         throw new Exception("Rol no válido", 400);
     }
 
+    // Validar que el correo no esté ya registrado
     $stmt_email = $pdo->prepare("SELECT idusuarios FROM usuarios WHERE email = :email");
     $stmt_email->execute([':email' => $email]);
     if ($stmt_email->fetchColumn()) {
         throw new Exception("El email ya está registrado", 409);
     }
 
+    // Insertar en credenciales
     $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
-
     $stmt_cred = $pdo->prepare("
         INSERT INTO credenciales (user, contrasena, fecharegistro, estado)
         VALUES (:user, :contrasena, NOW(), 1)
@@ -75,7 +78,7 @@ try {
     $stmt_cred->execute([':user' => $user, ':contrasena' => $hashed_password]);
     $credenciales_id = $pdo->lastInsertId();
 
-    // NO SE INCLUYE `ultimoacceso` en este insert
+    // Insertar en usuarios (NO incluye campo ultimoacceso porque usa DEFAULT CURRENT_TIMESTAMP)
     $stmt_usr = $pdo->prepare("
         INSERT INTO usuarios (
             nombre, apellido, email, telefono, direccion,
@@ -101,6 +104,7 @@ try {
     
     $usuarios_id = $pdo->lastInsertId();
 
+    // Insertar en tabla correspondiente al rol
     $tabla_rol = match($rol_desc) {
         'Docente' => 'docente',
         'Administrador' => 'admin',
