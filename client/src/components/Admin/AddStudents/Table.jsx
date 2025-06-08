@@ -107,11 +107,6 @@ const UploadStudents = () => {
                         <FontAwesomeIcon icon={faTimes} />
                     </button>
                 )}
-                {file && (
-                    <p className="mt-1 text-sm text-gray-700">
-                        Archivo seleccionado: <strong>{file.name}</strong>
-                    </p>
-                )}
             </div>
 
             {/* Botón de Subida */}
