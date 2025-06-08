@@ -1,10 +1,10 @@
 <?php 
 session_start();
 require_once 'conexion.php';
+$pdo = getPDO(); // <- Se obtiene la conexión aquí
 
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
-
 
 /**
  * @OA\Get(
