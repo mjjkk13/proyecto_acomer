@@ -13,6 +13,8 @@ if (in_array($origin, $allowed_origins)) {
     header('Access-Control-Allow-Headers: Content-Type, Authorization, Cache-Control, X-Requested-With');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Max-Age: 86400'); // cache 1 día
+    header("Vary: Origin"); // ← importante para que los proxies no cacheen mal
+
 }
 
 // --- Manejo de preflight OPTIONS
