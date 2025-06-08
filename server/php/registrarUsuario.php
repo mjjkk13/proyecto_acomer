@@ -75,16 +75,16 @@ try {
     $stmt_cred->execute([':user' => $user, ':contrasena' => $hashed_password]);
     $credenciales_id = $pdo->lastInsertId();
 
-    // Agregamos el campo `ultimoacceso` con NOW()
+    // NO SE INCLUYE `ultimoacceso` en este insert
     $stmt_usr = $pdo->prepare("
         INSERT INTO usuarios (
             nombre, apellido, email, telefono, direccion,
             numerodocumento, tipo_documento, tipo_usuario,
-            credenciales, ultimoacceso
+            credenciales
         ) VALUES (
             :nombre, :apellido, :email, :telefono, :direccion,
             :numerodocumento, :tdoc, :tipo_usuario,
-            :credenciales, NOW()
+            :credenciales
         )
     ");
     $stmt_usr->execute([ 
