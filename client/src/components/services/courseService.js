@@ -3,7 +3,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 async function fetchData(action, method = 'GET', data = null) {
   try {
     const options = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'include' };
-    const url = `${API_URL}?action=${action}`;
+    const url = `${API_URL}/Cursos.php?action=${action}`;
     if (method !== 'GET' && data) {
       options.body = JSON.stringify(data);
     }
