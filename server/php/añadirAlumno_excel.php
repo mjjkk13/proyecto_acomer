@@ -63,13 +63,12 @@
  */
 
 require 'cors.php';
-
-
-require 'cors.php';
 require 'vendor/autoload.php';
-require 'conexion.php'; // Usa la variable $pdo para la conexión
-$pdo = getPDO(); 
+require 'conexion.php';
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
+
+$pdo = getPDO();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_POST['courseId'])) {
     $courseId = intval($_POST['courseId']);
@@ -80,22 +79,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
         $worksheet = $spreadsheet->getActiveSheet();
         $rows = $worksheet->toArray();
 
-        // Preparar consulta fuera del bucle para mejorar rendimiento
+        // Verificar si hay al menos una fila con datos válidos (sin contar encabezado)
+        $hasData = false;
+        foreach ($rows as $index => $row) {
+            if ($index === 0) continue; // Saltar encabezados
+            $nombre = isset($row[0]) ? trim($row[0]) : null;
+            $apellido = isset($row[1]) ? trim($row[1]) : null;
+            if (!empty($nombre) && !empty($apellido)) {
+                $hasData = true;
+                break;
+            }
+        }
+
+        if (!$hasData) {
+            echo json_encode(["error" => "El archivo Excel está vacío o no contiene datos válidos."]);
+            exit;
+        }
+
         $stmt = $pdo->prepare("INSERT INTO alumnos (nombre, apellido, curso_id) VALUES (?, ?, ?)");
 
         foreach ($rows as $index => $row) {
-            if ($index === 0) continue; // Saltar encabezados
-            
+            if ($index === 0) continue;
+
             $nombre = isset($row[0]) ? trim($row[0]) : null;
             $apellido = isset($row[1]) ? trim($row[1]) : null;
 
-            // Validación de datos
             if (empty($nombre) || empty($apellido)) {
                 error_log("Fila $index con datos vacíos: " . json_encode($row));
                 continue;
             }
 
-            // Ejecutar la consulta con valores correctos
             $stmt->execute([$nombre, $apellido, $courseId]);
         }
 
