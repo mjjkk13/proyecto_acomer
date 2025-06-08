@@ -1,8 +1,6 @@
-# server/php/dockerfile
-
 FROM php:8.2-apache
 
-# Instala dependencias necesarias para PHP
+# Instala dependencias necesarias para PHP + zip
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -10,7 +8,9 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql
+    libzip-dev \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install pdo pdo_mysql zip
 
 # Activa el módulo rewrite de Apache (útil para muchas APIs y frameworks)
 RUN a2enmod rewrite
