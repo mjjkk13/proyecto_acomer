@@ -72,8 +72,6 @@
 
 session_start();
 require_once 'conexion.php';
-
-// Agregar esta línea para obtener la instancia PDO
 $pdo = getPDO();
 
 header('Content-Type: application/json; charset=utf-8');
@@ -105,6 +103,29 @@ try {
         exit;
     }
 
+    // Verificar hora del sistema
+    date_default_timezone_set('America/Bogota');
+    $horaActual = date('H:i');
+
+    $hora = strtotime($horaActual);
+    $horaDesayunoInicio = strtotime('07:00');
+    $horaDesayunoFin = strtotime('09:00');
+    $horaAlmuerzoInicio = strtotime('11:30');
+    $horaAlmuerzoFin = strtotime('13:00');
+    $horaRefrigerioFin = strtotime('13:00');
+
+    $esDesayuno = ($hora >= $horaDesayunoInicio && $hora <= $horaDesayunoFin);
+    $esAlmuerzo = ($hora >= $horaAlmuerzoInicio && $hora <= $horaAlmuerzoFin);
+    $esRefrigerio = (!$esDesayuno && !$esAlmuerzo && $hora <= $horaRefrigerioFin);
+
+    if (!$esDesayuno && !$esAlmuerzo && !$esRefrigerio) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Escaneo fuera del horario permitido. Solo se puede registrar entre 7:00–9:00am (desayuno), 11:30am–1:00pm (almuerzo) o refrigerio antes de la 1:00pm.'
+        ]);
+        exit;
+    }
+
     // Extraer cantidad de estudiantes del QR
     preg_match('/Estudiantes presentes: (\d+)/', $qr_code, $matches);
     $cantidad_estudiantes = $matches[1] ?? 0;
@@ -126,9 +147,8 @@ try {
     $idestudiante_ss = $estudiante['idestudiante_ss'];
 
     // Registrar escaneo
-    $sqlInsert = "INSERT INTO qrescaneados 
-                 (fecha_escaneo, estudiante_ss_id, qr_code) 
-                 VALUES (NOW(), :idestudiante_ss, :qr_code)";
+    $sqlInsert = "INSERT INTO qrescaneados (fecha_escaneo, estudiante_ss_id, qr_code) 
+                  VALUES (NOW(), :idestudiante_ss, :qr_code)";
     $stmtInsert = $pdo->prepare($sqlInsert);
     $stmtInsert->execute([
         ':idestudiante_ss' => $idestudiante_ss,
@@ -137,8 +157,8 @@ try {
 
     // Actualizar contador de QRs del estudiante
     $sqlUpdate = "UPDATE estudiante_ss 
-                 SET qr_registrados = qr_registrados + 1 
-                 WHERE idestudiante_ss = :idestudiante_ss";
+                  SET qr_registrados = qr_registrados + 1 
+                  WHERE idestudiante_ss = :idestudiante_ss";
     $stmtUpdate = $pdo->prepare($sqlUpdate);
     $stmtUpdate->execute([':idestudiante_ss' => $idestudiante_ss]);
 

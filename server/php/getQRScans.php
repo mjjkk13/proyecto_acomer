@@ -30,6 +30,10 @@
  */
 require_once 'conexion.php';
 require 'cors.php';
+
+// Establecer zona horaria de Bogotá
+date_default_timezone_set('America/Bogota');
+
 $pdo = getPDO(); 
 try {
     $sql = "SELECT fecha_escaneo, qr_code FROM qrescaneados ORDER BY fecha_escaneo DESC";
@@ -55,7 +59,7 @@ try {
         $resultados[] = [
             'curso' => $curso,
             'cantidad' => $cantidad,
-            'fecha' => $fecha
+            'fecha' => date("Y-m-d H:i:s", strtotime($fecha)) // Formateado con zona horaria de Bogotá
         ];
     }
 
