@@ -13,11 +13,11 @@ const QRScannerlist = () => {
       setLoading(true);
       setError(null);
       const data = await fetchQRScans();
-      
+
       if (!Array.isArray(data)) {
         throw new Error("Formato de datos inválido recibido del servidor");
       }
-      
+
       setQrData(data);
       setCurrentPage(1);
     } catch (err) {
@@ -55,16 +55,26 @@ const QRScannerlist = () => {
       );
     }
 
-    return currentScans.map((item) => (
-      <tr
-        key={`${item.fecha}-${item.curso}-${item.cantidad}`}
-        className="bg-white hover:bg-gray-50 transition duration-150"
-      >
-        <td className="px-4 py-2 whitespace-nowrap">{item.fecha}</td>
-        <td className="px-4 py-2">{item.curso}</td>
-        <td className="px-4 py-2 text-center">{item.cantidad}</td>
-      </tr>
-    ));
+    return currentScans.map((item) => {
+      // Convertir string de fecha a objeto Date
+      const fechaObj = new Date(item.fecha);
+
+      // Formatear fecha y hora, si es válida
+      const fechaConHora = isNaN(fechaObj)
+        ? item.fecha
+        : fechaObj.toLocaleString();
+
+      return (
+        <tr
+          key={`${item.fecha}-${item.curso}-${item.cantidad}`}
+          className="bg-white hover:bg-gray-50 transition duration-150"
+        >
+          <td className="px-4 py-2 whitespace-nowrap">{fechaConHora}</td>
+          <td className="px-4 py-2">{item.curso}</td>
+          <td className="px-4 py-2 text-center">{item.cantidad}</td>
+        </tr>
+      );
+    });
   };
 
   const renderPagination = () => {
@@ -130,9 +140,9 @@ const QRScannerlist = () => {
         >
           Anterior
         </button>
-        
+
         {pageButtons}
-        
+
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
@@ -148,7 +158,7 @@ const QRScannerlist = () => {
     <div className="container mx-auto mt-4 px-2 sm:px-0">
       <div className="bg-white rounded-lg shadow-sm p-4">
         <h2 className="text-xl font-semibold mb-4 text-gray-800">Registros de QR Escaneados</h2>
-        
+
         {loading ? (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
@@ -169,7 +179,7 @@ const QRScannerlist = () => {
                 </tbody>
               </table>
             </div>
-            
+
             {renderPagination()}
           </>
         )}

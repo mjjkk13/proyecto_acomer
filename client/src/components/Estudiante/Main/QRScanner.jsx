@@ -11,6 +11,27 @@ const QRScanner = () => {
   const [isCameraActive, setIsCameraActive] = useState(false); // Estado para controlar la cámara
   const [error] = useState(null); // Estado para manejar errores
 
+  // Función para validar si la hora está dentro del rango permitido
+  const isWithinAllowedTime = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    const toMinutes = (h, m) => h * 60 + m;
+    const currentMinutes = toMinutes(hours, minutes);
+
+    // Rango de desayuno: 7:00–9:00
+    const isBreakfast = currentMinutes >= toMinutes(7, 0) && currentMinutes <= toMinutes(9, 0);
+
+    // Rango de almuerzo: 11:30–13:00
+    const isLunch = currentMinutes >= toMinutes(11, 30) && currentMinutes <= toMinutes(13, 0);
+
+    // Rango de refrigerio antes de 13:00
+    const isSnack = currentMinutes < toMinutes(13, 0);
+
+    return isBreakfast || isLunch || isSnack;
+  };
+
   const handleScanClick = () => {
     Swal.fire({
       title: 'Escanea el Código QR',
@@ -46,10 +67,23 @@ const QRScanner = () => {
       const codeReader = new BrowserQRCodeReader();
       codeReader.decodeFromVideoDevice(null, videoRef.current, async (result, err) => {
         if (result) {
+          if (!isWithinAllowedTime()) {
+            codeReader.reset(); // Detiene el lector
+            Swal.fire({
+              title: 'Escaneo fuera del horario permitido',
+              text: 'Solo se puede registrar entre 7:00–9:00am (desayuno), 11:30am–1:00pm (almuerzo) o refrigerio antes de la 1:00pm.',
+              icon: 'error',
+              confirmButtonText: 'Aceptar',
+            });
+            stopCamera(); // Apaga la cámara
+            return;
+          }
+
           console.log('Código QR detectado:', result.text);
-          const audio = new Audio(sonido); // Crear una nueva instancia de Audio
-          audio.play(); // Reproducir el sonido
-          codeReader.reset(); // Detener el lector de QR
+          const audio = new Audio(sonido);
+          audio.play();
+          codeReader.reset();
+
           Swal.fire({
             title: 'Código QR detectado',
             text: result.text,
@@ -57,10 +91,9 @@ const QRScanner = () => {
             showConfirmButton: true,
             allowOutsideClick: false,
             allowEscapeKey: false,
-            allowEnterKey: false
+            allowEnterKey: false,
           });
 
-          // Llamamos al servicio para guardar el QR
           try {
             await saveqr.saveQRCode(result.text);
           } catch (error) {
@@ -68,7 +101,7 @@ const QRScanner = () => {
             Swal.fire('Error', 'No se pudo guardar el QR en la base de datos.', 'error');
           }
 
-          stopCamera(); // Detener la cámara después del escaneo
+          stopCamera();
         }
         if (err && !(err.name === 'NotFoundException')) {
           console.error('Error al escanear el QR:', err);
@@ -81,23 +114,21 @@ const QRScanner = () => {
   }, []);
 
   const stopCamera = () => {
-    const stream = videoRef.current?.srcObject; // Verificar si hay un flujo activo
+    const stream = videoRef.current?.srcObject;
     if (stream) {
       const tracks = stream.getTracks();
-      tracks.forEach((track) => track.stop()); // Detener todos los tracks activos
-      videoRef.current.srcObject = null; // Limpiar el flujo de video
+      tracks.forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
     }
-    setIsCameraActive(false); // Desactiva el renderizado del video
+    setIsCameraActive(false);
   };
 
-  // Activar la cámara después de renderizar el <video>
   useEffect(() => {
     if (isCameraActive) {
       activateCamera();
     }
   }, [isCameraActive, activateCamera]);
 
-  // Función para manejar el click en el video y detener la cámara
   const handleVideoClick = () => {
     if (isCameraActive) {
       stopCamera();
@@ -109,11 +140,9 @@ const QRScanner = () => {
     <div className="container mx-auto p-4 text-center">
       <h3 className="text-lg font-semibold mb-4 text-black">Escanear QR para acceder al comedor escolar</h3>
       <p className="mb-4 text-black">Por favor, escanea el código QR para acceder al comedor escolar.</p>
-      
-      {/* Mostrar mensaje de error si existe */}
+
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
-      {/* Mostrar la imagen si la cámara no está activa */}
       {!isCameraActive && (
         <img
           src={foto2}
@@ -122,8 +151,7 @@ const QRScanner = () => {
           onClick={handleScanClick}
         />
       )}
-      
-      {/* Contenedor de video para mostrar la cámara cuando esté activa */}
+
       {isCameraActive && (
         <div className="mt-4">
           <video
