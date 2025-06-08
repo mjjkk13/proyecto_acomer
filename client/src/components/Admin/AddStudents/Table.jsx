@@ -1,21 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getCourses, uploadStudents } from "../../services/addStudent";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload, faFileExcel, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faUpload, faFileExcel, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const UploadStudents = () => {
     const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState("");
     const [file, setFile] = useState(null);
+    const fileInputRef = useRef(null); // Referencia para el input file
 
     useEffect(() => {
         getCourses().then((response) => {
-            
             if (response.success && Array.isArray(response.data)) {
                 setCourses(response.data);
             } else if (Array.isArray(response)) { 
-                // Si el backend devuelve un array directamente
                 setCourses(response); 
             } else {
                 setCourses([]);
@@ -24,10 +23,17 @@ const UploadStudents = () => {
             setCourses([]);
         });
     }, []);
-    
 
     const handleFileChange = (e) => setFile(e.target.files[0]);
     const handleCourseChange = (e) => setSelectedCourse(e.target.value);
+
+    // Función para quitar archivo seleccionado
+    const handleRemoveFile = () => {
+        setFile(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = null; // Limpia el input visualmente
+        }
+    };
 
     const handleUpload = async () => {
         if (!file || !selectedCourse) {
@@ -41,6 +47,9 @@ const UploadStudents = () => {
                 Swal.fire("Éxito", result.message || "Archivo subido correctamente", "success");
                 setFile(null);
                 setSelectedCourse("");
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = null;
+                }
             } else {
                 throw new Error(result.error || "Hubo un problema con la subida del archivo.");
             }
@@ -77,7 +86,7 @@ const UploadStudents = () => {
             </div>
 
             {/* Input de Archivo */}
-            <div className="mb-4">
+            <div className="mb-4 relative">
                 <label className="block text-sm font-semibold flex items-center gap-2">
                     <FontAwesomeIcon icon={faFileExcel} className="text-green-500" /> Selecciona un archivo Excel:
                 </label>
@@ -86,7 +95,23 @@ const UploadStudents = () => {
                     accept=".xlsx, .xls"
                     className="file-input file-input-bordered w-full bg-white text-gray-900 focus:outline-none focus:ring mt-2"
                     onChange={handleFileChange}
+                    ref={fileInputRef}
                 />
+                {file && (
+                    <button
+                        type="button"
+                        onClick={handleRemoveFile}
+                        className="absolute top-8 right-2 text-red-500 hover:text-red-700"
+                        aria-label="Quitar archivo"
+                    >
+                        <FontAwesomeIcon icon={faTimes} />
+                    </button>
+                )}
+                {file && (
+                    <p className="mt-1 text-sm text-gray-700">
+                        Archivo seleccionado: <strong>{file.name}</strong>
+                    </p>
+                )}
             </div>
 
             {/* Botón de Subida */}
