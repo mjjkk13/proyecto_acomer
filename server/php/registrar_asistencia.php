@@ -1,16 +1,11 @@
 <?php
 require 'cors.php'; // Manejo de CORS (debe estar al inicio)
 
-
-
-
-// Responder a la petición OPTIONS de preflight y terminar aquí
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-// Cabecera para indicar que la respuesta es JSON
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');
 
@@ -22,7 +17,6 @@ session_start();
 $pdo = getPDO(); 
 date_default_timezone_set('America/Bogota');
 
-// Validar sesión
 if (!isset($_SESSION['idusuarios'])) {
     echo json_encode(['status' => 'error', 'message' => 'No ha iniciado sesión']);
     exit;
@@ -30,8 +24,8 @@ if (!isset($_SESSION['idusuarios'])) {
 
 $usuario_id = $_SESSION['idusuarios'];
 
-// Obtener ID del docente
 try {
+    // Obtener ID del docente
     $stmtDocente = $pdo->prepare("SELECT iddocente FROM docente WHERE usuario_id = :usuario_id");
     $stmtDocente->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
     $stmtDocente->execute();
@@ -43,29 +37,24 @@ try {
     }
 
     $docente_id = $docente['iddocente'];
-} catch (PDOException $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Error al obtener el docente.']);
-    exit;
-}
 
-// Obtener y validar los datos JSON recibidos
-$data = json_decode(file_get_contents('php://input'), true);
+    // Obtener y validar los datos JSON
+    $data = json_decode(file_get_contents('php://input'), true);
 
-if (!$data || !isset($data['idcursos']) || !isset($data['asistencias'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Datos incompletos o inválidos.']);
-    exit;
-}
+    if (!$data || !isset($data['idcursos']) || !isset($data['asistencias'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Datos incompletos o inválidos.']);
+        exit;
+    }
 
-$fecha = date('Y-m-d');
-$curso_id = $data['idcursos'];
-$asistencias = $data['asistencias'];
+    $fecha = date('Y-m-d');
+    $curso_id = $data['idcursos'];
+    $asistencias = $data['asistencias'];
 
-if (!is_array($asistencias) || empty($asistencias)) {
-    echo json_encode(['status' => 'error', 'message' => 'No hay asistencias para registrar.']);
-    exit;
-}
+    if (!is_array($asistencias) || empty($asistencias)) {
+        echo json_encode(['status' => 'error', 'message' => 'No hay asistencias para registrar.']);
+        exit;
+    }
 
-try {
     // Verificar que el curso pertenece al docente
     $stmtVerificar = $pdo->prepare("
         SELECT nombrecurso FROM cursos 
@@ -75,8 +64,8 @@ try {
         ':docente_id' => $docente_id,
         ':idcursos' => $curso_id
     ]);
-
     $curso = $stmtVerificar->fetch();
+
     if (!$curso) {
         echo json_encode(['status' => 'error', 'message' => 'El curso no está asignado al docente.']);
         exit;
@@ -84,11 +73,10 @@ try {
 
     $nombreCurso = $curso['nombrecurso'];
 
-    // Filtrar asistencias presentes
+    // Generar QR
     $asistenciasPresentes = array_filter($asistencias, fn($a) => isset($a['estado']) && $a['estado'] == 1);
     $cantidadPresentes = count($asistenciasPresentes);
 
-    // Generar QR con la información
     $qrData = "Curso: $nombreCurso\nEstudiantes presentes: $cantidadPresentes\nFecha: $fecha";
     $qrFileName = 'qr_asistencia_' . time() . '.png';
     $qrDir = 'qrcodes/';
@@ -129,13 +117,15 @@ try {
     echo json_encode([
         'status' => 'success',
         'message' => 'Asistencia registrada correctamente',
-        'qr_image' => "http://localhost/proyecto_acomer/server/php/$qrFilePath"
+        'qr_image' => "https://backend-acomer.onrender.com/$qrFilePath"
     ]);
+
 } catch (Throwable $e) {
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'message' => 'Ocurrió un error al procesar la solicitud.'
+        'message' => 'Ocurrió un error al procesar la solicitud.',
+        'error_detail' => $e->getMessage() // <--- Solo para desarrollo
     ]);
     exit;
 }
