@@ -1,16 +1,18 @@
 FROM php:8.2-apache
 
-# Instala dependencias necesarias para PHP + zip
+# Instala dependencias necesarias para GD, zip, PDO, etc.
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
+    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
+    libzip-dev \
     zip \
     unzip \
-    libzip-dev \
     && docker-php-ext-configure zip \
-    && docker-php-ext-install pdo pdo_mysql zip
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_mysql zip
 
 # Activa el módulo rewrite de Apache (útil para muchas APIs y frameworks)
 RUN a2enmod rewrite
@@ -18,7 +20,7 @@ RUN a2enmod rewrite
 # Establece la carpeta del documento raíz
 ENV APACHE_DOCUMENT_ROOT /var/www/html
 
-# Copia todo el contenido de tu backend al directorio del servidor
+# Copia el contenido del backend al directorio del servidor
 COPY . /var/www/html/
 
 # Asegura los permisos adecuados
