@@ -68,15 +68,13 @@ try {
 
     $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
 
-    // Ahora se incluye el campo ultimoacceso con valor '0000-00-00 00:00:00'
     $stmt_cred = $pdo->prepare("
-        INSERT INTO credenciales (user, contrasena, fecharegistro, estado, ultimoacceso)
-        VALUES (:user, :contrasena, NOW(), 1, :ultimoacceso)
+        INSERT INTO credenciales (user, contrasena, fecharegistro, estado)
+        VALUES (:user, :contrasena, NOW(), 1)
     ");
     $stmt_cred->execute([
         ':user' => $user,
         ':contrasena' => $hashed_password,
-        ':ultimoacceso' => '0000-00-00 00:00:00'
     ]);
     $credenciales_id = $pdo->lastInsertId();
 
