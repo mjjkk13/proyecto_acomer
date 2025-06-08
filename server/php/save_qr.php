@@ -73,9 +73,11 @@
 session_start();
 require_once 'conexion.php';
 
+// Agregar esta línea para obtener la instancia PDO
+$pdo = getPDO();
+
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
@@ -139,7 +141,6 @@ try {
                  WHERE idestudiante_ss = :idestudiante_ss";
     $stmtUpdate = $pdo->prepare($sqlUpdate);
     $stmtUpdate->execute([':idestudiante_ss' => $idestudiante_ss]);
-
 
     echo json_encode([
         'status' => 'success',
