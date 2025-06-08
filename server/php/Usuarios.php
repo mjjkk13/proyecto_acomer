@@ -1,16 +1,17 @@
 <?php
-// --- CORS debe ir al inicio sin nada antes
-require 'cors.php';
-
 header('Content-Type: application/json; charset=utf-8');
 
-// Soporte para preflight CORS (esto ya está en cors.php, pero se refuerza por si este archivo se llama directamente)
+require 'conexion.php';
+require 'cors.php';
+
+// Conectar a la base de datos
+$pdo = getPDO();
+
+// Soporte para preflight CORS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204); // No Content
+    http_response_code(204);
     exit;
 }
-
-require 'conexion.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
