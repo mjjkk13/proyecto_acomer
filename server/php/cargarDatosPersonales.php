@@ -127,10 +127,12 @@
  * )
  */
 
-session_start();  // Iniciar la sesión
-
+ 
 header('Content-Type: application/json; charset=utf-8');
 require 'cors.php';
+
+session_start();  // Iniciar la sesión
+
 
 
 require_once __DIR__ . '/conexion.php';
