@@ -1,12 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import desayunoImg from '../../../img/desayuno.png';
 import almuerzoImg from '../../../img/almuerzo.png';
 import refrigerioImg from '../../../img/refrigerio-saludable.png';
-import { fetchMenus, addMenu, fetchMenuByType, updateMenu, deleteMenu } from '../../services/menuService';
-import { useCallback } from 'react';
+import {
+  fetchMenus,
+  addMenu,
+  fetchMenuByType,
+  updateMenu,
+  deleteMenu
+} from '../../services/menuService';
 
 const menuImages = {
   desayuno: desayunoImg,
@@ -76,7 +81,7 @@ const MenuSection = () => {
     } catch (error) {
       console.error('Error loading menus:', error);
     }
-  }, [setGroupedMenus]);
+  }, []);
 
   useEffect(() => {
     loadMenus();
@@ -159,52 +164,51 @@ const MenuSection = () => {
     }
   };
 
-const handleAddMenu = async () => {
-  const { value: formValues } = await Swal.fire({
-    title: 'Agregar Menú',
-    html: `
-      <select id="tipoMenu" class="swal2-input" style="background-color: white;">
-        <option value="">Seleccione un tipo de menú</option>
-        <option value="desayuno">Desayuno</option>
-        <option value="almuerzo">Almuerzo</option>
-        <option value="refrigerio">Refrigerio</option>
-      </select>
-      <input id="fecha" type="date" class="swal2-input">
-      <textarea id="descripcion" class="swal2-textarea" placeholder="Descripción"></textarea>
-    `,
-    showCancelButton: true,
-    confirmButtonText: 'Agregar',
-    focusConfirm: false,
-    preConfirm: () => {
-      const tipomenu = document.getElementById('tipoMenu').value;
-      const fecha = document.getElementById('fecha').value;
-      const descripcion = document.getElementById('descripcion').value;
+  const handleAddMenu = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Agregar Menú',
+      html: `
+        <select id="tipoMenu" class="swal2-input" style="background-color: white;">
+          <option value="">Seleccione un tipo de menú</option>
+          <option value="desayuno">Desayuno</option>
+          <option value="almuerzo">Almuerzo</option>
+          <option value="refrigerio">Refrigerio</option>
+        </select>
+        <input id="fecha" type="date" class="swal2-input">
+        <textarea id="descripcion" class="swal2-textarea" placeholder="Descripción"></textarea>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Agregar',
+      focusConfirm: false,
+      preConfirm: () => {
+        const tipomenu = document.getElementById('tipoMenu').value;
+        const fecha = document.getElementById('fecha').value;
+        const descripcion = document.getElementById('descripcion').value;
 
-      if (!tipomenu || !fecha || !descripcion.trim()) {
-        Swal.showValidationMessage('Por favor, complete todos los campos.');
-        return false;
+        if (!tipomenu || !fecha || !descripcion.trim()) {
+          Swal.showValidationMessage('Por favor, complete todos los campos.');
+          return false;
+        }
+
+        return { tipomenu, fecha, descripcion };
       }
+    });
 
-      return { tipomenu, fecha, descripcion };
-    }
-  });
-
-  if (formValues) {
-    try {
-      const response = await addMenu(formValues);
-      if (response.success) {
-        await loadMenus();
-        Swal.fire('Éxito', 'Menú agregado', 'success');
-      } else {
+    if (formValues) {
+      try {
+        const response = await addMenu(formValues);
+        if (response.success) {
+          await loadMenus();
+          Swal.fire('Éxito', 'Menú agregado', 'success');
+        } else {
+          Swal.fire('Error', 'No se pudo agregar el menú.', 'error');
+        }
+      } catch (error) {
+        console.error('Error adding menu:', error);
         Swal.fire('Error', 'No se pudo agregar el menú.', 'error');
       }
-    } catch (error) {
-      console.error('Error adding menu:', error);
-      Swal.fire('Error', 'No se pudo agregar el menú.', 'error');
     }
-  }
-};
-
+  };
 
   return (
     <div className="container mx-auto my-4">
