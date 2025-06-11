@@ -94,17 +94,24 @@ const CursosDocente = () => {
       const response = await registrarAsistencia(cursoSeleccionado.idcursos, datosAsistencias);
 
       if (response.status === 'success') {
-        Swal.fire({
-          title: 'QR de Asistencia Generado',
-          html: `
-            <div style="text-align: center;">
-              <img id="qrImage" src="${response.qr_image}" alt="QR de Asistencia" width="200" style="display: block; margin-bottom: 10px;" />
-            </div>
-          `,
-          icon: 'success',
-          showConfirmButton: true,
-          confirmButtonText: 'Aceptar'
-        });
+          Swal.fire({
+            title: 'QR de Asistencia Generado',
+            html: `
+              <div style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                height: 300px; /* Ajusta según el alto total que quieras */
+              ">
+                <img id="qrImage" src="${response.qr_image}" alt="QR de Asistencia" width="200" style="margin-bottom: 10px;" />
+              </div>
+            `,
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonText: 'Aceptar'
+          });
+
 
       } else {
         Swal.fire('Error', response.message || 'Ocurrió un error al registrar las asistencias', 'error');
