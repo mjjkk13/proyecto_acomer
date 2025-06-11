@@ -28,8 +28,9 @@ const QR = () => {
         id: codigo.idqrgenerados,
         nombrecurso: codigo.nombrecurso || 'Sin curso asignado',
         fecha_hora: codigo.fechageneracion,
-        imagen: codigo.codigoqr || null, // ya es base64
+        imagen: codigo.qr_image || null,
       }));
+
 
       setQrCodes(fullQRs);
     } catch (error) {

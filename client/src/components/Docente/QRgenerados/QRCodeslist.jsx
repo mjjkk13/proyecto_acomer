@@ -65,14 +65,15 @@ const QRCodesList = () => {
         return;
       }
 
-      const formattedCodes = dataToProcess.map(item => ({
-      id: item.idqrgenerados || Math.random().toString(36).substr(2, 9),
-      fecha_hora: item.fechageneracion || new Date().toISOString(),
-      nombrecurso: item.nombrecurso || 'Sin curso asignado',
-      imagen: item.codigoqr || null,
-      fecha_uso: item.fecha_uso || null,
-      docente: item.docente_nombre || 'Desconocido'
-    }));
+    const formattedCodes = dataToProcess.map(item => ({
+    id: item.idqrgenerados || Math.random().toString(36).substr(2, 9),
+    fecha_hora: item.fechageneracion || new Date().toISOString(),
+    nombrecurso: item.nombrecurso || 'Sin curso asignado',
+    imagen: item.qr_image || null,  // <-- Aquí usamos qr_image
+    fecha_uso: item.fecha_uso || null,
+    docente: item.docente_nombre || 'Desconocido'
+  }));
+
 
 
 

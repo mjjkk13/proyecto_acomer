@@ -1,20 +1,16 @@
 <?php
 
-// CORS headers DEBEN ir antes de cualquier salida
 require 'cors.php';
 require_once 'conexion.php';
+require_once 'phpqrcode/qrlib.php'; // Asegúrate de tener esta librería
 
 session_start();
-$pdo = getPDO(); 
+$pdo = getPDO();
 
-// Manejo de preflight (OPTIONS)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
-// DEBUG opcional para ver sesión
-// file_put_contents('debug.log', "SESSION: " . print_r($_SESSION, true), FILE_APPEND);
 
 try {
     if (!isset($_SESSION['idusuarios']) || !isset($_SESSION['usuario']) || !isset($_SESSION['rol'])) {
@@ -29,7 +25,6 @@ try {
     $params = [];
 
     if ($role === 'Docente') {
-        // Obtener id docente
         $stmtDocente = $pdo->prepare("SELECT iddocente FROM docente WHERE usuario_id = :uid");
         $stmtDocente->execute([':uid' => $userId]);
         $docente = $stmtDocente->fetch(PDO::FETCH_ASSOC);
@@ -64,6 +59,21 @@ try {
 
     $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Generar QR base64 para cada resultado
+    foreach ($resultados as &$row) {
+        $qrTexto = $row['codigoqr'];
+
+        // Generar la imagen QR en memoria
+        ob_start();
+        QRcode::png($qrTexto, null, QR_ECLEVEL_L, 4);
+        $imageData = ob_get_contents();
+        ob_end_clean();
+
+        // Convertir a base64
+        $base64 = base64_encode($imageData);
+        $row['qr_image'] = 'data:image/png;base64,' . $base64;
+    }
+
     echo json_encode([
         'status' => 'success',
         'data' => $resultados
@@ -74,3 +84,4 @@ try {
         'message' => $e->getMessage()
     ]);
 }
+?>
