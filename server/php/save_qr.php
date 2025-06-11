@@ -112,7 +112,7 @@ try {
     $horaDesayunoFin = strtotime('09:00');
     $horaAlmuerzoInicio = strtotime('11:30');
     $horaAlmuerzoFin = strtotime('13:00');
-    $horaRefrigerioFin = strtotime('13:00');
+    $horaRefrigerioFin = strtotime('16:00');
 
     $esDesayuno = ($hora >= $horaDesayunoInicio && $hora <= $horaDesayunoFin);
     $esAlmuerzo = ($hora >= $horaAlmuerzoInicio && $hora <= $horaAlmuerzoFin);
@@ -121,7 +121,7 @@ try {
     if (!$esDesayuno && !$esAlmuerzo && !$esRefrigerio) {
         echo json_encode([
             'status' => 'error',
-            'message' => 'Escaneo fuera del horario permitido. Solo se puede registrar entre 7:00–9:00am (desayuno), 11:30am–1:00pm (almuerzo) o refrigerio antes de la 1:00pm.'
+            'message' => 'Escaneo fuera del horario permitido. Solo se puede registrar entre 7:00–9:00am (desayuno), 11:30am–1:00pm (almuerzo) o refrigerio antes de la 4:00pm.'
         ]);
         exit;
     }
