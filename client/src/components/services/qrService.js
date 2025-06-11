@@ -28,7 +28,15 @@ export const getQRCodes = async () => {
       throw new Error(data.message || 'Error en la respuesta del servidor');
     }
 
-    return data.data || [];
+    // Adaptar el campo base64 para que pueda mostrarse como imagen
+    const processedData = (data.data || []).map(item => ({
+      ...item,
+      codigoqr: item.codigoqr
+        ? `data:image/png;base64,${item.codigoqr.trim()}`
+        : null,
+    }));
+
+    return processedData;
 
   } catch (error) {
     console.error('Error en getQRCodes:', {

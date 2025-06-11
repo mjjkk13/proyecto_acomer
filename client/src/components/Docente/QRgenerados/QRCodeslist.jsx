@@ -11,7 +11,6 @@ const QRCodesList = () => {
   const [error, setError] = useState(null);
   const [userRole, setUserRole] = useState('user');
   const codesPerPage = 5;
-  const API_URL = 'https://backend-acomer.onrender.com/qrcodes';
 
   useEffect(() => {
     loadQRCodes();
@@ -65,15 +64,16 @@ const QRCodesList = () => {
         });
         return;
       }
-
+      
       const formattedCodes = dataToProcess.map(item => ({
         id: item.idqrgenerados || Math.random().toString(36).substr(2, 9),
         fecha_hora: item.fechageneracion || new Date().toISOString(),
         nombrecurso: item.nombrecurso || 'Sin curso asignado',
-        imagen: item.codigoqr ? `${API_URL}/${item.codigoqr}` : null,
+        imagen: item.codigoqr ? `data:image/png;base64,${item.codigoqr}` : null,
         fecha_uso: item.fecha_uso || null,
         docente: item.docente_nombre || 'Desconocido'
       }));
+
 
       setQrCodes(formattedCodes);
       setUserRole(role);

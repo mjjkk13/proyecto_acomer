@@ -1,5 +1,5 @@
 <?php
-require 'cors.php'; // Manejo de CORS (debe estar al inicio)
+require 'cors.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -78,17 +78,18 @@ try {
     $cantidadPresentes = count($asistenciasPresentes);
 
     $qrData = "Curso: $nombreCurso\nEstudiantes presentes: $cantidadPresentes\nFecha: $fecha";
-    $qrFileName = 'qr_asistencia_' . time() . '.png';
-    $qrDir = 'qrcodes/';
-    $qrFilePath = $qrDir . $qrFileName;
 
-    if (!file_exists($qrDir)) mkdir($qrDir, 0777, true);
-    QRcode::png($qrData, $qrFilePath);
+    // Generar imagen QR en memoria y convertir a base64
+    ob_start();
+    QRcode::png($qrData, null);
+    $qrImageData = ob_get_clean();
+    $base64QR = base64_encode($qrImageData);
+    $dataURL = 'data:image/png;base64,' . $base64QR;
 
     // Registrar QR en base de datos
-    $stmtQR = $pdo->prepare("INSERT INTO qrgenerados (codigoqr, fechageneracion) VALUES (:filename, :fechageneracion)");
+    $stmtQR = $pdo->prepare("INSERT INTO qrgenerados (codigoqr, fechageneracion) VALUES (:codigoqr, :fechageneracion)");
     $stmtQR->execute([
-        ':filename' => $qrFileName,
+        ':codigoqr' => $dataURL,
         ':fechageneracion' => date('Y-m-d H:i:s')
     ]);
     $qrgenerados_id = $pdo->lastInsertId();
@@ -117,7 +118,7 @@ try {
     echo json_encode([
         'status' => 'success',
         'message' => 'Asistencia registrada correctamente',
-        'qr_image' => "https://backend-acomer.onrender.com/$qrFilePath"
+        'qr_base64' => $dataURL
     ]);
 
 } catch (Throwable $e) {
@@ -125,7 +126,7 @@ try {
     echo json_encode([
         'status' => 'error',
         'message' => 'Ocurrió un error al procesar la solicitud.',
-        'error_detail' => $e->getMessage() // <--- Solo para desarrollo
+        'error_detail' => $e->getMessage()
     ]);
     exit;
 }

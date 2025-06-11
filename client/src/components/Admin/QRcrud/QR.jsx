@@ -8,7 +8,6 @@ const QR = () => {
   const [qrCodes, setQrCodes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const API_URL = 'https://backend-acomer.onrender.com/qrcodes';
 
   useEffect(() => {
     loadQRCodes();
@@ -19,21 +18,20 @@ const QR = () => {
       const response = await getQRCodes();
       console.log('Respuesta getQRCodes:', response);
 
-      // Si la respuesta es un arreglo, úsalo directamente, si es objeto con data, úsalo ahí
       const data = Array.isArray(response) ? response : response.data || [];
 
       if (!Array.isArray(data)) {
         throw new Error('Los datos recibidos no son un arreglo');
       }
 
-      const fullURLs = data.map((codigo) => ({
+      const fullQRs = data.map((codigo) => ({
         id: codigo.idqrgenerados,
         nombrecurso: codigo.nombrecurso || 'Sin curso asignado',
         fecha_hora: codigo.fechageneracion,
-        imagen: codigo.codigoqr ? `${API_URL}/${codigo.codigoqr}` : null,
+        imagen: codigo.codigoqr || null, // ya es base64
       }));
 
-      setQrCodes(fullURLs);
+      setQrCodes(fullQRs);
     } catch (error) {
       console.error('Error al cargar QR:', error);
       Swal.fire('Error', 'No se pudieron cargar los códigos QR', 'error');
