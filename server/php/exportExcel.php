@@ -14,66 +14,62 @@ try {
     $sqlDaily = "
         SELECT 
             DATE(fecha_escaneo) AS fecha,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '07:00:00' AND '09:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS desayuno,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '11:30:00' AND '13:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS almuerzo,
-            SUM(CASE WHEN (TIME(fecha_escaneo) NOT BETWEEN '07:00:00' AND '09:00:00') 
-                      AND (TIME(fecha_escaneo) NOT BETWEEN '11:30:00' AND '13:00:00')
-                      AND TIME(fecha_escaneo) <= '13:00:00'
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS refrigerio,
-            SUM(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)) AS totalEstudiantes
+            CASE
+              WHEN HOUR(fecha_escaneo) BETWEEN 6 AND 9 THEN 'Desayuno'
+              WHEN HOUR(fecha_escaneo) BETWEEN 11 AND 14 THEN 'Almuerzo'
+              WHEN HOUR(fecha_escaneo) BETWEEN 15 AND 17 THEN 'Refrigerio'
+            END AS tipomenu,
+            SUM(CAST(TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1)) AS UNSIGNED)) AS cantidad
         FROM qrescaneados
-        WHERE TIME(fecha_escaneo) <= '13:00:00'
-        GROUP BY DATE(fecha_escaneo)
-        ORDER BY fecha ASC
+        WHERE qr_code LIKE '%Estudiantes presentes:%'
+          AND (
+            HOUR(fecha_escaneo) BETWEEN 6 AND 9 OR
+            HOUR(fecha_escaneo) BETWEEN 11 AND 14 OR
+            HOUR(fecha_escaneo) BETWEEN 15 AND 17
+          )
+        GROUP BY fecha, tipomenu
+        ORDER BY fecha, tipomenu;
     ";
 
     $sqlWeekly = "
         SELECT 
-            WEEK(fecha_escaneo, 1) AS semana,
-            MONTHNAME(MIN(fecha_escaneo)) AS mes,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '07:00:00' AND '09:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS desayuno,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '11:30:00' AND '13:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS almuerzo,
-            SUM(CASE WHEN (TIME(fecha_escaneo) NOT BETWEEN '07:00:00' AND '09:00:00') 
-                      AND (TIME(fecha_escaneo) NOT BETWEEN '11:30:00' AND '13:00:00')
-                      AND TIME(fecha_escaneo) <= '13:00:00'
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS refrigerio,
-            SUM(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)) AS totalEstudiantes
+            CONCAT(YEAR(fecha_escaneo), '-W', LPAD(WEEK(fecha_escaneo, 1), 2, '0')) AS fecha,
+            CASE
+              WHEN HOUR(fecha_escaneo) BETWEEN 6 AND 9 THEN 'Desayuno'
+              WHEN HOUR(fecha_escaneo) BETWEEN 11 AND 14 THEN 'Almuerzo'
+              WHEN HOUR(fecha_escaneo) BETWEEN 15 AND 17 THEN 'Refrigerio'
+            END AS tipomenu,
+            SUM(CAST(TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1)) AS UNSIGNED)) AS cantidad
         FROM qrescaneados
-        WHERE TIME(fecha_escaneo) <= '13:00:00'
-        GROUP BY WEEK(fecha_escaneo, 1)
-        ORDER BY MIN(fecha_escaneo) ASC
+        WHERE qr_code LIKE '%Estudiantes presentes:%'
+          AND DAYOFWEEK(fecha_escaneo) BETWEEN 2 AND 6
+          AND (
+            HOUR(fecha_escaneo) BETWEEN 6 AND 9 OR
+            HOUR(fecha_escaneo) BETWEEN 11 AND 14 OR
+            HOUR(fecha_escaneo) BETWEEN 15 AND 17
+          )
+        GROUP BY fecha, tipomenu
+        ORDER BY fecha, tipomenu;
     ";
 
     $sqlMonthly = "
         SELECT 
-            MONTH(fecha_escaneo) AS mes,
-            MONTHNAME(MIN(fecha_escaneo)) AS nombre_mes,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '07:00:00' AND '09:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS desayuno,
-            SUM(CASE WHEN TIME(fecha_escaneo) BETWEEN '11:30:00' AND '13:00:00' 
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS almuerzo,
-            SUM(CASE WHEN (TIME(fecha_escaneo) NOT BETWEEN '07:00:00' AND '09:00:00') 
-                      AND (TIME(fecha_escaneo) NOT BETWEEN '11:30:00' AND '13:00:00')
-                      AND TIME(fecha_escaneo) <= '13:00:00'
-                THEN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)
-                ELSE 0 END) AS refrigerio,
-            SUM(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1) AS UNSIGNED)) AS totalEstudiantes
+            DATE_FORMAT(fecha_escaneo, '%Y-%m') AS fecha,
+            CASE
+              WHEN HOUR(fecha_escaneo) BETWEEN 6 AND 9 THEN 'Desayuno'
+              WHEN HOUR(fecha_escaneo) BETWEEN 11 AND 14 THEN 'Almuerzo'
+              WHEN HOUR(fecha_escaneo) BETWEEN 15 AND 17 THEN 'Refrigerio'
+            END AS tipomenu,
+            SUM(CAST(TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(qr_code, 'Estudiantes presentes: ', -1), '\n', 1)) AS UNSIGNED)) AS cantidad
         FROM qrescaneados
-        WHERE TIME(fecha_escaneo) <= '13:00:00'
-        GROUP BY MONTH(fecha_escaneo)
-        ORDER BY mes ASC
+        WHERE qr_code LIKE '%Estudiantes presentes:%'
+          AND (
+            HOUR(fecha_escaneo) BETWEEN 6 AND 9 OR
+            HOUR(fecha_escaneo) BETWEEN 11 AND 14 OR
+            HOUR(fecha_escaneo) BETWEEN 15 AND 17
+          )
+        GROUP BY fecha, tipomenu
+        ORDER BY fecha, tipomenu;
     ";
 
     // Ejecutar las consultas
