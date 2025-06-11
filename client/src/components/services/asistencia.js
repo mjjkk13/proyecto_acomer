@@ -86,11 +86,12 @@ export const registrarAsistencia = async (cursoId, asistencias) => {
 
     return {
       status: 'success',
-      qr_image: data.qr_base64,
+      qr_image: data.qr_base64,  // Aquí dejamos el base64 completo tal como lo envía el backend
     };
   } catch (error) {
     console.error('Error en registrarAsistencia:', error.response?.data || error.message);
     throw new Error('Error al registrar la asistencia');
   }
 };
+
 

@@ -79,15 +79,6 @@ const CursosDocente = () => {
     setAsistencias(nuevoEstado);
   };
 
-  const descargarQR = (base64Data, filename) => {
-    const link = document.createElement('a');
-    link.href = base64Data;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const enviarAsistencias = async () => {
     try {
       const datosAsistencias = Object.entries(asistencias).map(([idEstudiante, presente]) => ({
@@ -107,18 +98,13 @@ const CursosDocente = () => {
           title: 'QR de Asistencia Generado',
           html: `
             <div style="text-align: center;">
-              <img id="qrImage" src="data:image/png;base64,${response.qr_image}" alt="QR de Asistencia" width="200" style="display: block; margin-bottom: 10px;" />
+              <img id="qrImage" src="${response.qr_image}" alt="QR de Asistencia" width="200" style="display: block; margin-bottom: 10px;" />
             </div>
-            <a id="downloadBtn" href="data:image/png;base64,${response.qr_image}" download="QR_${cursoSeleccionado.idcursos}.png" class="swal2-confirm swal2-styled">
-              Descargar QR
-            </a>
           `,
           icon: 'success',
           showConfirmButton: true,
           confirmButtonText: 'Aceptar'
         });
-
-        descargarQR(`data:image/png;base64,${response.qr_image}`, `QR_${cursoSeleccionado.idcursos}.png`);
 
       } else {
         Swal.fire('Error', response.message || 'Ocurrió un error al registrar las asistencias', 'error');
