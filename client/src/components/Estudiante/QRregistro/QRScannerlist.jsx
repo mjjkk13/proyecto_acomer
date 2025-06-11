@@ -44,19 +44,18 @@ const QRScannerlist = () => {
     setCurrentPage(pageNumber);
   };
 
-  const renderTable = () => {
+const renderTable = () => {
     if (currentScans.length === 0) {
       return (
         <tr>
           <td colSpan="3" className="text-center py-4">
-            {error ? error : "No hay registros para mostrar"}
+            {error ? error : "No tienes QR registrados"}
           </td>
         </tr>
       );
     }
 
     return currentScans.map((item) => {
-      // Mostrar la fecha tal cual está en la base de datos, sin formateo
       const fechaOriginal = item.fecha;
 
       return (
@@ -71,6 +70,7 @@ const QRScannerlist = () => {
       );
     });
   };
+
 
   const renderPagination = () => {
     if (totalPages <= 1) return null;
