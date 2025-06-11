@@ -1,4 +1,5 @@
-<?php
+<?php 
+session_start(); // Iniciar la sesión
 require_once 'conexion.php';
 require 'cors.php';
 
@@ -6,9 +7,19 @@ require 'cors.php';
 date_default_timezone_set('America/Bogota');
 
 $pdo = getPDO(); 
+
+// Obtener el ID del estudiante desde la sesión
+if (!isset($_SESSION['estudiante_ss_id'])) {
+    echo json_encode(['error' => 'No hay sesión iniciada o el ID del estudiante no está definido']);
+    exit;
+}
+
+$estudiante_ss_id = intval($_SESSION['estudiante_ss_id']);
+
 try {
-    $sql = "SELECT fecha_escaneo, qr_code FROM qrescaneados ORDER BY fecha_escaneo DESC";
+    $sql = "SELECT fecha_escaneo, qr_code FROM qrescaneados WHERE estudiante_ss_id = :id ORDER BY fecha_escaneo DESC";
     $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $estudiante_ss_id, PDO::PARAM_INT);
     $stmt->execute();
 
     $resultados = [];
