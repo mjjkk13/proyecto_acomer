@@ -79,11 +79,14 @@ const parseResponse = async (response) => {
   
   export const deleteUser = async (id) => {
     try {
-      if (!id || typeof id !== 'string') {
+      if (!id) {
         throw new Error('ID inválido');
       }
       
-      const response = await fetchData({ id, action: 'delete' });
+      // Convert id to string if it's a number
+      const idString = String(id);
+      
+      const response = await fetchData({ id: idString, action: 'delete' });
       return { success: true, data: response };
     } catch (error) {
       console.error('Error deleting user:', error);
