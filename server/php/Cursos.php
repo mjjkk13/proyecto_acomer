@@ -125,7 +125,7 @@ try {
 
         // Acción para eliminar un curso
         case 'delete':
-            $idcurso = $_POST['idcurso'] ?? 0;
+            $idcurso = $_POST['idcursos'] ?? 0;
             if (!$idcurso) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Faltan datos para eliminar el curso.']);
