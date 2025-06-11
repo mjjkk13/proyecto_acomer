@@ -80,13 +80,13 @@ export const registrarAsistencia = async (cursoId, asistencias) => {
       throw new Error(data.message || 'Error en el registro de asistencia');
     }
 
-    if (!data.qr_image) {
+    if (!data.qr_base64) {
       throw new Error('QR no generado');
     }
 
     return {
       status: 'success',
-      qr_image: data.qr_image,
+      qr_image: data.qr_base64,
     };
   } catch (error) {
     console.error('Error en registrarAsistencia:', error.response?.data || error.message);
