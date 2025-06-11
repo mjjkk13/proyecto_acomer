@@ -24,12 +24,13 @@ const QR = () => {
         throw new Error('Los datos recibidos no son un arreglo');
       }
 
-      const fullQRs = data.map((codigo) => ({
-        id: codigo.idqrgenerados,
-        nombrecurso: codigo.nombrecurso || 'Sin curso asignado',
-        fecha_hora: codigo.fechageneracion,
-        imagen: codigo.qr_image || null,
-      }));
+  const fullQRs = data.map((codigo) => ({
+    id: codigo.idqrgenerados,
+    nombrecurso: codigo.nombrecurso || 'Sin curso asignado',
+    fecha_hora: codigo.fechageneracion,
+    imagen: codigo.codigoqr || null,  // <-- aquí igual, usa codigoqr
+  }));
+
 
 
       setQrCodes(fullQRs);
