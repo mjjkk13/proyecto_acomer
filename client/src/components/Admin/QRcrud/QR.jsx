@@ -28,7 +28,7 @@ const QR = () => {
     id: codigo.idqrgenerados,
     nombrecurso: codigo.nombrecurso || 'Sin curso asignado',
     fecha_hora: codigo.fechageneracion,
-    imagen: codigo.codigoqr || null,  // <-- aquí igual, usa codigoqr
+    imagen: codigo.qr_image || null,  // <-- aquí igual, usa qr_image
   }));
 
 

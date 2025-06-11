@@ -2,7 +2,7 @@
 
 require 'cors.php';
 require_once 'conexion.php';
-require_once 'phpqrcode/qrlib.php'; // Asegúrate de tener esta librería
+require_once 'phpqrcode/qrlib.php'; // Asegúrate de tener esta librería instalada
 
 session_start();
 $pdo = getPDO();
@@ -59,19 +59,23 @@ try {
 
     $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Generar QR base64 para cada resultado
+    // Procesamos cada registro para asegurarnos que todos tienen la imagen QR válida
     foreach ($resultados as &$row) {
         $qrTexto = $row['codigoqr'];
 
-        // Generar la imagen QR en memoria
-        ob_start();
-        QRcode::png($qrTexto, null, QR_ECLEVEL_L, 4);
-        $imageData = ob_get_contents();
-        ob_end_clean();
+        if (strpos($qrTexto, 'data:image') === 0) {
+            // Ya es un base64 válido
+            $row['qr_image'] = $qrTexto;
+        } else {
+            // Es texto plano, generamos el QR
+            ob_start();
+            QRcode::png($qrTexto, null, QR_ECLEVEL_L, 4);
+            $imageData = ob_get_contents();
+            ob_end_clean();
 
-        // Convertir a base64
-        $base64 = base64_encode($imageData);
-        $row['qr_image'] = 'data:image/png;base64,' . $base64;
+            $base64 = base64_encode($imageData);
+            $row['qr_image'] = 'data:image/png;base64,' . $base64;
+        }
     }
 
     echo json_encode([
